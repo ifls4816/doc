@@ -1,3 +1,5 @@
+# 阮一峰博客: https://www.ruanyifeng.com/blog/2019/09/getting-started-with-github-actions.html
+# github docs: https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
 name: docs
 
 on:
@@ -48,8 +50,8 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: crazy-max/ghaction-github-pages@v2
         with:
-          # 部署到 gh-pages 分支
-          target_branch: gh-pages
+          # 部署到 pages 分支
+          target_branch: pages
           # 部署目录为 VuePress 的默认输出目录
           build_dir: docs/.vuepress/dist
         env:

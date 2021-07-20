@@ -40,8 +40,7 @@ module.exports = {
   ],
   base: '/doc/',
   port: 4816,
-  // 不兼容ie 不转义es5 用来减少页面体积
-  evergreen: false,
+  evergreen: true, // 兼容ie 转义es5 用来减少页面体积
   dest: './docs/.vuepress/dist', // build的输出目录
   themeConfig: {
     navbar: router,

@@ -37,7 +37,7 @@ export default [
   },
   { text: 'React', link: '/markdown/react.md' },
   { text: 'nodejs', link: '/markdown/nodeJS.md' },
-  { text: '小程序', link: '/markdown/wx.md' },
+  // { text: '小程序', link: '/markdown/wx.md' },
   {
     text: 'CSS',
     children: [{ text: 'stylus', link: '/markdown/stylus.md' }],
