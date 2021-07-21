@@ -1,5 +1,7 @@
 # 1 css-flex
 
+整理自<a href="https://www.ruanyifeng.com/blog/2015/07/flex-grammar.html">阮一峰博客</a>
+
 ## 2 Flex 布局是什么
 
 > Flexible Box 即 弹性布局
@@ -90,6 +92,8 @@
 
 ### 3.5 align-item 垂直轴上的对齐方式
 
+> 注意: 若发生换行 产生多根主轴 该属性只能控制整体 不能控制 item 的间距 需要用 align-content
+
 ```css
 .box {
   align-items: flex-start | flex-end | center | baseline | stretch;
@@ -127,4 +131,57 @@
 - flex
 - align-self
 
-<!-- https://www.ruanyifeng.com/blog/2015/07/flex-grammar.html -->
+### 4.1 order 定义 item 的排列顺序 值越小越靠前
+
+```css
+.item {
+  order: 0;
+  /* 默认值为0 值越小越靠前 */
+}
+```
+
+### 4.2 flex-grow 放大比例
+
+> flex-grow 属性定义项目的放大比例，默认为 0，即如果存在剩余空间，也不放大 类似于 width 百分比效果
+
+```css
+.item {
+  flex-grow: <number>; /* default 0 */
+}
+```
+
+> 如果所有项目的 flex-grow 属性都为 1，则它们将等分剩余空间（如果有的话）。如果一个项目的 flex-grow 属性为 2，其他项目都为 1，则前者占据的剩余空间将比其他项多一倍。
+
+### 4.3 flex-shrink
+
+略
+
+### 4.4 flex-basis
+
+略
+
+### 4.5 flex 4.2 4.3 4.4 的简写形式
+
+> flex 属性是 flex-grow, flex-shrink 和 flex-basis 的简写，默认值为 0 1 auto。后两个属性可选。
+
+```css
+.item {
+  flex: none | [ < 'flex-grow' > < 'flex-shrink' >? || < 'flex-basis' > ];
+}
+```
+
+### 4.6 align-self 单个 item 的垂直对齐方式
+
+> 可覆盖 box 下的align-item 默认值为aotu
+
+```css
+.item {
+  align-self: auto | flex-start | flex-end | center | baseline | stretch;
+}
+/* auto（默认值）：轴线占满整个交叉轴。 */
+/* flex-start：与交叉轴的起点对齐。 */
+/* flex-end：与交叉轴的终点对齐。 */
+/* center：与交叉轴的中点对齐。 */
+/* space-between：与交叉轴两端对齐，轴线之间的间隔平均分布。 */
+/* space-around：每根轴线两侧的间隔都相等。所以，轴线之间的间隔比轴线与边框的间隔大一倍。 */
+```
