@@ -113,7 +113,7 @@ createApp(App).mount('#app')
 ### 组件实例 property
 
 常规 property:methods，props，computed，inject 和 setup
-内置 property:$attrs $emit等($是为了避免和用户声明的冲突)
+内置 property:$attrs $emit 等(\$是为了避免和用户声明的冲突)
 本质上都是在 data 中声明的变量或方法
 
 ### 生命周期
@@ -322,7 +322,7 @@ v-for="(value,key, index) in/of obj" // 遍历对象
   - slice()
 
 ```js
-example1.items = example1.items.filter((item) => item.message.match(/Foo/))
+example1.items = example1.items.filter(item => item.message.match(/Foo/))
 ```
 
 - 想变更数组又不改变原数组-计算属性
@@ -333,7 +333,7 @@ example1.items = example1.items.filter((item) => item.message.match(/Foo/))
   <ul v-for="numbers in sets">
     <li v-for="n in even(numbers)" :key="n">{{ n }}</li>
   </ul>
-  
+
   data() {
     return {
       sets: [[ 1, 2, 3, 4, 5 ], [6, 7, 8, 9, 10]]
@@ -962,7 +962,7 @@ export default {
 }
 ```
 
-### $refs
+### \$refs
 
 ```js
 <template>
@@ -1003,7 +1003,7 @@ api.ts
 ```js
 // 模拟api
 const fetchUserRepositories = (user: string) => {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     setTimeout(() => {
       resolve({
         name: '张三',
@@ -1022,7 +1022,7 @@ getData.ts
 import { fetchUserRepositories } from './api'
 import { ref, toRefs, onMounted, watch } from 'vue'
 // 接收props属性
-export default function (props: any) {
+export default function(props: any) {
   const repositories: any = ref([]) // 声明响应式数组
   const getUserRepositories = async () => {
     repositories.value = await fetchUserRepositories(props.user)
@@ -1044,7 +1044,7 @@ computed.ts
 ```js
 import { computed } from 'vue'
 // 接收repositories
-export default function (repositories: any) {
+export default function(repositories: any) {
   const repositories2 = computed(() => {
     if (repositories.value.name) {
       repositories.value.name = repositories.value.name + '--has benn computed'
@@ -1160,7 +1160,7 @@ app.use(base, 'test diy')
 app.mount('#app')
 ```
 
-## 响应式变量的声明
+## 响应式声明 ref reactive toRef toRefs区别
 
 - ref reactive =>可触发页面更新
 
@@ -1196,7 +1196,7 @@ const plusOne = computed({
   // 计算属性默认触发set
   get: () => count.value + 1,
   // 当重新定义plusOne当值时 会触发set属性
-  set: (val) => {
+  set: val => {
     console.log('val', val) // 1
     // 修改count的值
     count.value = val - 1
@@ -1239,7 +1239,7 @@ stop()
 
 ```js
 const data = ref(null)
-watchEffect((onInvalidate) => {
+watchEffect(onInvalidate => {
   const token = fetchData(id.value) // 异步操作
   onInvalidate(() => {
     // 某一时刻id值变化了 或者整个watchEffect被停止了 此时需要打断上面的异步操作
@@ -1360,7 +1360,7 @@ import { nextTick } from 'vue'
 nextTick(() => {})
 ```
 
-### template标签的v-for
+### template 标签的 v-for
 
 vue2 中 template 标签的 v-for 不能设置 key vue3 可以了
 
@@ -1551,4 +1551,21 @@ export default defineComponent({
 })
 </script>
 
+```
+
+## script setup 语法糖
+
+### props 使用
+
+接收父组件传值使用
+
+```ts
+import { defineProps } from 'vue'
+const props = defineProps({
+  title: String,
+  content: {
+    type: String,
+    require: true,
+  },
+})
 ```
