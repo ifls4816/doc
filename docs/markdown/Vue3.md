@@ -1160,17 +1160,19 @@ app.use(base, 'test diy')
 app.mount('#app')
 ```
 
-## 响应式声明 ref reactive toRef toRefs区别
+## 响应式声明 ref reactive toRef toRefs 区别
 
 - ref reactive =>可触发页面更新
 
   - ref 可用于任何类型的数据创建响应式 => 通过 ref 创建引用类型响应式数据时 实际上也是调用 reactive
 
+    > ref 在代码中访问需要 .value 模板中因有自动浅解包 可以不用.value
+
   - reactive 只用于创建引用类型数据的响应式
 
-    > 通过 ref reactive 转换的响应式数据不能解构 会破坏响应式 正常 value.属性即可
+    > 通过 ref reactive 转换的响应式数据不能解构 会破坏响应式
 
-    > reactive 创建的属性 需要.value 访问 模版中因为有浅解析可以不用
+    > reactive 创建的属性 不需要.value
 
 - toRef toRefs =>不可触发页面更新
 
@@ -1179,12 +1181,15 @@ app.mount('#app')
     > toRef(obj, 'target') // obj 要创建响应式的对象 'target' 要创建响应式的属性 不驱动视图 此处不能解构
 
   - toRefs 用于创建对象响应式 类似 reactive > toRef(obj) // 整个 obj 都改为响应式 不驱动视图 能解构
-    | 类型 | 是否触发页面改变 | 是否可以解构 | 创建的响应式数据 |
-    | -------- | ---------------- | ------------ | --------------------- |
-    | ref | `是` | 否 | 简单/复杂数据类型都可 |
-    | reactive | `是` | 否 | 复杂数据类型 |
-    | toRef | 否 | 否 | 针对对象的某一属性 |
-    | toRefs | 否 | `是` | 针对整个对象 |
+
+- 图表
+
+| 类型     | 是否触发页面改变 | 是否可以解构 | 创建的响应式数据      |
+| -------- | ---------------- | ------------ | --------------------- |
+| ref      | `是`             | 否           | 简单/复杂数据类型都可 |
+| reactive | `是`             | 否           | 复杂数据类型          |
+| toRef    | 否               | 否           | 针对对象的某一属性    |
+| toRefs   | 否               | `是`         | 针对整个对象          |
 
 ## 响应式变量的 computed 和 watch
 
@@ -1568,4 +1573,134 @@ const props = defineProps({
     require: true,
   },
 })
+```
+
+### emit 使用
+
+父组件:
+
+```ts
+<template>
+  <div>
+    <div>我是父组件</div>
+    <div>父组件的title: {{ str }}</div>
+    <hr />
+    // 1)此处绑定必须使用v-model
+    <my-com v-model:title="str" />
+  </div>
+</template>
+
+<script setup lang="ts">
+import myCom from './myCom.vue'
+import { ref } from 'vue'
+const str = ref('some data')
+</script>
+
+<style lang="less" scoped></style>
+```
+
+子组件:
+
+```ts
+<template>
+  <div>
+    <div>我是子组件</div>
+    // 2) 注意update:title写法
+    <input type="text" :value="title" @input="$emit('update:title', $event.target.value)" />
+  </div>
+</template>
+
+<script setup lange="ts">
+import { defineProps, defineEmits } from 'vue'
+const props = defineProps({
+  title: String,
+  someData: {
+    type: Object,
+    require: true
+  }
+})
+
+const emits = defineEmits(['update:title'])
+</script>
+
+<style lang="less" scoped></style>
+```
+
+### slots和attrs 使用
+
+```ts
+import { useAttrs, useSlots } from 'vue'
+const attrs = useAttrs() // 获取组件标签上的数据
+const slots = useSlots() // 获取插槽数据
+```
+
+### defineExpose API
+
+> 在标准组件写法里，子组件的数据都是默认隐式暴露给父组件的，但在 script-setup 模式下，所有数据只是默认 return 给 template 使用，不会暴露到组件外，所以父组件是无法直接通过挂载 ref 变量获取子组件的数据。如果要调用子组件的数据，需要先在子组件显示的暴露出来，才能够正确的拿到，这个操作，就是由 expose 来完成。
+
+
+父组件:
+```ts
+<template>
+  <div>
+    <div>我是父组件</div>
+    <div>父组件的title: {{ str }}</div>
+    <hr />
+    <my-com ref="sonMsg" />
+  </div>
+</template>
+
+<script setup lang="ts">
+import myCom from './myCom.vue'
+import { ref, onMounted } from 'vue'
+const sonMsg = ref(null)
+onMounted(() => {
+  // 注意: 获取的时候必须要等子组件挂载后才行
+  console.log(sonMsg.value.msg)
+})
+// console.log('sonMsg', sonMsg)
+</script>
+
+<style lang="less" scoped></style>
+
+```
+
+子组件:
+```ts
+<template>
+  <div>
+    <div>我是子组件</div>
+    <hr />
+  </div>
+</template>
+
+<script setup lange="ts">
+// 导入 defineExpose 组件
+import { ref, defineExpose } from 'vue'
+// 定义数据
+const msg = ref('Hello World!')
+// 暴露给父组件
+defineExpose({
+  msg
+})
+</script>
+
+<style lang="less" scoped></style>
+
+```
+
+### 顶级await的支持
+
+setup标签会默认添加async 标签内直接可以await
+
+```ts
+<script setup lang="ts">
+function fun1(str) {
+  return new Promise((reslove, reject) => {
+    reslove(str)
+  })
+}
+const post = await fun1('/api/getNums')
+console.log('post', post) // '/api/getNums'
+</script>
 ```
