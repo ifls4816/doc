@@ -1094,6 +1094,30 @@ export default {
 
 ```
 
+### v-bind绑定css样式
+
+```ts
+<template>
+  <h1 class="test">test</h1>
+</template>
+
+<script setup lang="ts">
+const color = 'red'
+const font = {
+  size: '30px'
+}
+</script>
+
+<style scoped lang="stylus">
+.test {
+  color: v-bind(color);
+  font-size: v-bind('font.size');
+}
+</style>
+
+
+```
+
 ## 自定义指令
 
 基本使用:
