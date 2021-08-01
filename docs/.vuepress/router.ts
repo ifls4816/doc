@@ -40,7 +40,10 @@ export default [
   // { text: '小程序', link: '/markdown/wx.md' },
   {
     text: 'CSS',
-    children: [{ text: 'stylus', link: '/markdown/stylus.md' }],
+    children: [
+      { text: 'stylus', link: '/markdown/stylus.md' },
+      { text: 'flex', link: '/markdown/cssFlex.md' },
+    ],
   },
 
   {
