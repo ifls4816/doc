@@ -54,7 +54,36 @@ export default [
       { text: 'mysql了解', link: '/markdown/mysql.md' },
     ],
   },
-
+  {
+    text: '你不知道的javascript',
+    children: [
+      {
+        text: '1-入门与进阶-up & going',
+        link: '/markdown/You-Dont-Know-JS/1-入门与进阶-up & going',
+      },
+      {
+        text: '2-作用域与闭包-scope & closures',
+        link: '/markdown/You-Dont-Know-JS/2-作用域与闭包-scope & closures',
+      },
+      {
+        text: '3-this与对象原型-this & object prototypes',
+        link:
+          '/markdown/You-Dont-Know-JS/3-this与对象原型-this & object prototypes',
+      },
+      {
+        text: '4-类型与文法-types & grammar',
+        link: '/markdown/You-Dont-Know-JS/4-类型与文法-types & grammar',
+      },
+      {
+        text: '5-异步与性能-async & performance',
+        link: '/markdown/You-Dont-Know-JS/5-异步与性能-async & performance',
+      },
+      {
+        text: '6-ES6与未来-es6 & beyond',
+        link: '/markdown/You-Dont-Know-JS/6-ES6与未来-es6 & beyond',
+      },
+    ],
+  },
   // {
   //   text: '自定义页面',
   //   link: '/custom/user.md',
