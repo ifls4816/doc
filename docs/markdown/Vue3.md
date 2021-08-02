@@ -962,7 +962,7 @@ export default {
 }
 ```
 
-### \$refs
+### $refs
 
 ```js
 <template>
@@ -1094,6 +1094,30 @@ export default {
 
 ```
 
+### v-bind绑定css样式
+
+```ts
+<template>
+  <h1 class="test">test</h1>
+</template>
+
+<script setup lang="ts">
+const color = 'red'
+const font = {
+  size: '30px'
+}
+</script>
+
+<style scoped lang="stylus">
+.test {
+  color: v-bind(color);
+  font-size: v-bind('font.size');
+}
+</style>
+
+
+```
+
 ## 自定义指令
 
 基本使用:
@@ -1182,6 +1206,13 @@ app.mount('#app')
 
   - toRefs 用于创建对象响应式 类似 reactive > toRef(obj) // 整个 obj 都改为响应式 不驱动视图 能解构
 
+  场景:
+  ```ts
+  const obj = reactive({a:1})
+  // template使用时要 {{ obj.a }} 可以通过toRefs()解构出来 使用时就可直接 {{ a }}
+  const { a } = {...toRefs(obj)} // 不能直接解构obj 需要浅拷贝一份
+  ```
+
 - 图表
 
 | 类型     | 是否触发页面改变 | 是否可以解构 | 创建的响应式数据      |
@@ -1220,7 +1251,7 @@ console.log(count.value) // 0
 const count = ref(0) // 经验证: 仅简单数据类型有效 obj无效
 // const obj = ref({a:1}) // 改变obj的值 watchEffect无法监听到
 watchEffect(() => {
-  // 类似与computed 首次默认执行 监测到响应式数据变化时会再执行
+  // 类似与computed 首次默认会在onMounted前调用 监测到响应式数据变化时会再执行
   console.log('effect', count.value) // 首次:0 第二次:1
 })
 
@@ -1261,7 +1292,7 @@ watchEffect(onInvalidate => {
 
 > 区别于 watchEffect 副作用
 >
-> - watch 默认不执行
+> - watch 默认lazy 首次不执行 第三个参数加{immediate: true}时立即执行
 > - 能更精准的监听什么状态下执行
 > - 能访问变化前后的值 oldValue newValue
 
@@ -1656,7 +1687,7 @@ import { ref, onMounted } from 'vue'
 const sonMsg = ref(null)
 onMounted(() => {
   // 注意: 获取的时候必须要等子组件挂载后才行
-  console.log(sonMsg.value.msg)
+  console.log((sonMsg.value as any).msg)
 })
 // console.log('sonMsg', sonMsg)
 </script>
