@@ -29,6 +29,13 @@ export default [
     ],
   },
   {
+    text: 'TypeScript',
+    children: [
+      { text: 'ts1', link: '/markdown/typescript1.md' },
+      { text: 'ts2', link: '/markdown/typescript2.md' },
+    ],
+  },
+  {
     text: 'Vue',
     children: [
       { text: 'vue2', link: '/markdown/vue.md' },
