@@ -333,7 +333,7 @@ example1.items = example1.items.filter(item => item.message.match(/Foo/))
   <ul v-for="numbers in sets">
     <li v-for="n in even(numbers)" :key="n">{{ n }}</li>
   </ul>
-
+  
   data() {
     return {
       sets: [[ 1, 2, 3, 4, 5 ], [6, 7, 8, 9, 10]]
@@ -1149,6 +1149,8 @@ export default {
   // app: 部分vue方法  options:函数调用时自定义的值
   install: (app: any, options: any) => {
     // 组件中setup访问: vm: any = getCurrentInstance()  vm.ctx.$test
+    // 注意: 此写法在新版本vue3中已经不适用 改为: vm: any = getCurrentInstance() vm.proxy.$test
+    // 此处为建议使用provide和inject注入替换该写法
     app.config.globalProperties.$test = test
 
     app.provide('i18n', options) // 组件中通过inject('i18n')获取
@@ -1341,7 +1343,7 @@ lastName.value = 'Smith' // 第二次: 新值:["John", "Smith"] 旧值: ["John",
 const numbers = reactive([1, 2, 3, 4])
 
 watch(
-  () => [...numbers], // 对象或数组要以深拷贝方式传入
+  () => [...numbers], // 对象或数组要以浅拷贝方式传入: 若不加 也能触发watch 但是新值旧值无法区分
   (numbers, prevNumbers) => {
     console.log(numbers, prevNumbers)
   }
@@ -1558,7 +1560,8 @@ export default defineComponent({
   },
   setup() {
     // 此处相当于this.$refs.modal
-    const modal = ref<InstanceType<typeof box1>>() //定义model类型为子组件类型
+    // InstanceType该类型的作用是获取构造函数类型的实例类型
+    const modal = ref<InstanceType<typeof box1>>() //定义model类型为子组件类型  
     const openModal = () => {
       modal.value?.open()
     }
