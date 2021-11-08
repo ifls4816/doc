@@ -62,7 +62,7 @@ const word;//报错
 - const 用来声明常量，常量是不能改变的量，常量也有块级作用域，不能提升，初始化常量时必须赋值
 - 能用 const 就用 const
 
-## 2 赋值结构
+## 2 赋值解构
 
 ==解构赋值就是将对象或者数组中的数据拆解出来分别赋值给某几个变量/常量==
 
@@ -82,10 +82,12 @@ console.log(type)
 
 ```javascript
 let [aaa, bbbb, cde, daa] = [111, 'abc', 3.1415, 'hahaha']
-console.log(aaa)
-console.log(bbbb)
-console.log(cde)
-console.log(daa)
+aaa // 111
+let [, , third = '默认值'] = ['foo', 'bar', 'baz']
+third // "baz"
+let [head, ...tail] = [1, 2, 3, 4]
+head // 1
+tail // [2, 3, 4]
 ```
 
 - 深拷贝对象&数组
@@ -96,25 +98,23 @@ var obj2 = { ...obj1 }
 obj1.a = null
 console.log(obj1)
 console.log(obj2)
-
 ```
 
 - 展开语法
 
 ```js
-var arr = [0,1,2]
+var arr = [0, 1, 2]
 consoloe.log(...arr) // 0 1 2
-
 ```
 
 - 合并数组&对象
 
-可代替contact push unshift
+可代替 contact push unshift
 
 ```js
-var arr1 = [1,2]
-var arr2 = [3,4]
-console.log([...arr1,...arr2])//[1,2,3,4]
+var arr1 = [1, 2]
+var arr2 = [3, 4]
+console.log([...arr1, ...arr2]) //[1,2,3,4]
 ```
 
 - 字符串转数组
@@ -157,6 +157,27 @@ console.log(b)
 console.log(c) //多出来的cccdddeee全都以数组的形式保存在变量c中
 ```
 
+### 2.4 常见用法
+
+```js
+// 交换两个变量的值
+let x = 1
+let y = ((2)[(x, y)] = [y, x]) // x:2 y:1
+// 解构函数的返回值: 数组
+function example() {
+  return [1, 2, 3]
+}
+let [a, b, c] = example()
+// 解构函数的返回值: 对象
+function example() {
+  return {
+    foo: 1,
+    bar: 2
+  }
+}
+let { foo, bar } = example()
+```
+
 ## 3 字符串扩展
 
 ### 3.1 模板字符串
@@ -193,11 +214,25 @@ console.log(str.includes(char)) //判断str字符串中是否包含char字符串
 ```javascript
 let str = 'abcdefg'
 let char = 'efg'
-console.log(str.startsWith(char)) //false
 //判断str字符串是否是以char字符串开始
-console.log(str.endsWith(char)) //true
+console.log(str.startsWith(char)) //false
 //判断str字符串是否是以char字符串结束
+console.log(str.endsWith(char)) //true
+
+// 第二个参数表示开始搜索的位置
+let s = 'Hello world!';
+s.startsWith('world', 6) // true 索引向前查
+s.endsWith('Hello', 5) // true 索引向后查
+s.includes('Hello', 6) // false 索引向前查
 ```
+
+- repeat()
+
+```js
+'x'.repeat(3) // xxx
+'x'.repeat(0) // ''
+```
+
 
 - padStart() 和 padEnd() 填充字符串
 
@@ -209,33 +244,56 @@ console.log(str.padStart(8, '-')) // -----abc
 console.log(str.padEnd(8, 'we')) //abcwewew
 ```
 
-### 3.3 数组方法扩展
+- trimStart() 和 trimEnd()
 
-- includes：判断一个数组中是否包含另一个值
-
-```javascript
-let arr = ['abc', 20, 'bbb', 100, 200]
-console.log(arr.includes('abc')) //true
+```js
+// 新增字符串 不改变原始字符串 所以const没问题
+const s = '  abc  '
+s.trim() // 'abc'
+s.trimStart() // 'abc  '
+s.trimEnd() // '  abc'
 ```
 
-- find： 返回满足条件的第一个值
+- replaceAll() 替换所有字符串
 
-```javascript
-//  功能: 返回满足条件的第一个单元值
-let arr = ['abc', 20, 'bbb', 100, 200]
-let result = arr.find(function(item, index) {
-  //item属性 index索引
-  console.log(index + '--->' + item)
-  return item > 50
-})
-console.log(result) //100
+```js
+'aabbcc'.replace('b', '_') // 'aa_bcc'
+
+'aabbcc'.replaceAll('b', '_') // 'aa__cc'
 ```
 
-- findIndex： 返回满足条件的第一个值的索引
 
-## 4 新增函数写法
 
-### 4.1 形参设置默认值
+
+## 4 数值新增方法
+
+- Number.parseInt() 和 Number.parseFloat()
+
+```js
+// ES5的写法
+parseInt('12.34') // 12
+parseFloat('123.45#') // 123.45
+
+// ES6的写法
+Number.parseInt('12.34') // 12
+Number.parseFloat('123.45#') // 123.45
+
+// 二者完全一致 只是为了减少全局方法 逐步模块化
+```
+
+- Number.isInteger()
+
+```js
+// 判断数字是否为整数
+Number.isInteger(25) // true
+Number.isInteger(25.1) // false
+```
+
+
+
+## 5 新增函数写法
+
+### 5.1 形参设置默认值
 
 ```javascript
 function add(x = 3, y = 5) {
@@ -248,7 +306,7 @@ add() //8
 add(10, 20) //30
 ```
 
-### 4.2 解构赋值和形参默认值配合
+### 5.2 解构赋值和形参默认值配合
 
 ```javascript
 function add({ x, y = 5 }) {
@@ -259,7 +317,7 @@ add({ x: 10 }) //15
 add({ x: 20, y: 50 }) //70
 ```
 
-### 4.3 rest 参数（可变参数）
+### 5.3 rest 参数（可变参数）
 
 ```javascript
 // rest参数: 在es6 使用 rest参数来代替 arguments
@@ -269,8 +327,17 @@ function getData(...args) {
   console.log(args) //会将传入的实参以数组的形式保存起来
 }
 ```
+add: Array.from() 可以把伪数组转为数组
 
-## 5 箭头函数
+### 5.4 函数的name属性
+
+```js
+function foo() {}
+foo.name // "foo"
+```
+
+
+### 5.4 箭头函数
 
 函数的另一种书写方式
 
@@ -303,7 +370,7 @@ let person = () => {
   this.age
 }
 
-var p = new person()
+var p = new person() // persion is not a constructor
 
 //2. 箭头函数没有arguments
 //要使用rest来接收可变参数
@@ -332,6 +399,32 @@ document.getElementById('btn').onclick = function() {
 }
 ```
 
+## 3.3 数组方法扩展
+
+- includes：判断一个数组中是否包含另一个值
+
+```javascript
+let arr = ['abc', 20, 'bbb', 100, 200]
+console.log(arr.includes('abc')) //true
+```
+
+- find： 返回满足条件的第一个值
+
+```javascript
+//  功能: 返回满足条件的第一个单元值
+let arr = ['abc', 20, 'bbb', 100, 200]
+let result = arr.find(function(item, index) {
+  //item属性 index索引
+  console.log(index + '--->' + item)
+  return item > 50
+})
+console.log(result) //100
+```
+
+- findIndex： 返回满足条件的第一个值的索引
+
+
+
 ## 6 定义对象的简单方式
 
 ```javascript
@@ -355,4 +448,23 @@ const obj1 = {
   country
 }
 console.log(obj1.name)
+```
+
+## 7 for in 和 for of 区别
+
+- for...in es5
+
+  > 遍历的是 key 名 数组拿到的是索引 对象拿到的是 key
+
+- for...of es6
+
+  > 遍历的结果是 value
+  > for of 不能直接遍历对象 需要配合 Object.keys(obj)
+
+```js
+for (let key of Object.keys(obj)) {
+  // 遍历出来的是
+  console.log(key) // key 值
+  console.log(obj[key]) // value值
+}
 ```
