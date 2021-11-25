@@ -220,7 +220,7 @@ console.log(str.startsWith(char)) //false
 console.log(str.endsWith(char)) //true
 
 // 第二个参数表示开始搜索的位置
-let s = 'Hello world!';
+let s = 'Hello world!'
 s.startsWith('world', 6) // true 索引向前查
 s.endsWith('Hello', 5) // true 索引向后查
 s.includes('Hello', 6) // false 索引向前查
@@ -232,7 +232,6 @@ s.includes('Hello', 6) // false 索引向前查
 'x'.repeat(3) // xxx
 'x'.repeat(0) // ''
 ```
-
 
 - padStart() 和 padEnd() 填充字符串
 
@@ -262,9 +261,6 @@ s.trimEnd() // '  abc'
 'aabbcc'.replaceAll('b', '_') // 'aa__cc'
 ```
 
-
-
-
 ## 4 数值新增方法
 
 - Number.parseInt() 和 Number.parseFloat()
@@ -288,8 +284,6 @@ Number.parseFloat('123.45#') // 123.45
 Number.isInteger(25) // true
 Number.isInteger(25.1) // false
 ```
-
-
 
 ## 5 新增函数写法
 
@@ -327,15 +321,15 @@ function getData(...args) {
   console.log(args) //会将传入的实参以数组的形式保存起来
 }
 ```
+
 add: Array.from() 可以把伪数组转为数组
 
-### 5.4 函数的name属性
+### 5.4 函数的 name 属性
 
 ```js
 function foo() {}
 foo.name // "foo"
 ```
-
 
 ### 5.4 箭头函数
 
@@ -399,7 +393,50 @@ document.getElementById('btn').onclick = function() {
 }
 ```
 
-## 3.3 数组方法扩展
+## 6 数组方法扩展
+
+- Array.from(): 类数组对象转换为数组
+
+```js
+// 类数组对象转换为数组
+let arrayLike = {
+    '0': 'a',
+    '1': 'b',
+    '2': 'c',
+    length: 3
+};
+// ES5的写法
+var arr1 = Array.prototype.slice.call(arrayLike); // ['a', 'b', 'c']
+// ES6的写法
+let arr2 = Array.from(arrayLike); // ['a', 'b', 'c']
+
+// 也可将字符串转换为数组
+Array.from('hello') // ['h', 'e', 'l', 'l', 'o']
+[...'hello'] // ['h', 'e', 'l', 'l', 'o']
+
+// 参数2 相当于map
+Array.from(arrayLike, x => x * x)
+
+// 参数3 如果map函数里面用到了this关键字，还可以传入Array.from的第三个参数，用来绑定this
+Array.from(arrayLike, function (item) { // 注意这里不能使用箭头函数 会导致传入的this指向不准
+    console.log(item)
+    console.log(this)
+  }, arrayLike)
+```
+
+- Array.of(): 将一组值转换为数组
+
+```js
+Array.of() // []
+Array.of(3, 11, 8) // [3,11,8]
+Array.of(3) // [3]
+Array.of(3).length // 1
+
+// 注意是为了弥补Array()的差异 推荐使用Array.of()
+Array() // []
+Array(3) // [, , ,]
+Array(3, 11, 8) // [3, 11, 8]
+```
 
 - includes：判断一个数组中是否包含另一个值
 
@@ -411,43 +448,168 @@ console.log(arr.includes('abc')) //true
 - find： 返回满足条件的第一个值
 
 ```javascript
-//  功能: 返回满足条件的第一个单元值
+//  功能: 返回满足条件的第一个单元值 若都不符合 则返回undefined
 let arr = ['abc', 20, 'bbb', 100, 200]
-let result = arr.find(function(item, index) {
-  //item属性 index索引
-  console.log(index + '--->' + item)
-  return item > 50
-})
+let result = arr.find(x => x > 50)
 console.log(result) //100
 ```
 
-- findIndex： 返回满足条件的第一个值的索引
+- findIndex： 返回满足条件的第一个值的索引 若都不符合 则返回-1
 
+- fill() 方法使用给定值，填充一个数组
 
+```js
+;['a', 'b', 'c'].fill(7) // [7, 7, 7]
 
-## 6 定义对象的简单方式
+new Array(3).fill(7) // [7, 7, 7]
+```
 
-```javascript
-//标准方式定义
-const name = '张飞'
-const age = 40
-const country = '蜀'
+- entries() keys() values()
 
-const obj = {
-  name: name,
-  age: age,
-  country: country
+```js
+// 可以用for...of循环进行遍历
+// 唯一的区别是keys()是对键名的遍历
+// values()是对键值的遍历
+// entries()是对键值对的遍历
+for (let index of ['a', 'b'].keys()) {
+  console.log(index)
 }
-console.log(obj.name) //张飞
+// 0
+// 1
 
-//当key的名字和value的变量名一致时，
-//就只需要写一个即可
-const obj1 = {
-  name,
-  age,
-  country
+for (let elem of ['a', 'b'].values()) {
+  console.log(elem)
 }
-console.log(obj1.name)
+// 'a'
+// 'b'
+
+for (let [index, elem] of ['a', 'b'].entries()) {
+  console.log(index, elem)
+}
+// 0 "a"
+// 1 "b"
+```
+
+- flat() flatMap()
+
+```js
+// flat()用于将嵌套的数组“拉平”
+;[1, 2, [3, [4]]]
+  .flat(3)
+  [(1, [2, [3]])].flat(Infinity)
+
+  [
+    // flatMap()方法对原数组的每个成员执行一个函数（相当于执行Array.prototype.map()）
+    // 相当于 [[2, 4], [3, 6], [4, 8]].flat()
+    (2, 3, 4)
+  ].flatMap(x => [x, x * 2])
+// [2, 4, 3, 6, 4, 8]
+```
+
+## 7 对象的扩展
+
+### 7.1 对象写法扩展
+
+- 使用表达式作为 key 名
+
+```js
+// 变量/表达式 定义key名
+let propKey = 'foo'
+let obj = {
+  [propKey]: true,
+  ['a' + 'bc']: 123
+}
+// 表达式定义方法名
+let obj = {
+  ['h' + 'ello']() {
+    return 'hi'
+  }
+}
+obj.hello() // hi
+```
+
+- 合并两个对象
+
+```js
+let ab = { ...a, ...b }
+let ab = Object.assgin({}, a, b)
+```
+
+### 7.2 对象新增方法
+
+- Object.is()
+
+```js
+// 判断两个值是否相等
+Object.is('foo', 'foo') + // true
+  // 为了弥补 == 和 ===的不足
+  0 ===
+  -0 //true
+NaN === NaN // false
+Object.is(+0, -0) // false
+Object.is(NaN, NaN) // true
+```
+
+- Object.keys() Object.values()
+
+```js
+// Object.keys() 获取对象的key值 以数组形式返回 多用于遍历
+// Object.values() 获取对象的values值 以数组形式返回 多用于遍历
+let { keys, values, entries } = Object
+let obj = { a: 1, b: 2, c: 3 }
+
+for (let key of keys(obj)) {
+  console.log(key) // 'a', 'b', 'c'
+}
+
+for (let value of values(obj)) {
+  console.log(value) // 1, 2, 3
+}
+
+for (let [key, value] of entries(obj)) {
+  console.log([key, value]) // ['a', 1], ['b', 2], ['c', 3]
+}
+```
+
+- Object.assign()
+
+```js
+// 一 基础:
+
+// 1.注意: 浅拷贝 后面会替换前面的同名属性
+Object.assign(target, source1, source2)
+// 2.也可以用来合并数组 但是会把数组视为对象
+// 实际上是合并了{0:1,1:2,2:3} {0:4,1:5}两个对象
+Object.assign([1, 2, 3], [4, 5]) // [4,5,3]
+// 3.取值函数的处理
+const source = {
+  get foo() {
+    return 1
+  }
+}
+// source中的get foo函数 会被执行
+Object.assign({}, source) // { foo: 1 }
+
+// 二 常见用法:
+// 1.给对象添加属性
+class Foo {
+  constructor(x, y) {
+    Object.assign(this, { x, y })
+    // this.x = x
+    // this.y = y
+  }
+}
+// 2.给对象添加方法
+Object.assign(obj, {
+  sayHi() {
+    console.log('hi')
+  },
+  sayAge() {
+    console.log('i am 18 years old')
+  }
+})
+// 3.合并多个对象
+const merge = (target, ...sources) => Object.assign(target, ...sources)
 ```
 
 ## 7 for in 和 for of 区别
@@ -467,4 +629,199 @@ for (let key of Object.keys(obj)) {
   console.log(key) // key 值
   console.log(obj[key]) // value值
 }
+```
+
+## 8 运算符扩展
+
+- 链判断运算符
+
+```js
+// 判断?左侧对象是否为null或者undefined
+const firstName = message?.body?.user?.firstName || 'default'
+// 函数调用: 若obj下存在foo 则调用
+obj.foo?.()
+```
+
+- null 判断运算符
+
+```js
+// 判断??前的值是否为null或者undefined
+const animationDuration = response.settings.animationDuration ?? 300
+// 也可以配合?使用: response.settings是null或undefined 或者response.settings.animationDuration是null或undefined 返回300
+const animationDuration = response.settings?.animationDuration ?? 300
+```
+
+- 逻辑赋值运算符
+
+```js
+// 或赋值运算符
+x ||= y
+// 等同于
+x || (x = y)
+
+// 与赋值运算符
+x &&= y
+// 等同于
+x && (x = y)
+
+// Null 赋值运算符
+x ??= y
+// 等同于
+x ?? (x = y)
+
+// 实际场景:
+user.id ||= 1
+// 等同于
+user.id = user.id || 1
+```
+
+## 9 Symbol
+
+> es5 中的对象属性名都是字符串,导致属性名字容易冲突.es6 中 Symbol 的引入可以避免该问题
+
+> js 中的基本数据类型: null undefined string boolaen number object Symbol
+
+```js
+// Symbol函数可以接受一个字符串作为参数，表示对 Symbol 实例的描述，主要是为了在控制台显示，或者转为字符串时，比较容易区分。
+let s1 = Symbol('foo')
+let s2 = Symbol('bar')
+s1 // Symbol(foo)
+s2 // Symbol(bar)
+s1.toString() // "Symbol(foo)"
+s2.toString() // "Symbol(bar)"
+
+// 若在Symbol里传入一个对象 则Symbol会调用该对象的toString()方法将对象转为字符串 然后生成Symbol
+const obj = {
+  toString() {
+    return 'abc'
+  }
+}
+const sym = Symbol(obj)
+sym // Symbol(abc)
+
+// Symbol只是当前值的描述 两个Symbol返回值是不相等的
+let s1 = Symbol()
+let s2 = Symbol()
+s1 === s2 // false
+let a1 = Symbol('foo')
+let a2 = Symbol('foo')
+a1 === a2 // false
+
+// Symbol不能参与运算
+let sym = Symbol('My symbol')
+'your symbol is ' +
+  sym // TypeError: can't convert symbol to string
+  `your symbol is ${sym}`
+// TypeError: can't convert symbol to string
+// 但是可以通过显式转换为字符串
+'your symbol is ' + String(sym) // your symbol is My symbol
+// 也可转换为布尔值
+Boolean(sym) // true
+// 但是不能转换为Number
+Number(sym) // TypeError
+```
+
+### 9.1 获取 Symbol 的描述
+
+```js
+const sym = Symbol('foo')
+sym.description // foo
+```
+
+### 9.2 Symbol 作为属性名
+
+```js
+let sym = Symbol()
+// 设置属性
+const obj = {
+  [sym]: 'hello'
+}
+// 读取
+obj[sym] // hello
+
+// 设置函数
+let s = Symbol()
+let obj = {
+  [s](arg) {
+    console.log(123)
+  }
+}
+obj[s]()
+```
+
+### 9.3 替换魔术字符串
+
+```js
+const shapeType = {
+  // triangle: 'Triangle' // 此处的Triangle就是魔术字符串强耦合 不利于维护
+  triangle: Symbol() // 替换为Symbol
+}
+
+function getArea(shape, options) {
+  let area = 0
+  switch (shape) {
+    case shapeType.triangle:
+      area = 0.5 * options.width * options.height
+      break
+  }
+  return area
+}
+
+getArea(shapeType.triangle, { width: 100, height: 100 })
+```
+
+### 9.4 属性名的遍历
+
+```js
+// for...in、for...of
+// Object.keys()、Object.getOwnPropertyNames()、JSON.stringify()
+// 这些会忽略Symbol属性 只能通过Object.getOwnPropertySymbols()访问
+const a = Symbol('a')
+const b = Symbol('b')
+const obj = {
+  [a]: 'hello',
+  [b]: 'world'
+}
+console.log(Object.getOwnPropertySymbols(obj)) // [Symbol(a), Symbol(b)]
+
+// 也可以通过新的api Reflect.ownKeys获取Symbol的key值
+Reflect.ownKeys(obj) // [Symbol(a), Symbol(b)]
+```
+
+### 9.5 Symbol.for() Symbol.keyFor()
+
+- Symbol.for()
+
+> Symbol 原理:Symbol.for()与 Symbol()这两种写法，都会生成新的 Symbol。它们的区别是，前者会被登记在全局环境中供搜索，后者不会。Symbol.for()不会每次调用就返回一个新的 Symbol 类型的值，而是会先检查给定的 key 是否已经存在，如果不存在才会新建一个值。比如，如果你调用 Symbol.for("cat")30 次，每次都会返回同一个 Symbol 值，但是调用 Symbol("cat")30 次，会返回 30 个不同的 Symbol 值。
+
+```js
+// Symbol()创建的值是不重复的 Symbol.for可创建重复的值
+Symbol.for('bar') === Symbol.for('bar') // true
+
+Symbol('bar') === Symbol('bar') // false
+```
+
+- Symbol.keyFor()
+
+```js
+// Symbol.keyFor()方法返回一个已登记的 Symbol 类型值的key
+let s1 = Symbol.for('foo')
+Symbol.keyFor(s1) // "foo"
+
+let s2 = Symbol('foo') // Symbol是不登记的 所以返回undefined
+Symbol.keyFor(s2) // undefined
+
+// 注意: Symbol.keyFor登记是全局的
+function foo() {
+  return Symbol.for('bar')
+}
+const x = foo()
+const y = Symbol.for('bar')
+console.log(x === y) // true
+
+// 可用此特性进行iframe传值
+iframe = document.createElement('iframe')
+iframe.src = String(window.location)
+document.body.appendChild(iframe)
+iframe.contentWindow.Symbol.for('foo') === Symbol.for('foo') // true
 ```
