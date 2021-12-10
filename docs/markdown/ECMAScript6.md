@@ -825,3 +825,285 @@ iframe.src = String(window.location)
 document.body.appendChild(iframe)
 iframe.contentWindow.Symbol.for('foo') === Symbol.for('foo') // true
 ```
+
+## 10 Set 和 Map 数据结构
+
+### 10.1 Set
+
+> Set 是 es6 新增的数据结构 类似与数组 但成员唯一 不会重复 Set 本身是一个构造函数 可以生成 Set 数据结构
+
+```js
+const s = new Set();
+[2, 3, 5, 4, 5, 2, 2].forEach(x => s.add(x));
+for (let i of s) {
+  console.log(i); // 2 3 5 4
+}
+// 通过set进行数组去重
+const arr = [...new Set([1, 2, 3, 4, 5])]
+function dedupe(array) {
+  // Array.from可以讲Set数据类型转换为Array
+  return Array.from(new Set(array));
+}
+dedupe([1, 1, 2, 3]) // [1, 2, 3]
+// 通过set进行字符串去重
+[...new Set('ababbc')].join('') // join:数组转为字符串
+```
+
+#### 10.1.1 Set 实例的属性和方法
+
+- 属性:
+
+  - Set.prototype.constructor：构造函数，默认就是 Set 函数。
+  - Set.prototype.size：返回 Set 实例的成员总数。
+
+- 方法:
+
+  - Set.prototype.add(value)：添加某个值，返回 Set 结构本身。
+  - Set.prototype.delete(value)：删除某个值，返回一个布尔值，表示删除是否成功。
+  - Set.prototype.has(value)：返回一个布尔值，表示该值是否为 Set 的成员。
+  - Set.prototype.clear()：清除所有成员，没有返回值。
+
+  - Set.prototype.keys()：返回键名的遍历器
+  - Set.prototype.values()：返回键值的遍历器
+    > keys 和 values 方法完全一致 返回的都是 Iterator 对象
+  - Set.prototype.entries()：返回键值对的遍历器
+
+  ```js
+  let set = new Set(['red', 'green', 'blue'])
+  for (let item of set.entries()) {
+    console.log(item)
+    // ["red", "red"]
+    // ["green", "green"]
+    // ["blue", "blue"]
+  }
+  ```
+
+  - Set.prototype.forEach()：使用回调函数遍历每个成员
+
+  ```js
+  // forEach for of都可以
+  let set = new Set(['red', 'green', 'blue'])
+
+  for (let x of set) {
+    console.log(x)
+    // red
+    // green
+    // blue
+  }
+  set.forEach(i => {
+    console.log(i)
+    // red
+    // green
+    // blue
+  })
+  // 也可间接使用数组的方法
+  let set = new Set([1, 2, 3])
+  set = new Set([...set].map(x => x * 2))
+  // 返回Set结构：{2, 4, 6}
+  let set = new Set([1, 2, 3, 4, 5])
+  set = new Set([...set].filter(x => x % 2 == 0))
+
+  // 并集交集差集的实现
+  let a = new Set([1, 2, 3])
+  let b = new Set([4, 3, 2])
+
+  // 并集
+  let union = new Set([...a, ...b])
+  // Set {1, 2, 3, 4}
+
+  // 交集
+  let intersect = new Set([...a].filter(x => b.has(x)))
+  // set {2, 3}
+
+  // （a 相对于 b 的）差集
+  let difference = new Set([...a].filter(x => !b.has(x)))
+  // Set {1}
+  ```
+
+### 10.2 WeakSet
+
+> WackSet 接口和 Set 类似 也是不重复值的集合 但是它储存的只能是对象 WeakSet 中的对象都是弱类型引用 其他对象不再对其引用时 会被 js 垃圾回收机制回收 其余略 详情: <a target="_blank" href="https://es6.ruanyifeng.com/#docs/set-map#WeakSet">WeakSet</a>
+
+### 10.3 Map
+
+> 对象数据结构中 key 值只能是字符串(字符串-值) Map 可以任意值当作 key 值(值-值)
+
+```js
+const m = new Map()
+const o = { p: 'Hello World' }
+m.set(o, 'content')
+m.get(o) // "content"
+m.has(o) // true
+m.delete(o) // true
+m.has(o) // false
+m.size // 1
+// 实际应用
+function foo(type) {
+  const val = [
+    ['小红', '第一'], // key, value
+    ['小明', '第二'],
+    ['小绿', '第三']
+  ]
+  const T = new Map(val)
+  return T.get(type) ?? '不知道'
+}
+console.log(foo('小红'))
+```
+
+#### 10.3.1 Map 实例的属性和方法
+
+- 属性:
+
+  - size
+
+  - set 返回的是 Map 对象 可采用链式写法
+
+  ```js
+  const m = new Map()
+  m.set('a', 1).set('b', 2)
+  ```
+
+  - get
+
+  - has
+
+  - delete
+
+  - clear 清除 Map 中的所有成员 无返回值
+
+- 方法:
+
+  - Map.prototype.keys()：返回键名的遍历器。
+  - Map.prototype.values()：返回键值的遍历器。
+  - Map.prototype.entries()：返回所有成员的遍历器。
+  - Map.prototype.forEach()：遍历 Map 的所有成员
+
+> map 转为数组 使用数组方法后可以再通过 new Map 转换回来
+
+```js
+const map = new Map([
+  [1, 'one'],
+  [2, 'two'],
+  [3, 'three'],
+]);
+[...map.keys()] // [1, 2, 3]
+[...map.values()] // ['one', 'two', 'three']
+[...map.entries()] // [[1,'one'], [2, 'two'], [3, 'three']]
+[...map] // [[1,'one'], [2, 'two'], [3, 'three']]
+
+// 对象转化为map
+let obj = { a: 1, b: 2 }
+obj = Object.entries(obj) // [[a,1],[b,2]]
+const map = new Map(obj)
+```
+
+### 10.4 WeakMap
+
+> WeakMap 结构与 Map 结构类似，也是用于生成键值对的集合。 但是 WeakMap 只接受对象作为键名 详情: <a href="https://es6.ruanyifeng.com/#docs/set-map#Map" target="_blank">WeakMap</a>
+
+## 11 Porxy
+
+> 详情: <a href="https://es6.ruanyifeng.com/#docs/proxy" target="_blank">Porxy</a>
+
+## 12 Reflect
+
+> 详情 <a href="https://es6.ruanyifeng.com/#docs/reflect" target="_blank">Reflect</a>
+
+## 13 Promise
+
+- Promise.any():有一个子实例成功就算成功，全部子实例失败才算失败
+- Promise.all():全部子实例的成功才算成功，一个子实例失败就算失败
+- Promise.race():赛跑机制，看最先的 promise 子实例是成功还是失败
+- Promise.allsettled():所有实例执行完成，无论成功或失败
+- Promise.resolve(): 参数可以接受数值 promise 实例 thenable 对象
+
+```js
+const thenable = {
+  then: function(resolve, reject) {
+    resolve(111)
+  }
+}
+Promise.resolve(thenable)
+```
+
+- Promise.reject()
+
+## 14 Interator 和 for of
+
+原生具备 Iterator 接口的数据结构如下。
+
+- Array
+- Map
+- Set
+- String
+- TypedArray
+- 函数的 arguments 对象
+- NodeList 对象
+
+```js
+// 手写实现Interator接口
+const it = makeIterator(['a', 'b'])
+// it.next() // { value: "a", done: false }
+// it.next() // { value: "b", done: false }
+// it.next() // { value: undefined, done: true }
+function makeIterator(arr) {
+  let index = 0
+  return {
+    next() {
+      return index < arr.length
+        ? {
+            value: arr[index++],
+            done: false
+          }
+        : {
+            value: arr[index],
+            done: true
+          }
+    }
+  }
+}
+```
+
+```js
+// 自带的interator使用
+let arr = ['a', 'b']
+let iter = arr[Symbol.iterator]()
+
+iter.next() // { value: 'a', done: false }
+iter.next() // { value: 'b', done: false }
+iter.next() // { value: undefined, done: true }
+```
+
+```js
+// 类方法实现
+class Range {
+  constructor(start, stop) {
+    Object.assign(this, { start, stop })
+  }
+  // 关键: for of会自动前往原型链上寻找该方法
+  [Symbol.iterator]() {
+    return this
+  }
+  next() {
+    // 注意: 需要在值++前接收一下value值
+    const value = this.start
+    if (this.start < this.stop) {
+      this.start++
+      return { value: value, done: false }
+    }
+    x
+    return { value: value, done: true }
+  }
+}
+function range(start, stop) {
+  return new Range(start, stop)
+}
+for (let value of range(0, 3)) {
+  console.log(value)
+}
+```
+
+```js
+// 也可以直接借用Array原型上的Symbol.iterator
+
+```
