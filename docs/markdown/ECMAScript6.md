@@ -1105,5 +1105,223 @@ for (let value of range(0, 3)) {
 
 ```js
 // 也可以直接借用Array原型上的Symbol.iterator
+NodeList.prototype[Symbol.iterator] = Array.prototype[Symbol.iterator]
+// 或者
+NodeList.prototype[Symbol.iterator] = [][Symbol.iterator]
+```
 
+## 15 Generator 函数
+
+```js
+function* helloWorldGenerator() {
+  yield 'hello'
+  yield 'world'
+  return 'ending'
+}
+
+var hw = helloWorldGenerator() // 此时函数调用后返回一个Generator对象
+
+hw.next()
+// { value: 'hello', done: false }
+hw.next()
+// { value: 'world', done: false }
+hw.next()
+// { value: 'ending', done: true }
+hw.next()
+// { value: undefined, done: true }
+
+// Generator方法:
+hw.throw() // 抛出错误
+hw.return('foo') // { value: 'foo', done: true } 立即终止生成器 返回return的参数 生成器再调用则是{ value: undefined, done: true }
+```
+
+> 使用场景: 处理异步请求
+
+```js
+function request(url) {
+  fetch(url)
+    .then(response => response.json())
+    .then(data => it.next(data.hitokoto)) // 第二次调用next 返回异步结果 隐藏loading
+}
+function* generator() {
+  console.log('展示loading')
+  const res = yield request('https://v1.hitokoto.cn')
+  console.log(res)
+  console.log('隐藏loading')
+}
+const it = generator()
+it.next() // 首次调用next 代码走到yield
+
+// 另一种写法(意义不大)
+const request = url => {
+  return fetch(url)
+}
+const generator = function*() {
+  yield request('https://v1.hitokoto.cn')
+}
+const g = generator()
+const ajax = g.next().value
+ajax
+  .then(response => response.json())
+  .then(res => {
+    console.log(res)
+  })
+```
+
+## 16 async 函数
+
+- async 函数的 return 值 会变成 then 函数的参数
+
+```js
+// generator:
+const gen = function*() {
+  const f1 = yield readFile('/etc/fstab')
+  const f2 = yield readFile('/etc/shells')
+  console.log(f1.toString())
+  console.log(f2.toString())
+}
+// async: 实际上就是内置执行器的generator函数
+const asyncReadFile = async function() {
+  const f1 = await readFile('/etc/fstab')
+  const f2 = await readFile('/etc/shells')
+  console.log(f1.toString())
+  console.log(f2.toString())
+}
+```
+
+- 函数声明
+
+```js
+// 声明函数
+async function foo() {}
+// 函数表达式
+const foo = async function() {}
+```
+
+- 错误捕获
+
+```js
+const stop = async () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      reject(new Error('失败了'))
+    }, 1000)
+  })
+}
+const asyncStop = async () => {
+  await stop() // 此处报错 下一个stop不会执行
+  await stop()
+  // await stop().catch(err=>console.log(err)) // 此处报错但是捕获了 下一个stop会执行
+  // await stop()
+}
+asyncStop()
+```
+
+- 多个请求依次发生时 要使用 for 循环 forEach 等不行
+
+```js
+async function dbFuc(db) {
+  let docs = [{}, {}, {}]
+
+  for (let doc of docs) {
+    await db.post(doc)
+  }
+}
+```
+
+## 17 Class
+
+> 基本 class 常识略
+
+> 注意点: 1.class 内部是严格模式 2.没有变量提升 3.有.name 属性:class Foo{} Foo.name 4.class 里的方法尽量不要结构 会影响方法内的 this 指向(非要结构可手动改变 this 指向)
+
+- get 和 set 关键字
+
+```js
+class Foo {
+  constructor(prop) {
+    Object.assign(this, { prop })
+  }
+  get getDt() {
+    return this.prop + '===='
+  }
+  set setDt(val) {
+    console.log(val)
+    this.prop = val + '----'
+  }
+}
+const f = new Foo('123')
+console.log(f.getDt)
+f.setDt = 123
+console.log(f.getDt)
+```
+
+- clas 的静态方法: static 声明 不创建实例 直接在 clas 上调用
+
+## 18 Module 语法
+
+- 和 CommonJS AMD 模块化的区别:
+
+  - ES6 模块的设计思想是尽量的静态化，使得编译时就能确定模块的依赖关系，以及输入和输出的变量。CommonJS 和 AMD 模块，只能在运行时确定
+  - CommonJS 模块输出的是一个值的拷贝，ES6 模块输出的是值的引用
+  - CommonJS 模块的 require()是同步加载模块，ES6 模块的 import()命令是异步加载，有一个独立的模块依赖的解析阶段。
+
+```js
+// CommonJS模块
+let { stat, exists, readfile } = require('fs')
+// 等同于
+let _fs = require('fs')
+let stat = _fs.stat
+let exists = _fs.exists
+let readfile = _fs.readfile
+// 上述代码实际上是把整个fs模块全部导入了 然后再取fs模块上的特定方法。这种加载称为“运行时加载”: 只有再运行代码的时候才能拿到fs对象 没法做到在编译阶段进行静态优化
+
+// ES6模块
+import { stat, exists, readFile } from 'fs'
+// 相反 es6的模块化是通过export命令显试的导出特定代码 在使用import导入 真正做到了按需导入 即"编译时加载"
+// 但是 es6无法取代require的动态加载功能(es2020 import()实现了)
+```
+
+- es2020 动态加载: import()
+
+```js
+const main = document.querySelector('main')
+// import()返回一个promise对象
+import(`./section-modules/${someVariable}.js`)
+  .then(module => {
+    module.loadPageInto(main)
+  })
+  .catch(err => {
+    main.textContent = err.message
+  })
+// 使用场景:
+// 1.按需加载
+button.addEventListener('click', event => {
+  import('./dialogBox.js')
+    .then(dialogBox => {
+      dialogBox.open()
+    })
+    .catch(error => {
+      /* Error handling */
+    })
+})
+// 2.条件加载
+if (condition) {
+  import('moduleA').then(...)
+} else {
+  import('moduleB').then(...)
+}
+// 3.动态的模块路径
+import(f()).then(...)
+```
+
+```html
+<script type="module">
+  ;(async () => {
+    for (let i = 0; i < 2; i++) {
+      const dt = await import(`./test${i}.js`)
+      console.log(dt)
+    }
+  })()
+</script>
 ```
