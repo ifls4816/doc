@@ -20,6 +20,8 @@ tsc hello.ts
 
 ### 安装ESLint
 
+> 配合ts的 eslint
+
 ```shell
 // 安装ESLint
 npm install --save-dev eslint 
@@ -28,6 +30,16 @@ npm install --save-dev typescript @typescript-eslint/parser
 // 安装ESLint的ts补充规则
 npm install --save-dev @typescript-eslint/eslint-plugin
 ```
+
+> 正常js的eslint
+```shell
+// 全局安装esling
+npm install -g eslint
+// 初始化
+eslint --init
+
+```
+
 
 ### 创建配置文件
 
