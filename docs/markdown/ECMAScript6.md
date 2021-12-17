@@ -162,7 +162,8 @@ console.log(c) //多出来的cccdddeee全都以数组的形式保存在变量c�
 ```js
 // 交换两个变量的值
 let x = 1
-let y = ((2)[(x, y)] = [y, x]) // x:2 y:1
+let y = 2
+;[x, y] = [y, x] // x:2 y:1
 // 解构函数的返回值: 数组
 function example() {
   return [1, 2, 3]
@@ -172,7 +173,7 @@ let [a, b, c] = example()
 function example() {
   return {
     foo: 1,
-    bar: 2
+    bar: 2,
   }
 }
 let { foo, bar } = example()
@@ -189,7 +190,7 @@ document.write(str) //在反引号中可以不用管 单双引号的嵌套问题
 const obj = {
   url: 'http://www.baidu.com',
   domain: '百度',
-  title: '百度一下你就知道'
+  title: '百度一下你就知道',
 }
 let str = `<a href="${obj.url}" title="${obj.title}">${obj.domain}</a>` //此处为主要用法 变量在模板字符串中的写法
 document.write(str)
@@ -343,10 +344,10 @@ let show = (name, word) => {
 
 show('盖伦', '一代版本一代神，代代版本玩盖伦')
 
-let add = (x, y) => x + y //不建议用这种写法
+let add = (x, y) => x + y
 console.log(add(1, 5))
 
-let add = x => x + 10 //不建议用这种写法
+let add = (x) => x + 10
 console.log(add(1))
 ```
 
@@ -405,6 +406,7 @@ let arrayLike = {
     '2': 'c',
     length: 3
 };
+// 注意: 转化时对原数据有要求 key值要从0开始 且有length字段
 // ES5的写法
 var arr1 = Array.prototype.slice.call(arrayLike); // ['a', 'b', 'c']
 // ES6的写法
@@ -450,7 +452,7 @@ console.log(arr.includes('abc')) //true
 ```javascript
 //  功能: 返回满足条件的第一个单元值 若都不符合 则返回undefined
 let arr = ['abc', 20, 'bbb', 100, 200]
-let result = arr.find(x => x > 50)
+let result = arr.find((x) => x > 50)
 console.log(result) //100
 ```
 
@@ -494,15 +496,12 @@ for (let [index, elem] of ['a', 'b'].entries()) {
 
 ```js
 // flat()用于将嵌套的数组“拉平”
-;[1, 2, [3, [4]]]
-  .flat(3)
-  [(1, [2, [3]])].flat(Infinity)
+;[1, 2, [3, [4]]].flat(3) // [1,2,3,4]
+;[1, [2, [3]]].flat(Infinity)
+// flatMap()方法对原数组的每个成员执行一个函数（相当于执行Array.prototype.map()）
+// 相当于 [[2, 4], [3, 6], [4, 8]].flat()
 
-  [
-    // flatMap()方法对原数组的每个成员执行一个函数（相当于执行Array.prototype.map()）
-    // 相当于 [[2, 4], [3, 6], [4, 8]].flat()
-    (2, 3, 4)
-  ].flatMap(x => [x, x * 2])
+;[2, 3, 4].flatMap((x) => [x, x * 2])
 // [2, 4, 3, 6, 4, 8]
 ```
 
@@ -517,13 +516,13 @@ for (let [index, elem] of ['a', 'b'].entries()) {
 let propKey = 'foo'
 let obj = {
   [propKey]: true,
-  ['a' + 'bc']: 123
+  ['a' + 'bc']: 123,
 }
 // 表达式定义方法名
 let obj = {
   ['h' + 'ello']() {
     return 'hi'
-  }
+  },
 }
 obj.hello() // hi
 ```
@@ -585,7 +584,7 @@ Object.assign([1, 2, 3], [4, 5]) // [4,5,3]
 const source = {
   get foo() {
     return 1
-  }
+  },
 }
 // source中的get foo函数 会被执行
 Object.assign({}, source) // { foo: 1 }
@@ -606,7 +605,7 @@ Object.assign(obj, {
   },
   sayAge() {
     console.log('i am 18 years old')
-  }
+  },
 })
 // 3.合并多个对象
 const merge = (target, ...sources) => Object.assign(target, ...sources)
@@ -682,7 +681,9 @@ user.id = user.id || 1
 > js 中的基本数据类型: null undefined string boolaen number object Symbol
 
 ```js
-// Symbol函数可以接受一个字符串作为参数，表示对 Symbol 实例的描述，主要是为了在控制台显示，或者转为字符串时，比较容易区分。
+// Symbol函数可以接受一个字符串作为参数，
+// 表示对 Symbol 实例的描述，主要是为了在控制台显示
+// 或者转为字符串时，比较容易区分。
 let s1 = Symbol('foo')
 let s2 = Symbol('bar')
 s1 // Symbol(foo)
@@ -694,7 +695,7 @@ s2.toString() // "Symbol(bar)"
 const obj = {
   toString() {
     return 'abc'
-  }
+  },
 }
 const sym = Symbol(obj)
 sym // Symbol(abc)
@@ -734,9 +735,9 @@ sym.description // foo
 let sym = Symbol()
 // 设置属性
 const obj = {
-  [sym]: 'hello'
+  [sym]: 'hello',
 }
-// 读取
+// 读取: 注意: 此处obj.sym不可以
 obj[sym] // hello
 
 // 设置函数
@@ -744,7 +745,7 @@ let s = Symbol()
 let obj = {
   [s](arg) {
     console.log(123)
-  }
+  },
 }
 obj[s]()
 ```
@@ -754,7 +755,7 @@ obj[s]()
 ```js
 const shapeType = {
   // triangle: 'Triangle' // 此处的Triangle就是魔术字符串强耦合 不利于维护
-  triangle: Symbol() // 替换为Symbol
+  triangle: Symbol(), // 替换为Symbol
 }
 
 function getArea(shape, options) {
@@ -780,7 +781,7 @@ const a = Symbol('a')
 const b = Symbol('b')
 const obj = {
   [a]: 'hello',
-  [b]: 'world'
+  [b]: 'world',
 }
 console.log(Object.getOwnPropertySymbols(obj)) // [Symbol(a), Symbol(b)]
 
@@ -830,7 +831,7 @@ iframe.contentWindow.Symbol.for('foo') === Symbol.for('foo') // true
 
 ### 10.1 Set
 
-> Set 是 es6 新增的数据结构 类似与数组 但成员唯一 不会重复 Set 本身是一个构造函数 可以生成 Set 数据结构
+> Set 是 es6 新增的数据结构 类似于数组 但成员唯一 不会重复    Set本身是一个构造函数 可以生成 Set 数据结构
 
 ```js
 const s = new Set();
@@ -890,7 +891,7 @@ dedupe([1, 1, 2, 3]) // [1, 2, 3]
     // green
     // blue
   }
-  set.forEach(i => {
+  set.forEach((i) => {
     console.log(i)
     // red
     // green
@@ -898,10 +899,10 @@ dedupe([1, 1, 2, 3]) // [1, 2, 3]
   })
   // 也可间接使用数组的方法
   let set = new Set([1, 2, 3])
-  set = new Set([...set].map(x => x * 2))
+  set = new Set([...set].map((x) => x * 2))
   // 返回Set结构：{2, 4, 6}
   let set = new Set([1, 2, 3, 4, 5])
-  set = new Set([...set].filter(x => x % 2 == 0))
+  set = new Set([...set].filter((x) => x % 2 == 0))
 
   // 并集交集差集的实现
   let a = new Set([1, 2, 3])
@@ -912,11 +913,11 @@ dedupe([1, 1, 2, 3]) // [1, 2, 3]
   // Set {1, 2, 3, 4}
 
   // 交集
-  let intersect = new Set([...a].filter(x => b.has(x)))
+  let intersect = new Set([...a].filter((x) => b.has(x)))
   // set {2, 3}
 
   // （a 相对于 b 的）差集
-  let difference = new Set([...a].filter(x => !b.has(x)))
+  let difference = new Set([...a].filter((x) => !b.has(x)))
   // Set {1}
   ```
 
@@ -942,7 +943,7 @@ function foo(type) {
   const val = [
     ['小红', '第一'], // key, value
     ['小明', '第二'],
-    ['小绿', '第三']
+    ['小绿', '第三'],
   ]
   const T = new Map(val)
   return T.get(type) ?? '不知道'
@@ -1021,7 +1022,7 @@ const map = new Map(obj)
 const thenable = {
   then: function(resolve, reject) {
     resolve(111)
-  }
+  },
 }
 Promise.resolve(thenable)
 ```
@@ -1053,13 +1054,13 @@ function makeIterator(arr) {
       return index < arr.length
         ? {
             value: arr[index++],
-            done: false
+            done: false,
           }
         : {
             value: arr[index],
-            done: true
+            done: true,
           }
-    }
+    },
   }
 }
 ```
@@ -1140,8 +1141,8 @@ hw.return('foo') // { value: 'foo', done: true } 立即终止生成器 返回ret
 ```js
 function request(url) {
   fetch(url)
-    .then(response => response.json())
-    .then(data => it.next(data.hitokoto)) // 第二次调用next 返回异步结果 隐藏loading
+    .then((response) => response.json())
+    .then((data) => it.next(data.hitokoto)) // 第二次调用next 返回异步结果 隐藏loading
 }
 function* generator() {
   console.log('展示loading')
@@ -1153,7 +1154,7 @@ const it = generator()
 it.next() // 首次调用next 代码走到yield
 
 // 另一种写法(意义不大)
-const request = url => {
+const request = (url) => {
   return fetch(url)
 }
 const generator = function*() {
@@ -1162,8 +1163,8 @@ const generator = function*() {
 const g = generator()
 const ajax = g.next().value
 ajax
-  .then(response => response.json())
-  .then(res => {
+  .then((response) => response.json())
+  .then((res) => {
     console.log(res)
   })
 ```
