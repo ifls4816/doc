@@ -114,7 +114,7 @@ console.log(mydata)
 // 列表渲染-遍历对象
 const obj = { name: 'zs', age: '18', gender: 'ny' }
 var arr = []
-for (var key in obj) {
+for (let key in obj) {
   // obj[key] for in遍历对象的写法
   // 注意此处key的问题 key里是（name age gender）不是数字，但是也能防止报错
   arr.push(<li key={key}>{obj[key]}</li>)
@@ -229,7 +229,7 @@ class Person {
 const per = new Person('小王',18)
 per.sayHi()
 
-// class 之类名 extends 父类名 {}
+// class 子类名 extends 父类名 {}
 class Student extends Person {
     construtor(name,age,score) {
         //正常情况下应该写this.name=name... 此处用了系统自带的surper方法来继承
@@ -372,7 +372,7 @@ class App extends React.Component {
 class Child extends React.Component {
   // 3:在子组件中接收值
   // props是React.Component中自带的 Child子组件可以直接继承后使用
-  constructor(props) {
+  constructor(props) { // constructor中若没有任何逻辑 只有super 则整个constructor可以省略
     super(props)
   }
   render() {
@@ -595,7 +595,7 @@ ReactDOM.render(<App />, document.getElementById('root'))
 
 ```
 
-### 6.6 props-children
+### 6.6 props-children(插槽)
 
 ```js
 // 使用场景: 当Child子组件封装好 但是有的部分内容不能写死,可以从父组件中传来
@@ -766,7 +766,7 @@ class App extends React.Component {
   constructor(props) {
     super(props)
     // 声明了一个响应式数据
-    // this.state是对象，任何constructor里都有this.state
+    // this.state默认是null，任何constructor里都有this.state
     this.state = {
       age: 10
     }
@@ -2318,7 +2318,7 @@ npm install --save-dev babel-plugin-transform-class-properties
 ```js
 npm i -g create-react-app 全局内安装脚手架工具 装一次即可
 
-create-react-app demos(项目名)
+npx create-react-app demos(项目名)
 
 npm run start 开始项目
 ```
