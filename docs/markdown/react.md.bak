@@ -1,23 +1,5 @@
 # React
 
-> vue 特点
-
-1. 组件化
-2. 双向数据绑定 v-model
-3. MVVM(Model-View-ViewModel)->**对 MVC 设计模式的优化**
-4. **渐进式**->开发项目时->随着项目的推荐->**逐渐向项目中加内容**
-5. 插值表达式{{data中的数据名}}和指令系统 v-if 等
-6. 响应式数据 data
-
-> react(对比 Vue 进行学习)
-
-1. 组件化
-2. 单向数据流(没有双向的现象)
-3. 声明(相当于声明一个变量)式->在开发过程中->根据需要定制组件(react 组件有两种不同的类型)
-4. 插值表达式{}
-5. 响应式数据(并不是所有的数据都是响应式)
-6. 跨平台开发->一次代码,多端运行(混合 app->react-native->RN->react)
-
 ## 1 react初使用
 
 helloworld.js
@@ -60,7 +42,6 @@ index.html
 <body>
   <!-- 容器 -->
   <div id="root"></div>
-   <!-- babel解析需要配置type -->
   <script type="text/babel" src="./1-helloword.js"></script>
 </body>
 </html>
@@ -72,7 +53,6 @@ index.html
 
 ## 2 jsx-插值
 
-JSX->一门对 js 进行扩展的小众**语言**->JSX 和 react 没有任何直接关系->**可以在 react**开发时使用 jsx 语言->**也可以在 vue**中使用 jsx 创建元素
 js文件
 
 ```js
@@ -103,7 +83,7 @@ function creatEle() {
 
 // 渲染
 // ReactDOM.render(ele, document.getElementById('root'))
-// 此处creatEle括号必须写
+//
 ReactDOM.render(creatEle(), document.getElementById('root'))
 
 ```
@@ -126,7 +106,7 @@ let ele = <div>{age >= 18 ? '成年' : '未成年'}</div>
 // 列表渲染-遍历数组
 const data = ['小米', '小明', '小丽']
 let mydata = data.map((item, index) => {
-  // 注意此处key的写法 参考vue:提高渲染速度,若其中一个元素数据发生变化了,有key时 只有其中一个发生变化了 只需变化一个即可 若无key 则全需要变化
+  // 注意此处key的写法
   return <li key={index}>{item}</li>
 })
 console.log(mydata)
@@ -179,37 +159,6 @@ ReactDOM.render(ele, document.getElementById('root'))
 
 ## 5 函数组件和类组件
 
-> vue 的组件特点
-
-1. 体现封装思想
-2. 封装 html+css+js
-3. 可以复用(重复利用)
-4. 减少代码->提高开发效率
-5. 一个组件就是一个特殊的 Vue 实例->new Vue({el/data/等})
-   1. 组件中可以使用 Vue 实例的选项(除了 el)
-   2. 组件有自己的选项,比如 tempalte
-   3. 先注册组件 然后使用
-6. 分类:全局和局部(本地)
-7. 写法:1 注册 2 封装内容 3 使用
-
-```js
-// 1. Vue.component(组件名,组件选项所在对象)
-// 2. 实现组件选项所在对象的内容(template/data/methods等)
-// 3. 在标签的位置通过组件名字使用组件
-```
-
-> react 组件特点
-
-1. 体现封装
-2. 重复利用
-3. **封装视图(使用 jsx 编写标签)**
-4. 减少代码->提高开发效率
-5. **两类:根据写法分成了两个组件**
-   1. 函数组件
-   2. 类组件
-6. 名字+内容+使用
-
-> 注意:react 组件有两类:函数组件 类组件!!!
 ### 5.1 函数组件
 
 ```js
@@ -283,9 +232,8 @@ per.sayHi()
 // class 子类名 extends 父类名 {}
 class Student extends Person {
     construtor(name,age,score) {
-        // 正常情况下应该写this.name=name... 此处用了系统自带的surper方法来继承
+        //正常情况下应该写this.name=name... 此处用了系统自带的surper方法来继承
         // super有很多作用，此处是调用父类的construtor方法
-		name age都是来源于父类 super(props)同理 继承于React.Component父类中的props
         super(name,age)
         this.score=score
     }
@@ -299,7 +247,7 @@ const stu = new Student('小米',18,100)
 // App是子类  React.conponent是父类 react提供好的
 // React.Component注意大小写
 class App extends React.Component {
-  // render方法是子类组件从父类组件继承来的 render必须return出react元素
+  // render方法是子类组件从父类组件继承来的 render必须return
   render() {
     return (
       <div>
@@ -331,9 +279,9 @@ ReactDOM.render(<App />, document.getElementById('root'))
 
 ### 5.3 函数组件和类组件同时使用
 
-函数组件又称无状态组件=>不能处理响应式数据
+函数组件又称无状态组件
 
-类组件又称有状态组件=>可处理响应式数据
+类组件又称有状态组件
 
 ```js
 // 没有响应式数据的时候可以写函数组件 代码量比类组件少
@@ -361,16 +309,9 @@ class App extends React.Component {
     }
   }
   render() {
-	const data = [...this.state.data]
-    // 当使用setState修改state数据后, 组件的render方法会重新执行一遍
-    const changeTitle = () => {
-      data[0] = '标题1111'
-      this.setState({data})
-    }
     return (
       <div>
         <h3>App</h3>
-        <button onClick={changeTitle}>按钮</button>
         <Header title={this.state.data[0]} />
         <Banner title={this.state.data[1]} />
         <Footer title={this.state.data[2]} />
@@ -612,7 +553,6 @@ ReactDOM.render(<App />, document.getElementById('root'))
 
 ### 6.5 PropTypes
 
-为类组件的属性指定类型=>让PropsTypes做props的静态类型检测 使代码更加严谨
 > 传入值类型检测 PropTypes组件被react给独立封装出来了,要使用的话需要安装单独的库 npm install --save prop-types 其他使用方式参见文档
 
 ```js
@@ -701,7 +641,20 @@ class App extends React.Component {
 ReactDOM.render(<App />, document.getElementById('root'))
 ```
 
-可以配合 15-点表示法 书写
+可以配合点表示法书写
+
+```js
+// 手机app的弹窗->多次出现->封装的产物->组件->模态框组件->Modal
+
+// 共同点
+// 1. 居中
+// 2. 半透明
+// 3. 点其他位置, 消失
+
+// 不同点:
+// 内容 不确定
+```
+
 
 
 ### 6.7 练习-组件传值时优化写法
@@ -831,7 +784,7 @@ class App extends React.Component {
 ReactDOM.render(<App />, document.getElementById('root'))
 ```
 
-## 8 setState修改响应式数据
+## 8 setState修改数据
 
 ```js
 // 修改响应式数据
@@ -873,7 +826,6 @@ class App extends React.Component {
     }
     // 改对象
     const fn2 = () => {
-	  // 扩展运算符同样能展开对象(浅拷贝)
       let obj = { ...this.state.obj }
       obj.name = 'ls'
       this.setState({
@@ -952,9 +904,9 @@ ReactDOM.render(<App />, document.getElementById('root'))
 
 ## 9 state和props的区别
 
-1.props是接受外部传递进来的数据 传值使用
+1.props是接受外部传递进来的数据
 
-2.state是声明当前组件内部的响应式数据 组件内部自己处理数据使用
+2.state是声明当前组件内部的响应式数据
 
 PS：二者都是数据，props来源于外部，通常是来自父组件，state来源于自己
 
@@ -991,7 +943,7 @@ class App extends React.Component {
   componentDidMount() {
     console.log('componentDidMount')
     // 组件挂载完毕 相当于vue中的mounted
-    // 可以操作state数据 操作DOM 
+    // 可以获取首屏数据！！！操作DOM 
   }
 }
   // 渲染
@@ -1007,7 +959,7 @@ ReactDOM.render(<App />, document.getElementById('root'))
 
 ### 10.2 更新
 
-#### 10.2.1 更新-更新状态state
+#### 10.2.1 更新-更新状态
 
 ```js
 class App extends React.Component {
@@ -1037,7 +989,7 @@ class App extends React.Component {
   // 更新状态
   // 是否应该更新
   shouldComponentUpdate(nextProps, nextState) {
-    // 参数1：接收新的props          参数2：接收的新state
+    // 参数1：          参数2：接收的新state
     console.log('shouldComponentUpdate')
     // 可以用来判断数据是否更新，进行性能优化
     // 若新state和旧state一样，false 不更新 反之更新
@@ -1057,7 +1009,9 @@ class App extends React.Component {
   componentDidUpdate() {
     console.log('componentDidUpdate')
   }
-  
+  // 更新状态
+  // 更新状态
+  // 更新状态
   // 渲染
   render() {
     console.log('render')
@@ -1081,7 +1035,6 @@ ReactDOM.render(<App />, document.getElementById('root'))
 ```
 
 #### 10.3.2 更新-更新属性
-相比状态更新 多了一个componentWillReceiveProps
 
 ```js
 class App extends React.Component {
@@ -1151,11 +1104,8 @@ ReactDOM.render(<App />, document.getElementById('root'))
  componentWillUnmount() {
     console.log('componentWillUnmount----')
     // 在这里应该做的事儿
-    // 1. 把state清空: this.setState = () => { return }
-    //    原因: setState是异步函数 若异步未执行完 切换了组件 则setState执行后会报错 清空能避免这个报错
+    // 1. 把state清空
     // 2. 清除定时器
-    //   在类组件外let timer
-    //   在方法函数内 timer = setInterval(()=>{}) 然后在componentWillUnmount中卸载
     // 3. 把组件的事件绑定置空btn.onclick=null
   }
 ```
@@ -1184,11 +1134,6 @@ class App extends React.Component {
   fn5 = () => {
     console.log('fn5-------')
   }
-  fn6 = (a,b,e) => {
-      // a:100 b:200 e:事件对象
-    console.log(a,b,e)
-    console.log('fn5-------')
-  }
   render() {
     const fn1 = () => {
       console.log('fn1-------')
@@ -1210,8 +1155,6 @@ class App extends React.Component {
         >
           按钮5
         </button>
-		{/* 利用bind可以修改fn3中的this指向 且不调用函数 此处改指向不重要 目的是带形参且不调用函数 此处this可以使用null代替 若使用其他形参 则e对象默认为最后一个 100对应fn6中的a 200对应fn6中的b 最后不送的实参默认为e */}
-		<button onClick={this.fn6.bind(this,100,200)}></button<
       </div>
     )
   }
@@ -1240,7 +1183,6 @@ class App extends React.Component {
     // 在代码调用的时候改变,应该写在constructor中
   }
   // 自定义的时候写正常函数找不到this 推荐使用箭头函数
-  // 注意 此处在构造函数中不能直接写箭头函数 该写法来自于jsx
   fn2 = () => {
     console.log(this) // 当前App类的实例化对象
   }
@@ -1277,7 +1219,7 @@ class App extends React.Component {
   }
   // 箭头函数不声明直接写是jsx语法
   // e是自带的形参,指的是高级事件对象,所以可以使用e.target e.preventDefault()
-  // 这里的e是高级事件对象,只能用e.preventDefault()阻止默认行为 return false等都无法使用
+  // 这里的e是高级事件对象,只能用e.preventDefault()阻止默认行为
   fn1 = e => {
     console.log('fn1-----')
     console.log(e)
@@ -1511,7 +1453,6 @@ ReactDOM.render(<App />, document.getElementById('root'))
           <label>
             <input
               type="radio"
-			// name一致时 两个input会成为一组 默认只选中一个(原生js写法)
               value="man"
               name="sex"
               // 只写一个checked即可,因为radio通过name值绑定为一对,其中一个选中,另一个就不选中
@@ -1719,50 +1660,6 @@ ReactDOM.render(<App />, document.getElementById('root'))
 > 在启动服务之后->了解该服务的接口规则是什么?->看文档->如何发送请求->postman
 
 `开发中常用的4种请求:增删改查`
-
-db.json
-
-```json
-{
-  "books": [
-    {
-      "id": 1,
-      "name": "00000"
-    },
-    {
-      "name": "aaac",
-      "id": 2
-    },
-    {
-      "name": "aaad",
-      "id": 3
-    },
-    {
-      "name": "aaae",
-      "id": 4
-    },
-    {
-      "name": "1111",
-      "id": 5
-    },
-    {
-      "name": "999999",
-      "id": 6
-    }
-  ],
-  "posts": [
-    {
-      "name": "zs",
-      "age": "18"
-    },
-    {
-      "name": "ls",
-      "age": "20"
-    }
-  ]
-}
-```
-
 
 ```
 查询db.json下key为books的数组数据
@@ -2013,7 +1910,8 @@ ReactDOM.render(<App />, document.getElementById('root'))
 ```
 
 
-## 14 操作DOM元素 设置样式
+
+## 14 操作DOM元素-设置样式
 
 ```js
 class App extends React.Component {
@@ -2173,7 +2071,7 @@ ReactDOM.render(<App />, document.getElementById('root'))
    2. bundle.js是从入口文件main.js开始的使用的所有.js文件的代码
    3. bundle.js里面的代码默认是**压缩的(**默认打包的模式是生产模式)
 
-9. 目前希望bundle.js的代码是非压缩的,可以修改webpack配置,新增mode设置:mode:development
+9. 目前希望bundle.js的代码是非压缩的,可以修改webpack配置,新增mode设置
 
 ### 16.3 webpack-loader
 
@@ -2471,7 +2369,7 @@ npm run start 开始项目
 
       
 
-   2. index.css->样式文件=>公共css 相当于gloabl.css
+   2. index.css->样式文件
 
    3. App.js->根组件文件(相当于App.vue)
 
@@ -2722,7 +2620,7 @@ function Topics() {
         </li>
       </ul>
       <hr />
-		{/* exact精准匹配:当exact为false时，根据路由匹配所有组件 “/”、“/home”、“/home/menu”；当exact为true时，则“/” 仅匹配“/”、无法匹配到“/home”。 */}
+
       <Route exact path="/topics/a" component={Aaa} />
       <Route path="/topics/b" component={Bbb} />
       <Route path="/topics/c" component={Ccc} />
@@ -2821,880 +2719,6 @@ function Topics() {
 }
 
 export default BasicExample
-
-```
-
-### 19.4 路由重定向
-
-1. 注意:重定向是发送了两次get请求
-2. 场景:无法匹配组件时,返回404/登录
-
-```js
-import React from 'react'
-import { BrowserRouter as Router, Route, Link, Redirect, Switch } from 'react-router-dom'
-
-function BasicExample() {
-  return (
-    <Router>
-      <div>
-        <ul>
-      	   <li>
-            <Link to="/">默认页</Link>
-          </li>
-          <li>
-            <Link to="/home">Home</Link>
-          </li>
-          <li>
-            <Link to="/user">User</Link>
-          </li>
-        </ul>
-
-        <hr />
-        {/* switch组件要在上面导入 作用:可以避免重复匹配 匹配到符合项后不再进行匹配 */}
-        <Switch>
-          {/*书写区分先后顺序 非精准匹配下 下方写法中 Route 和 Redirect谁在上 谁先捕获到路由 建议把重定向放在末尾*/}
-	      {/* Route:配置路由用 */}
-          <Route exact path="/" component={Home} />
-          {/* exact 精准匹配 */}
-          <Route exact path="/home" component={Home} />
-          <Route exact path="/user" component={User} />
-          <Route exact path="/404" component={Notfound} />
-     	  {/* 上方全是精准匹配 若输入其他路由 则重定向到404 */}
-          <Redirect from="/" to="/404" />
-        </Switch>
-      </div>
-    </Router>
-  )
-}
-
-function Home() {
-  return (
-    <div>
-      <h2>Home</h2>
-    </div>
-  )
-}
-
-function User() {
-  return (
-    <div>
-      <h2>User</h2>
-    </div>
-  )
-}
-
-function Notfound() {
-  return (
-    <div>
-      <h2>Notfound</h2>
-    </div>
-  )
-}
-
-export default BasicExample
-
-```
-
-> 注意:
-
-1. Router>(Link+Switch>(Route+Redirect))
-2. Switch组件作用 只显示第一个匹配到的组件
-3. Redirect通常写在Route结构的末尾
-4. exact建议设置为true
-
-### 19.5 动态路由传参
-
-1. vue-router-> path:'/ball/:id' component:Ball
-2. 场景:不同的标识,渲染同一个组件-> 项目中的详情页通常使用动态路由
-3. 详情页: 数据不同+页面组成一样->动态路由
-
-```js
-import React from 'react'
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
-
-function BasicExample() {
-  return (
-    <Router>
-      <div>
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/about">About</Link>
-          </li>
-          <li>
-            <Link to="/ball/football">football</Link>
-          </li>
-          <li>
-            <Link to="/ball/beaskball">beaskball</Link>
-          </li>
-          <li>
-            <Link to="/ball/otherball">otherball</Link>
-          </li>
-        </ul>
-
-        <hr />
-
-        <Route exact path="/" component={Home} />
-        <Route path="/about" component={About} />
-        {/* :是要求的 id可以随便起 习惯为id */}
-        <Route path="/ball/:id" component={Ball} />
-      </div>
-    </Router>
-  )
-}
-
-function Home(props) {
-  console.log(props) // 同Ball一致
-  return (
-    <div>
-      <h2>Home</h2>
-    </div>
-  )
-}
-
-function About() {
-  return (
-    <div>
-      <h2>About</h2>
-    </div>
-  )
-}
-
-function Ball(props) {
-  // 正常情况下props为空对象{} 当组件是由路由匹配到的 props才会有match history等值
-  // 若组件不是路由匹配的 可以尝试从父组件中传递this.props值到子组件
-  // 也可以用react带的方法转换
-  // 1) import { withRouter } from 'react-router-dom'
-  // 2) export default withRouter(组件名)
-  // console.log(props.match.params.id)
-  const { id } = props.match.params
-  console.log(id)
-  // 此处也支持编程式导航
-  // const { history } = props
-  // history.push('/ball', {arguments})
-  // history.goBack() // 返回上一页
-  // history.go(0) //0或空为刷新 -1回退上一页 -2回退上两页 1无效
-  return (
-    <div>
-      <h2>Ball</h2>
-    </div>
-  )
-}
-
-export default BasicExample
-
-```
-
-### 19.6 导航链接的激活样式
-
-```js
-import React from 'react'
-// Link替换为NavLink 下方使用时也需要替换
-import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom'
-
-function BasicExample() {
-  return (
-    <Router>
-      <div>
-        <ul>
-          <li>
-      		{/* 点击选中会自动生成active类名 需要激活样式 给active写样式即可 */}
-            <NavLink to="/">Home</Link>
-          </li>
-          <li>
-            <NavLink to="/about">About</Link>
-          </li>
-          <li>
-            <NavLink to="/ball/football">football</Link>
-          </li>
-          <li>
-            <NavLink to="/ball/beaskball">beaskball</Link>
-          </li>
-          <li>
-            <NavLink to="/ball/otherball">otherball</Link>
-          </li>
-        </ul>
-
-        <hr />
-
-        <Route exact path="/" component={Home} />
-        <Route path="/about" component={About} />
-        {/* :是要求的 id可以随便起 习惯为id */}
-        <Route path="/ball/:id" component={Ball} />
-      </div>
-    </Router>
-  )
-}
-
-function Home(props) {
-  console.log(props) // 同Ball一致
-  return (
-    <div>
-      <h2>Home</h2>
-    </div>
-  )
-}
-
-function About() {
-  return (
-    <div>
-      <h2>About</h2>
-    </div>
-  )
-}
-
-function Ball(props) {
-  return (
-    <div>
-      <h2>Ball</h2>
-    </div>
-  )
-}
-
-export default BasicExample
-
-
-```
-
-### 19.7 路由守卫
-
-> react-router-dom中的路由守卫
-
-1. 没有提供直接实现路由守卫的API
-2. 可以利用自定义组件->封装Route
-3. Route标签有一个render属性->render={()=>{return <组件/>}}
-
-```js
-// 路由模块
-
-import React from 'react'
-import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
-  Redirect
-} from 'react-router-dom'
-
-import Login from './components/login/login.js'
-import Home from './components/home/home.js'
-import Cal from './components/main/cal.js'
-import Map from './components/main/map.js'
-
-import Detail from './components/main/detail.js'
-
-// 本质上此处时函数定义 下方标签是函数调用 也就是组件传值
-const Auth = props => {
-  let { component: Component } = props
-  // console.log(Component)
-
-  // return <Route path="/" component={Home} />
-  return (
-    <Route
-      path="/"
-      render={(props) => {
-        // 组件中props值 包含history等 可以用来push go
-        console.log(props)
-        // 如果token存在->home
-        // 如果token不存在->重定向到Login
-        let token = localStorage.getItem('token')
-        // 判断是否有token 若有 直接显示从标签处接受的Home组件(此处接受后重命名为了Component react要求标签首字母必须大写) 若无 重定向到login
-        let com = token ? <Component /> : <Redirect to="/login" />
-        // 完成后返回组件
-        return com
-      }}
-    />
-  )
-}
-
-const AppRouter = () => {
-  return (
-    <Router>
-      <Switch>
-        <Route exact path="/login" component={Login} />
-        <Route path="/detail" component={Detail} />
-        <Route path="/cal" component={Cal} />
-        <Route path="/map" component={Map} />
-
-        {/* Auth函数调用时 会传来component为home的值 上面用作接收 */}
-        <Auth component={Home} />
-
-        {/* <Route path="/" component={Home} /> */}
-        {/* 若跳转到未配置的路由/xxx 则会触发重定向 */}
-        <Redirect to="/login" />
-      </Switch>
-    </Router>
-  )
-}
-
-export default AppRouter
-```
-
-
-
-## 20 好租客项目
-
-### 20.1 前期准备
-
-phpstudy => 开启mysql服务
-
-navicat配置表文件 加载sql文件
-
-更改myapi中config的数据库配置
-
-### 20.2 引入ant-design-mobile
-
-官网: https://mobile.ant.design/
-
-装载
-
-```shell
-npm install antd-mobile --save
-```
-
-引入组件
-
-```shell
-import { Button } from 'antd-mobile'
-```
-
-引入样式
-
-```shell
-import 'antd-mobile/dist/antd-mobile.css'
-```
-
-react touch loader react的手机端loader库   专门的react的加载更多+刷新的组件(npm+github)-> [react-touch-loader](https://github.com/Broltes/react-touch-loader/blob/master/example/app.jsx)
-
-```shell
-npm i react-touch-loader
-```
-
-
-
-### 20.3 路由配置
-
-1. 新建router.js配置路由
-2. 新建components/两个文件夹/login+home
-3. login.js+home.js
-4. 在App.js引入router.js并且使用
-
-router.js
-
-```js
-import React from 'react'
-import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom'
-import Login from './components/login/login.js'
-import Home from './components/home/home.js'
-function AppRouter() {
-  return (
-    <Router>
-      <div>
-      	{/*注意: 这里的效果不是通过按钮去改标识的,所以Link是不需要的*/}
-        <Switch>
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/" component={Home} />
-          {/* 若跳转到未配置的路由/xxx 则会触发重定向 */}
-          <Redirect to="/login" />
-        </Switch>
-      </div>
-    </Router>
-  )
-}
-
-export default AppRouter
-
-```
-
-## 21 高阶组件
-
-### 21.1 高阶函数
-
-概念:函数的形参或者是返回值也是函数 fn1 fn2就是高阶函数 高阶函数目的**:复用函数**
-
-```js
-function add(){}
-function fn1(add){
-    return 10
-}
-function fn2(){
-    return add
-}
-```
-
-函数柯里化:每个函数只有一个形参    函数柯里化:使用了高阶函数配合闭包
-
-```js
-function calvnew(a) {
-      return function (b) {
-        return function (c) {
-          return a * b * c
-        }
-      }
-    }
-const resnew = calvnew(2)(3)(4)
-```
-
-### 21.2 高阶组件HOC
-
-高阶组件:一个组件的形参或者返回值也是组件 此时为高阶组件 目的是复用组件
-
-使用场景:当多个组件有重复逻辑时 此时使用HOC封装重复的逻辑部分(可以是方法 也可以是值)
-
-```js
-import React from 'react'
-
-// import { withRouter } from 'react-router-dom'
-
-// 演示高阶组件的写法
-const Acom = props => {
-  // console.log('我是逻辑代码')
-  let { num } = props
-  return <div> A组件---{num}</div>
-}
-const Bcom = props => {
-  // console.log('我是逻辑代码')
-  let { num } = props
-  return <div> B组件---{num}</div>
-}
-// 这里复用的是withComponent的返回值
-// withComponent()实参是加工之前的组件 return的是加工后加入公共方法的组件
-// react定义好的高阶组件:withRouter()
-const withComponent = Com => {
-  return class extends React.Component {
-    constructor(props) {
-      super(props)
-      this.state = {
-        num: 100
-      }
-    }
-
-    componentWillMount() {
-      console.log('我是逻辑代码')
-    }
-
-    render() {
-      return (
-        <div>
-          <Com num={this.state.num} />
-        </div>
-      )
-    }
-  }
-}
-
-// Acom组件最开始的props没有num->把Acom交给Withcomponent方法->Withcomponent()加功Acom组件->给Acom组件添加了属性num
-const Acomnew = withComponent(Acom)
-const Bcomnew = withComponent(Bcom)
-
-const App = props => {
-  // console.log(props)
-
-  return (
-    <div>
-      App
-      <Acomnew />
-      <Bcomnew />
-    </div>
-  )
-}
-
-export default App
-
-```
-
-## 22 fetch API
-
-> 原生支持 支持promise
-
-
-
-```js
-<script>
-    fetch('https://rarest-gj.csc108.com/znbdpc/api/topic/hottest', { method: 'GET' })
-        .then((res) => {
-    	// res的内容类似于axios中的res内容 不能直接用 直接.也没有值 只能用自带的.josn()方法转换
-    	// body: ReadableStream
-		// bodyUsed: true
-		// headers: Headers {}
-		// ok: true
-		// redirected: false
-		// status: 200
-		// statusText: "OK"
-		// type: "cors"
-		// url: "https://rarest-gj.csc108.com/znbdpc/api/topic/hottest"
-          console.log(res)
-          return res.json()
-        })
-        .then((res) => {
-          console.log(res)
-        })
-  </script>
-```
-
-
-
-简单封装(mdn文档内容):
-
-```js
-// Example POST method implementation:
-
-postData('http://example.com/answer', {answer: 42})
-  .then(data => console.log(data)) // JSON from `response.json()` call
-  .catch(error => console.error(error))
-
-function postData(url, data) {
-  // Default options are marked with *
-  return fetch(url, {
-    body: JSON.stringify(data), // must match 'Content-Type' header
-    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    credentials: 'same-origin', // include, same-origin, *omit
-    headers: {
-      'user-agent': 'Mozilla/4.0 MDN Example',
-      'content-type': 'application/json'
-    },
-    method: 'POST', // *GET, POST, PUT, DELETE, etc.
-    mode: 'cors', // no-cors, cors, *same-origin
-    redirect: 'follow', // manual, *follow, error
-    referrer: 'no-referrer', // *client, no-referrer
-  })
-  .then(response => response.json()) // parses response to JSON
-}
-```
-
-response中带的方法
-
-```
-res.json() 转换成json格式
-res.blob() js自己的数据类型=>转换成进制数据 不常用
-res.text()文本
-res.formData() 处理表单数据
-```
-
-
-
-## 23 redux
-
-二者都是基于flux思想 vuex只能用在vue中 redux可以但不限于用在react项目中
-
-- vuex数据管理的流程:
-
-  > 1.state:声明组件中的数据,并且数据是响应式的
-  >
-  > 2.actions:和后台交互,发送ajax,返回res,把返回的数据交给mutations
-  >
-  > 3.mutations:接收actions的结果,同时修改state
-
-- redux流程
-
-  > 1. 基于flux的实现
-  > 2. redux和react没有任何关系
-  > 3. redux可以用于任何项目
-  > 4. **组成部分**: store + action + reducer
-
-### 23.1 可忽略:react中使用redux
-
-```shell
-npm install redux
-```
-
-index.js中
-
-```js
-// thunk 和 applyMiddleware是为了处理异步action使用
-import thunk from 'redux-thunk'
-import { createStore, applyMiddleware } from 'redux'
-// redux处理数据的函数
-function reducerfn(state = 10, action) {
-  switch (action.type) {
-    case 'add':
-      let state1 = state
-      state1++
-      return state1
-
-    case 'sub':
-      let state2 = state
-      state2--
-      return state2
-
-    default:
-      return state
-  }
-}
-// 创建redux仓库
-let store = createStore(reducerfn, applyMiddleware(thunk))
-
-// 当 store.dispatch(createAction2())改变state值时 需要通过这里面获取最新的state 否则state更新 但是无法获取的
-const unsubscribe = store.subscribe(() =>
-  // 通过根标签store传值
-  ReactDOM.render(<App store={store} />, document.getElementById('root'))
-)
-```
-
-action.js
-
-```js
-export const createAction1 = num => {
-    return {
-        type: 'add',
-        num: num
-    }
-}
-
-export const createAction2 = num => {
-    return {
-        type: 'sub',
-        num: num
-    }
-}
-// 异步的action 用作发网络请求
-export const createAction3 = num => {
-  return dispatch => {
-    // dispatch(createAction1())
-
-    setTimeout(() => {
-      dispatch(createAction1())
-    }, 1000)
-  }
-}
-
-```
-
-App.js
-
-```js
-import {createAction1, createAction2} from 'action.js'
-
-// 此处需要一个类组件
-render() {
-    const { store } = this.props
-    // console.log(store)
-    return (
-      <div>
-        App
-        // store下的getState方法 默认调用index.js中的reducerfn函数 state = 10
-        <p>{store.getState()}</p>
-        <button
-          onClick={() => {
-            store.dispatch(createAction1())
-          }}
-        >
-          点我+1
-        </button>
-        <button
-          onClick={() => {
-            store.dispatch(createAction2())
-          }}
-        >
-          点我-1
-        </button>
-      </div>
-    )
-  }
-```
-
-### 23.2 重点:react中使用react化的redux
-
-```shell
-npm install --save redux react-redux redux-thunk
-npm install --save-dev redux-logger
-```
-
-文件结构
-
-scr
-
-​	store
-
-​		index.js =>返回store
-
-​		reducer.js =>返回reducer函数
-
-​		action.js =>操作数据
-
-
-
-根目录下的:index.js
-
-```js
-import { Provider } from 'react-redux'
-import store from './store/index.js'
-// 简化了上方的使用方式
-ReactDOM.render(
-    // Provider可以透传给App以外的组件 不用一级一级的传值了
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById('root')
-)
-```
-
-store下的index.js
-
-```js
-// 返回仓库:相当于data
-import { createStore } from 'redux'
-import Reducer from './reducer.js'
-
-let state = {
-  num1: 10,
-  num2: 20,
-  num3: 30
-}
-
-// 创建store仓库:createStore(Reducer,可选参数2) 可选参数2就是项目中所使用的数据state
-let store = createStore(Reducer, state)
-export default store
-
-```
-
-store下的reducer.js
-
-```js
-// 返回reducer
-const Reducer = (state, action) => {
-  switch (action.type) {
-    case 'add':
-      // 不建议直接修改状态 应该深拷贝一份
-      let state1 = Object.assign({}, state)
-      state1[action.pname]++
-
-      return state1
-
-    case 'sub':
-      let state2 = Object.assign({}, state)
-      state2[action.pname]--
-      return state2
-
-    default:
-      return state
-  }
-}
-export default Reducer
-```
-
-store下的action.js
-
-```js
-export const createAction1 = pname => {
-  // 此处return的值 会完整保存在reducer中的action形参里
-  return {
-    type: 'add',
-    pname: pname
-  }
-}
-
-export const createAction2 = pname => {
-  return {
-    type: 'sub',
-    pname: pname
-  }
-}
-```
-
-组件使用:
-
-Total.js
-
-使用redux计算status总和
-
-```js
-import React from 'react'
-// 用途:把redux中的数据 映射为当前组件的数据 方便直接用this.props
-import { connect } from 'react-redux'
-
-class Total extends React.Component {
-  render() {
-    const { sum } = this.props
-    return <div>商品总数：【{sum}】</div>
-  }
-}
-
-// 分析: state->num1 num2 num3->映射(改为)当前组件的props数据->connect
-//state->store的state  ownProps->当前组件自己的属性{} 
-const mapStateToProps = (state, ownProps) => {
-  // js自带函数 eval 可以计算字符串
-  // 
-  let sum = eval(Object.values(state).join('+')) // eval('10+20+30') => 60
-  // 返回新props
-  return {
-    sum
-  }
-}
-// connect是一个方法 有返回值 返回值是函数HOC(接收旧组件返回新组件) 改函数调用Total 正常返回一个react组件 
-export default connect(mapStateToProps)(Total)
-
-```
-
-Item.js
-
-动态修改state中的值
-
-```js
-import React from 'react'
-// 把store的数据映射到当前组件中
-import { connect } from 'react-redux'
-import { createAction1, createAction2 } from '../store/actions.js'
-class Item extends React.Component {
-  render() {
-    const { num, pname, add, sub } = this.props
-    return (
-      <div>
-        <button
-          onClick={() => {
-            // 修改数据->store->state->dispatch(action)
-            add()
-          }}
-        >
-          +
-        </button>
-        <button
-          onClick={() => {
-            sub()
-          }}
-        >
-          -
-        </button>
-        <span>
-          【{pname}】商品的数量【
-          {num}】
-        </span>
-      </div>
-    )
-  }
-}
-// 映射state到props->把store的state改为当前组件的props属性:把仓库的状态数据改为当前组件的属性数据
-const mapStateToProps = (state, ownProps) => {
-  // console.log(ownProps) // {pname:num123} => pname是父组件传来的
-  // console.log(state) // {num1:10,num2:20,num3:30}
-  const num = state[ownProps.pname]
-  return {
-    num,
-    // 父组件传来的数据仍旧可用 redux返回的新属性也能用
-    pname: ownProps.pname,
-  }
-}
-// 把dispath方法映射为组件的props
-const mapDispatchToProps = (dispatch, ownProps) => {
-  // console.log(dispatch, ownProps)
-  // console.log(ownProps)
-  return {
-    // 把acton行为中的函数传给了dispatch 包装成了一个add方法 并返回 通过connect合并到props属性中
-    add: () => {
-      dispatch(createAction1(ownProps.pname))
-    },
-    sub: () => {
-      dispatch(createAction2(ownProps.pname))
-    },
-  }
-}
-// 参数1:把仓库的状态转换成属性 参数2:把仓库的方法转换成属性
-export default connect(mapStateToProps, mapDispatchToProps)(Item)
-
-```
-
-
 
 ```
 
