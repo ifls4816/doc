@@ -2830,41 +2830,43 @@ export default BasicExample
 2. 场景:无法匹配组件时,返回404/登录
 
 ```js
+// 注意: 针对的是v6版本的路由
 import React from 'react'
-import { BrowserRouter as Router, Route, Link, Redirect, Switch } from 'react-router-dom'
-
+import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom'
 function BasicExample() {
   return (
     <Router>
       <div>
         <ul>
-      	   <li>
-            <Link to="/">默认页</Link>
+          {/* 第一层路由 */}
+          <li>
+            <Link to='/'>Home</Link>
           </li>
           <li>
-            <Link to="/home">Home</Link>
+            <Link to='/about'>About</Link>
           </li>
           <li>
-            <Link to="/user">User</Link>
+            <Link to='/topics'>Topics</Link>
           </li>
         </ul>
 
         <hr />
-        {/* switch组件要在上面导入 作用:可以避免重复匹配 匹配到符合项后不再进行匹配 */}
-        <Switch>
-          {/*书写区分先后顺序 非精准匹配下 下方写法中 Route 和 Redirect谁在上 谁先捕获到路由 建议把重定向放在末尾*/}
-	      {/* Route:配置路由用 */}
-          <Route exact path="/" component={Home} />
-          {/* exact 精准匹配 */}
-          <Route exact path="/home" component={Home} />
-          <Route exact path="/user" component={User} />
-          <Route exact path="/404" component={Notfound} />
-     	  {/* 上方全是精准匹配 若输入其他路由 则重定向到404 */}
-          <Redirect from="/" to="/404" />
-        </Switch>
+        <Routes>
+           {/*书写区分先后顺序 谁先捕获到路由 建议把重定向放在末尾*/}
+          <Route exact path='/' element={<Home />} />
+          <Route exact path='/about' element={<About />} />
+          <Route exact path='/topics/*' element={<Topics />} />
+          <Route exact path='/404' element={<Notfound />} />
+          {/* 上方全是精准匹配 若输入其他路由 则重定向到404 */}
+          <Route path='*' element={<Navigate to='/404' />} />
+        </Routes>
       </div>
     </Router>
   )
+}
+
+function Notfound() {
+  return <div>404</div>
 }
 
 function Home() {
@@ -2875,32 +2877,57 @@ function Home() {
   )
 }
 
-function User() {
+function About() {
   return (
     <div>
-      <h2>User</h2>
+      <h2>About</h2>
     </div>
   )
 }
 
-function Notfound() {
+function Aaa() {
+  return <div>我是a里的内容</div>
+}
+
+function Bbb() {
+  return <div>我是b里的内容</div>
+}
+
+function Ccc() {
+  return <div>我是c里的内容</div>
+}
+
+function Topics() {
   return (
     <div>
-      <h2>Notfound</h2>
+      {/* 第二层路由 */}
+      <h2>Topics</h2>
+      <ul>
+        <li>
+          <Link to='/topics/a'>A</Link>
+        </li>
+        <li>
+          <Link to='/topics/b'>B</Link>
+        </li>
+        <li>
+          <Link to='/topics/c'>C</Link>
+        </li>
+      </ul>
+      <hr />
+      <Routes>
+        {/* 注意此处写法: 直接写单层路由即可匹配到 */}
+        <Route exact path='/a' element={<Aaa />} />
+        <Route path='/b' element={<Bbb />} />
+        <Route path='/c' element={<Ccc />} />
+      </Routes>
     </div>
   )
 }
 
 export default BasicExample
 
+
 ```
-
-> 注意:
-
-1. Router>(Link+Switch>(Route+Redirect))
-2. Switch组件作用 只显示第一个匹配到的组件
-3. Redirect通常写在Route结构的末尾
-4. exact建议设置为true
 
 ### 19.5 动态路由传参
 
