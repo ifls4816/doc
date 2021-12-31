@@ -2646,7 +2646,7 @@ render() {
 Router03.js  引入到App.js
 
 ```js
-// 注意: 此版本对应的是react router v5版本 v6版本有变动
+// 注意: 此版本对应的是react router v6版本
 import React from 'react'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 
@@ -2733,7 +2733,7 @@ function Topics() {
 export default BasicExample
 
 
-// 注意: 此版本对应的是react router v5版本 v6版本有变动
+// 注意: 此版本对应的是react router v6版本
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 function BasicExample() {
@@ -2935,7 +2935,10 @@ export default BasicExample
 2. 场景:不同的标识,渲染同一个组件-> 项目中的详情页通常使用动态路由
 3. 详情页: 数据不同+页面组成一样->动态路由
 
+#### 19.5.1 react router v5
+
 ```js
+// 此处为react router v5版本
 import React from 'react'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 
@@ -3014,70 +3017,222 @@ export default BasicExample
 
 ```
 
-### 19.6 导航链接的激活样式
+#### 19.5.2 react router v6
+
+- params传递
+
+```js
+// 传递:
+import React from 'react'
+import ComB from './compontents/ComB'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+function BasicExample() {
+  // 1: 定义要传的参数
+  const age = 20
+  const name = 'zs'
+  return (
+    <Router>
+      <div>
+        <ul>
+          <li>
+            <Link to='/'>Home</Link>
+          </li>
+          <li>
+            {/* 2:触发跳转时传值 */}
+            <Link to={{ pathname: `/foo/${age}/${name}` }}>pathname传参</Link>
+          </li>
+        </ul>
+
+        <hr />
+        <Routes>
+          <Route exact path='/' element={<Home />} />
+          {/* 3:定义路由要传递的值 */}
+          <Route exact path='/foo/:age/:name' element={<ComB />} />
+        </Routes>
+      </div>
+    </Router>
+  )
+}
+
+function Home() {
+  return <h2>Home</h2>
+}
+
+export default BasicExample
+
+// 接收
+import { useParams  } from 'react-router-dom'
+function ComB() {
+  const params = useParams()
+  console.log(params) // {age: '20', name: 'zs'}
+  return <div>123</div>
+}
+export default ComB
+
+```
+
+- search传递 
 
 ```js
 import React from 'react'
-// Link替换为NavLink 下方使用时也需要替换
-import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom'
-
+import ComB from './compontents/ComB'
+import { BrowserRouter as Router, Routes, Route, Link  } from 'react-router-dom'
 function BasicExample() {
   return (
     <Router>
       <div>
         <ul>
           <li>
-      		{/* 点击选中会自动生成active类名 需要激活样式 给active写样式即可 */}
-            <NavLink to="/">Home</Link>
+            <Link to='/'>Home</Link>
           </li>
           <li>
-            <NavLink to="/about">About</Link>
+            <Link to='/about'>About</Link>
           </li>
           <li>
-            <NavLink to="/ball/football">football</Link>
+            <Link to='/topics'>Topics</Link>
           </li>
           <li>
-            <NavLink to="/ball/beaskball">beaskball</Link>
-          </li>
-          <li>
-            <NavLink to="/ball/otherball">otherball</Link>
+      		{/* 1:传递的参数 */}
+            <Link to={`/foo?age=20&name=zhangsan`}>传参</Link>
           </li>
         </ul>
 
         <hr />
+        <Routes>
+          <Route exact path='/' element={<Home />} />
+          {/* 2:此处无需特殊声明 正常注册即可 */}
+          <Route exact path='/foo' element={<ComB />} />
+        </Routes>
+      </div>
+    </Router>
+  )
+}
+// 2:ComB组件获取
+import { useSearchParams, useLocation } from 'react-router-dom'
 
-        <Route exact path="/" component={Home} />
-        <Route path="/about" component={About} />
-        {/* :是要求的 id可以随便起 习惯为id */}
-        <Route path="/ball/:id" component={Ball} />
+function ComB() {
+  // 获取方法1 hook式
+  const [searchParams, setSearchParams] = useSearchParams()
+  console.log('searchParams', searchParams)
+  console.log('setSearchParams', setSearchParams)
+  console.log(searchParams.get("age")) // 20
+    
+  // 获取方法2 
+  const { search } = useLocation()
+  // 获取到的是urlencode编码 import qs from "query-string"; 可用qs转换
+  console.log(search) // age=20&name=zhangsan
+  return <div>123</div>
+}
+export default ComB
+
+```
+
+- state传递
+
+```js
+// 传递
+import React from 'react'
+import ComB from './compontents/ComB'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+function BasicExample() {
+  return (
+    <Router>
+      <div>
+        <ul>
+          <li>
+            <Link to='/'>Home</Link>
+          </li>
+          <li>
+            {/* 1:触发跳转时传值 */}
+            <Link to='/foo' state={{ name: 'zs', age: 20 }}>
+              state传参
+            </Link>
+          </li>
+        </ul>
+
+        <hr />
+        <Routes>
+          <Route exact path='/' element={<Home />} />
+          {/* 2: 此处无需特殊声明 正常注册即可 */}
+          <Route exact path='/foo' element={<ComB />} />
+        </Routes>
       </div>
     </Router>
   )
 }
 
-function Home(props) {
-  console.log(props) // 同Ball一致
+function Home() {
+  return <h2>Home</h2>
+}
+
+export default BasicExample
+
+// 获取
+import { useLocation } from 'react-router-dom'
+
+function ComB() {
+  const { state } = useLocation()
+  console.log(state) // {age: '20', name: 'zs'}
+  // 注: useLocation() 返回内容:
+  // hash: ""
+  // key: "kjo98i8y"
+  // pathname: "/foo"
+  // search: ""
+  // state: {name: 'zs', age: 20}
+  return <div>123</div>
+}
+export default ComB
+```
+
+### 19.6 导航链接的激活样式
+
+```js
+import React from 'react'
+import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom'
+function BasicExample() {
   return (
-    <div>
-      <h2>Home</h2>
-    </div>
+    <Router>
+      <ul>
+        <li>
+          {/* 替换Link为NavLick 点击选中会自动生成active类名 需要激活样式 给active写样式即可 */}
+          <NavLink to='/'>Home</NavLink>
+        </li>
+        <li>
+          <NavLink to='/foo'>foo</NavLink>
+        </li>
+        <li>
+          <NavLink to='/bar'>bar</NavLink>
+        </li>
+        <li>
+          <NavLink to='/baz'>baz</NavLink>
+        </li>
+      </ul>
+
+      <hr />
+      <Routes>
+        <Route exact path='/' element={<Home />} />
+        <Route exact path='/foo' element={<Foo />} />
+        <Route exact path='/bar' element={<Bar />} />
+        <Route exact path='/baz' element={<Baz />} />
+      </Routes>
+    </Router>
   )
 }
 
-function About() {
-  return (
-    <div>
-      <h2>About</h2>
-    </div>
-  )
+function Home() {
+  return <h2>Home</h2>
 }
 
-function Ball(props) {
-  return (
-    <div>
-      <h2>Ball</h2>
-    </div>
-  )
+function Foo() {
+  return <h2>Foo</h2>
+}
+
+function Bar() {
+  return <h2>Bar</h2>
+}
+
+function Baz() {
+  return <h2>Baz</h2>
 }
 
 export default BasicExample
@@ -3549,7 +3704,7 @@ import { Provider } from 'react-redux'
 import store from './store/index.js'
 // 简化了上方的使用方式
 ReactDOM.render(
-    // Provider可以透传给App以外的组件 不用一级一级的传值了
+    // Provider可以透传给App以外的组件 不用一级一级的传值了 套在最外层即可
   <Provider store={store}>
     <App />
   </Provider>,
@@ -3561,18 +3716,21 @@ store下的index.js
 
 ```js
 // 返回仓库:相当于data
-import { createStore } from 'redux'
 import Reducer from './reducer.js'
+// thunk 和 applyMiddleware是为了处理异步action使用
+import thunk from 'redux-thunk'
+import { createStore, applyMiddleware } from 'redux'
 
 let state = {
   num1: 10,
   num2: 20,
-  num3: 30
+  num3: 30,
+  // action发请求: 1) state里定义数据
+  ajaxData:{},
 }
 
-// 创建store仓库:createStore(Reducer,可选参数2) 可选参数2就是项目中所使用的数据state
-let store = createStore(Reducer, state)
-export default store
+// 创建store仓库:createStore(Reducer,可选参数2) 可选参数2就是项目中所使用的数据state, 参数3 thunk
+export default createStore(Reducer, state, applyMiddleware(thunk))
 
 ```
 
@@ -3593,8 +3751,14 @@ const Reducer = (state, action) => {
       let state2 = Object.assign({}, state)
       state2[action.pname]--
       return state2
-
+    // action发请求: 2) reducer里处理数据
+    case 'ajax':
+      let state3 = Object.assign({}, state)
+      state3.ajaxData = action.pname
+      return state3
+     
     default:
+      // 必须有default 初始化的时候默认会执行一次Reducer type为随机值 会默认走default
       return state
   }
 }
@@ -3618,6 +3782,25 @@ export const createAction2 = pname => {
     pname: pname
   }
 }
+
+// action发请求: 3) action定义异步函数
+export const createActionAjax = (data) => ({
+  type: 'ajax',
+  pname: data,
+})
+
+export const createAction3 = (req) => {
+  return (dispatch) => {
+    console.log(req)
+    fetch('https://v1.hitokoto.cn')
+      .then((response) => response.json())
+      .then((data) => {
+        // action要求返回的必须是带type的对象 所以调用createActionAjax 进入reducer.js中的 第2)步
+        dispatch(createActionAjax(data))
+      })
+  }
+}
+
 ```
 
 组件使用:
@@ -3665,21 +3848,17 @@ import { connect } from 'react-redux'
 import { createAction1, createAction2 } from '../store/actions.js'
 class Item extends React.Component {
   render() {
-    const { num, pname, add, sub } = this.props
+     // action发请求: 5) 调用
+    const { num, pname, add, sub, ajax, ajaxData } = this.props
     return (
       <div>
         <button
-          onClick={() => {
-            // 修改数据->store->state->dispatch(action)
-            add()
-          }}
+          onClick={add}
         >
-          +
+          + [修改数据->store->state->dispatch(action)]
         </button>
         <button
-          onClick={() => {
-            sub()
-          }}
+          onClick={sub}
         >
           -
         </button>
@@ -3693,13 +3872,14 @@ class Item extends React.Component {
 }
 // 映射state到props->把store的state改为当前组件的props属性:把仓库的状态数据改为当前组件的属性数据
 const mapStateToProps = (state, ownProps) => {
-  // console.log(ownProps) // {pname:num123} => pname是父组件传来的
+  // console.log(ownProps) // {pname:num123} => pname是父组件传来的:  <ComA pname="num1"/>
   // console.log(state) // {num1:10,num2:20,num3:30}
   const num = state[ownProps.pname]
   return {
     num,
     // 父组件传来的数据仍旧可用 redux返回的新属性也能用
     pname: ownProps.pname,
+    ajaxData: state.ajaxData,
   }
 }
 // 把dispath方法映射为组件的props
@@ -3708,12 +3888,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   // console.log(ownProps)
   return {
     // 把acton行为中的函数传给了dispatch 包装成了一个add方法 并返回 通过connect合并到props属性中
-    add: () => {
-      dispatch(createAction1(ownProps.pname))
-    },
-    sub: () => {
-      dispatch(createAction2(ownProps.pname))
-    },
+    add: dispatch(createAction1(ownProps.pname)),
+    sub: dispatch(createAction2(ownProps.pname)),
+    // action发请求: 4) 将函数通过connect挂在到组件的props上
+    ajax: (req) => dispatch(createAction3(req)),
   }
 }
 // 参数1:把仓库的状态转换成属性 参数2:把仓库的方法转换成属性
@@ -3721,7 +3899,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(Item)
 
 ```
 
+## 24 HOOK
 
-
-```
+> react中的函数组件默认不支持响应式数据等 HOOK的出现可以完全使用函数组件替代类组件
 
