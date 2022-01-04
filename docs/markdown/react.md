@@ -3899,7 +3899,35 @@ export default connect(mapStateToProps, mapDispatchToProps)(Item)
 
 ```
 
-## 24 HOOK
+### 23.3 HOOK
 
-> react中的函数组件默认不支持响应式数据等 HOOK的出现可以完全使用函数组件替代类组件
+#### 23.3.1 useState声明响应式数据
+```js
+//  count: 0 setCount: 更改count的方法
+ const [count, setCount] = useState(0);
+```
 
+#### 23.3.2 useEffect替代生命周期(类似vue3中的watchEffect)
+
+```js
+import { useState, useEffect } from 'react'
+function ComB() {
+  const [count, setCount] = useState(0)
+  useEffect(() => {
+    document.title = count
+    return () => {
+      // 首次执行的时候 return出来的函数并不会执行 只有下次effect执行的时候 会清除上次的结果
+      // 使用场景:发送ajax请求取消订阅 清除定时器等
+      console.log(123)
+    }
+  })
+  return (
+    <div>
+      <div>{count}</div>
+      <button onClick={() => setCount(count + 1)}>+</button>
+    </div>
+  )
+}
+export default ComB
+
+```
