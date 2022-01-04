@@ -3921,6 +3921,16 @@ function ComB() {
       console.log(123)
     }
   })
+
+  // 特定情况下更新 类似watch用法 当count发生边化时 触发useEffect组件更新
+  useEffect(() => {
+    document.title = `You clicked ${count} times`;
+  // 每次更新 effect会比较上次的count和本次的count 若发生边化才更新
+  // 用于替代componentDidUpdate(prevProps, prevState) 做性能优化或watch某值
+  }, [count]); // 仅在 count 更改时更新
+   useEffect(() => {
+    // 若想useEffect只执行一次 可以第二个参数可以直接传空数组
+   }, [])
   return (
     <div>
       <div>{count}</div>
