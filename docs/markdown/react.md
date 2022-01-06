@@ -704,7 +704,87 @@ ReactDOM.render(<App />, document.getElementById('root'))
 可以配合 15-点表示法 书写
 
 
-### 6.7 练习-组件传值时优化写法
+### 6.7 Context组件多级嵌套时值的传递
+
+<span id="content">Context</span>
+
+```js
+// themes.js 数据存储
+import React from 'react'
+export const themes = {
+  light: {
+    foreground: '#000000',
+    background: '#eeeeee',
+  },
+  dark: {
+    foreground: '#ffffff',
+    background: '#222222',
+  },
+}
+export const ThemeContext = React.createContext(
+  themes.dark, // 默认值
+)
+
+// app.js 数据提供方
+import React, { Component } from 'react'
+import ComA from './compontents/ComA'
+import { ThemeContext, themes } from './compontents/theme'
+
+class App extends Component {
+  state = {
+    themes: themes.dark,
+  }
+  change = () => {
+    this.setState({
+      themes: this.state.themes === themes.dark ? themes.light : themes.dark,
+    })
+  }
+  render() {
+    return (
+      <div>
+        App:
+        <ThemeContext.Provider value={this.state.themes}>
+          <ComA />
+        </ThemeContext.Provider>
+        <button onClick={this.change}>change</button>
+      </div>
+    )
+  }
+}
+export default App
+
+// ComA.js: 数据流与ComA无关
+import ComC from './ComC'
+function ComA() {
+ 
+  return <div>我是ComA:
+    <ComC />
+  </div>
+}
+export default ComA
+
+// ComC.js:
+import React, { useContext } from 'react'
+import { ThemeContext } from './theme'
+// hook写法
+function ComC() {
+  const content = useContext(ThemeContext)
+  console.log(content)
+  return <div>ComC</div>
+}
+// class写法
+// class ComC extends React.Component {
+//   react提供的api 相当于在class类上添加了content 使用时直接this.context即可
+//   static contextType = ThemeContext
+//   render() {
+//     console.log(this.context)
+//     return <div>ComC</div>
+//   }
+// }
+export default ComC
+```
+
+### 6.8 练习-组件传值时优化写法
 
 js文件
 
@@ -757,7 +837,7 @@ const App = props => {  // props默认是{}
 ReactDOM.render(<App />, document.getElementById('root'))
 ```
 
-### 6.8 练习-登录和注册组件显示与隐藏
+### 6.9 练习-登录和注册组件显示与隐藏
 
 ```js
 class App extends React.Component {
@@ -3899,15 +3979,17 @@ export default connect(mapStateToProps, mapDispatchToProps)(Item)
 
 ```
 
-### 23.3 HOOK
+## 24 HOOK
 
-#### 23.3.1 useState声明响应式数据
+### 24.1 useState声明响应式数据
 ```js
-//  count: 0 setCount: 更改count的方法
- const [count, setCount] = useState(0);
+  //  count: 0 setCount: 更改count的方法
+  // useState()中传入的参数可以是通过计算得来的 该值只有在初始化的时候触发一次 后面读缓存
+  // useState(()=> computedSomeValue(props))
+  const [count, setCount] = useState(0);
 ```
 
-#### 23.3.2 useEffect替代生命周期(类似vue3中的watchEffect)
+### 24.2 useEffect替代生命周期(类似vue3中的watchEffect)
 
 ```js
 import { useState, useEffect } from 'react'
@@ -3928,9 +4010,14 @@ function ComB() {
   // 每次更新 effect会比较上次的count和本次的count 若发生边化才更新
   // 用于替代componentDidUpdate(prevProps, prevState) 做性能优化或watch某值
   }, [count]); // 仅在 count 更改时更新
+
    useEffect(() => {
     // 若想useEffect只执行一次 可以第二个参数可以直接传空数组
    }, [])
+
+   useEffect(() => {
+     // dom更新完毕后 才会异步调用 所以会有延迟 若涉及到视图更新 可以使用替代 useLayoutEffect 该函数为同步调用
+   })
   return (
     <div>
       <div>{count}</div>
@@ -3942,7 +4029,9 @@ export default ComB
 
 ```
 
-#### 23.3.2 自定义 Hook (提取公共hook)
+
+
+### 24.3 自定义 Hook (提取公共hook)
 
 ```js
 // useDemo.js: 函数名字必须为use开头
@@ -3970,4 +4059,110 @@ function ComB(props) {
 }
 export default ComB
 
+```
+### 24.4 useContext() 组件多级嵌套时值的传递
+
+[组件多级嵌套时值的传递](#content)
+
+### 24.5 useReducer
+
+```js
+// 使用场景: state有多个子值 多层嵌套 或者state间相互依赖时
+import { useReducer } from 'react'
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'increment':
+      return { count: state.count + 1 }
+    case 'decrement':
+      return { count: state.count - 1 }
+    default:
+      throw new Error()
+  }
+}
+export default function ComA() {
+  // 这里的count:0 可以是组件自己维护的值 也可以是props
+  const [state, dispash] = useReducer(reducer, { count: 0 })
+  return (
+    <>
+      <h2>{state.count}</h2>
+      <button onClick={() => dispash({ type: 'increment' })}>增加</button>
+      <button onClick={() => dispash({ type: 'decrement' })}>减少</button>
+    </>
+  )
+}
+```
+
+### 24.6 useRef 通过ref获取dom元素
+
+```js
+import { useRef, useEffect } from 'react'
+
+function ComA() {
+  const domRef = useRef(null)
+  useEffect(() => {
+    domRef.current.focus()
+  }, [])
+  return <input type='text' ref={domRef} />
+}
+
+export default ComA
+```
+
+<!-- useLayoutEffect -->
+
+### 24.7 useImperativeHandle与forwardRef
+
+> 二者搭配使用 将子组件的ref暴漏给父组件 以供父组件调用
+
+```js
+// 子组件定义
+import { useRef, useImperativeHandle, forwardRef } from 'react'
+let FancyInput = (props, ref) => {
+  console.log('props', props) // 父组件传来的值
+  console.log('ref', ref) // 父组件通过useRef/React.createRef构建的ref值
+  const domRef = useRef(null)
+  useImperativeHandle(ref, () => ({
+    focus: () => {
+      domRef.current.focus()
+    },
+  }))
+  return <input type='text' ref={domRef} placeholder={props.placeholder} />
+}
+FancyInput = forwardRef(FancyInput)
+export default FancyInput
+// 父组件调用:
+function App() {
+  const inputRefs = useRef(null)
+  useEffect(() => {
+    inputRefs.current.focus()
+  }, [])
+  return (
+    <>
+      App:
+      <FancyInput placeholder='我是高级input' ref={inputRefs} />
+    </>
+  )
+}
+
+```
+
+### 24.8 useLayoutEffect
+
+> 参照 24.2 useEffect
+
+> 渲染问题也可以使用 && 解决
+```js
+function Child() {
+  const [showChild, setShowChild] = useState(false)
+  useEffect(() => { 
+    setShowChild(true)
+  }, [])
+  return showChild && <Child />
+}
+```
+
+### 24.9 useCallback与useMemo
+
+```js
+// todo
 ```
