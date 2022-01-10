@@ -90,14 +90,14 @@ head // 1
 tail // [2, 3, 4]
 ```
 
-- 深拷贝对象&数组
+- 浅拷贝对象&数组
 
 ```js
-var obj1 = { a: 1, b: 2 }
+ var obj1 = { a: 1, b: 2, c: { cc: 1 } }
 var obj2 = { ...obj1 }
-obj1.a = null
-console.log(obj1)
-console.log(obj2)
+obj1.c.cc = null
+console.log(obj1) // {a: 1, b: 2, c: {cc: null}
+console.log(obj2) // {a: 1, b: 2, c: {cc: null}
 ```
 
 - 展开语法
