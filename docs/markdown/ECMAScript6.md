@@ -945,6 +945,13 @@ function foo(type) {
     ['小明', '第二'],
     ['小绿', '第三'],
   ]
+  // new Map时 参数需要二元数组 也可以声明对象 然后通过Object.entries构建
+  // const val = {
+  //   '小红': '第一',
+  //   '小明': '第二',
+  //   '小绿': '第三',
+  // }
+  // Object.entries(val) // [['小红', '第一'],['小明', '第二'],['小绿', '第三']]
   const T = new Map(val)
   return T.get(type) ?? '不知道'
 }
