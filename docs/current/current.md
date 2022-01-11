@@ -166,3 +166,75 @@ const getURLParameters = (url) =>
     {},
   )
 ```
+
+## 9 reduce
+
+```js
+const arr = ['a', 'b', 'c', 'd', undefined, null]
+const initialValue = 0
+arr.reduce((total, currentValue, currentIndex, arr) => {
+  // 必需。初始值: 若初始值不填 着total为数组的第一个元素
+  // 第二轮循环时 该值是函数return的值(即上次调用函数的返回值)
+  console.log('total', total)
+  // 必需。当前value值: 若初始值不填 value值从第二个元素开始
+  console.log('currentValue', currentValue)
+  // 可选。当前index值: 若初始值不填 index值从第二个元素开始
+  console.log('currentIndex', currentIndex)
+  // 可选。原数组
+  console.log('arr', arr)
+}, initialValue) // 传递给total的初始值
+
+// 场景一: 数组元素求和/求积
+let numArr = [1, 2, 3, 4, 5]
+console.log(numArr.reduce((a, b) => a + b)) // 15
+console.log(numArr.reduce((a, b) => a * b)) // 120
+
+// 场景二: 计算每个元素出现的次数
+let arrName = ['name', 'age', 'long', 'short', 'long', 'name', 'name']
+const timeObj = arrName.reduce((total, curretVal) => {
+  // 2:判断当前值是否在初始化的对象中 若有 加一次 若无 往对象中添加1
+  if (curretVal in total) {
+    total[curretVal]++
+  } else {
+    total[curretVal] = 1
+  }
+  return total
+}, {}) // 1:首次传入口对象 走else 添加为1次
+console.log(timeObj)
+
+// 场景三: 数组去重
+let arr = ['name', 'age', 'long', 'short', 'long', 'name', 'name']
+let newArr = arr.reduce((total, currentVal) => {
+  if (!total.includes(currentVal)) {
+    total.push(currentVal)
+  }
+  return total
+}, [])
+
+// 场景四: 对对象属性求和
+let person = [
+  {
+    name: 'xiaoming',
+    age: 18,
+  },
+  {
+    name: 'xiaohong',
+    age: 17,
+  },
+  {
+    name: 'xiaogang',
+    age: 19,
+  },
+]
+// 1: reduce
+const foo = person.reduce((total, currentVal) => (total += currentVal.age), 0)
+// 2: map
+let sum = 0
+const bar = person.map((item) => (sum += item.age))
+sum = bar[bar.length - 1]
+console.log(sum)
+// 3: forEach
+let sum2 = 0
+person.forEach((item) => (sum2 += item.age))
+console.log(sum2)
+```
