@@ -7,11 +7,11 @@
   "background_color": "#fff",
   "theme_color": "#3eaf7c",
   "icons": [{
-    "src": "msapplication-icon-144x144.png",
+    "src": "/docs/msapplication-icon-144x144.png",
     "sizes": "144x144",
     "type": "image/png"
   }, {
-    "src": "apple-touch-icon-152x152.png",
+    "src": "/docs/apple-touch-icon-152x152.png",
     "sizes": "152x152",
     "type": "image/png"
   }]
