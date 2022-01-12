@@ -1,5 +1,5 @@
 import router from './router'
-const { path } = require('@vuepress/utils')
+import { path } from '@vuepress/utils'
 module.exports = {
   clientAppEnhanceFiles: path.resolve(__dirname, './clientAppEnhances.ts'),
   title: '个人文档',
@@ -7,8 +7,8 @@ module.exports = {
   // 此处配置会被解析在head里如:<link rel="icon" href="/favicon.ico">
   head: [
     // pwa应用配置
-    ['link', { rel: 'icon', href: '/docs/favicon.ico' }],
-    ['link', { rel: 'manifest', href: '/docs/manifest.webmanifest' }],
+    ['link', { rel: 'icon', href: '/doc/img/favicon.ico' }],
+    ['link', { rel: 'manifest', href: '/doc/img/manifest.webmanifest' }],
     ['meta', { name: 'theme-color', content: '#3eaf7c' }],
     ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],
     [
