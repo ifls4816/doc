@@ -7,8 +7,8 @@ module.exports = {
   // 此处配置会被解析在head里如:<link rel="icon" href="/favicon.ico">
   head: [
     // pwa应用配置
-    ['link', { rel: 'icon', href: '/favicon.ico' }],
-    ['link', { rel: 'manifest', href: '/manifest.webmanifest' }],
+    ['link', { rel: 'icon', href: '/docs/favicon.ico' }],
+    ['link', { rel: 'manifest', href: '/docs/manifest.webmanifest' }],
     ['meta', { name: 'theme-color', content: '#3eaf7c' }],
     ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],
     [
@@ -17,13 +17,13 @@ module.exports = {
     ],
     [
       'link',
-      { rel: 'apple-touch-icon', href: '/icons/apple-touch-icon-152x152.png' },
+      { rel: 'apple-touch-icon', href: '/apple-touch-icon-152x152.png' },
     ],
     [
       'meta',
       {
         name: 'msapplication-TileImage',
-        content: '/icons/msapplication-icon-144x144.png',
+        content: '/msapplication-icon-144x144.png',
       },
     ],
     ['meta', { name: 'msapplication-TileColor', content: '#000000' }],
