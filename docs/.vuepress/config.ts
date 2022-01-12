@@ -17,13 +17,13 @@ module.exports = {
     ],
     [
       'link',
-      { rel: 'apple-touch-icon', href: '/apple-touch-icon-152x152.png' },
+      { rel: 'apple-touch-icon', href: '/doc/img/apple-touch-icon-152x152.png' },
     ],
     [
       'meta',
       {
         name: 'msapplication-TileImage',
-        content: '/msapplication-icon-144x144.png',
+        content: '/doc/img/msapplication-icon-144x144.png',
       },
     ],
     ['meta', { name: 'msapplication-TileColor', content: '#000000' }],
