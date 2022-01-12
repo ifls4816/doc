@@ -1,7 +1,7 @@
 export default [
   { text: 'Home', link: '/' },
   {
-    text: 'javascript',
+    text: 'Javascript',
     children: [
       {
         text: '基础',
