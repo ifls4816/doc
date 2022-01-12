@@ -973,6 +973,14 @@ console.log(foo('小红'))
 
   - get
 
+  ```js
+  // 注意: 只有同一个对象的引用 Map才将其视为同一个键 案例中的两个['a']引用不同
+  let map = new Map(); 
+  map.set(['a'], 555); 
+  map.get(['a']) // undefined
+
+  ```
+
   - has
 
   - delete

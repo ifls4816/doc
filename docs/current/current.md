@@ -211,6 +211,28 @@ let newArr = arr.reduce((total, currentVal) => {
   return total
 }, [])
 
+// 对象去重
+const arr = [
+  {
+    id: '1',
+    msg: '',
+  },
+  {
+    id: '2',
+    msg: '',
+  },
+  {
+    id: '1',
+    msg: '',
+  },
+]
+const newArr = arr.reduce((total, currentVal) => {
+  if (!total.find((i) => i.id === currentVal.id)) {
+    total.push(currentVal)
+  }
+  return total
+}, [])
+
 // 场景四: 对对象属性求和
 let person = [
   {
