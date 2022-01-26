@@ -50,6 +50,7 @@ export default [
     children: [
       { text: 'stylus', link: '/markdown/stylus.md' },
       { text: 'flex', link: '/markdown/cssFlex.md' },
+      { text: 'tailwindcss', link: '/markdown/tailwindcss.md' },
     ],
   },
 
