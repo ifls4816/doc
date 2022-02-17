@@ -1641,6 +1641,8 @@ const str = ref('some data')
     <div>我是子组件</div>
     // 2) 注意update:title写法
     <input type="text" :value="title" @input="$emit('update:title', $event.target.value)" />
+    // 此处input事件放在script中写法为:
+    // const onChange = (e: Event) => emits('update:myValue', (e.target as HTMLInputElement).value)
   </div>
 </template>
 
