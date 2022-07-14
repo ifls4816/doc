@@ -1038,7 +1038,8 @@ app.get('login', (req, res) => {
 
 ```js
 //url地址中以 /public 开头的，都会去 public 目录下读取对应的文件并返回给浏览器
-app.use('/public', express.static('./public'))
+app.use('/public', express.static('./public')) // 相对路径
+app.use('/public', express.static(path.join(__dirname, 'public'))) // 绝对路径
 ```
 
 ```js
@@ -1266,6 +1267,65 @@ app.post('/myLogin', (req, res) => {
   console.log(req.body)
   res.end('data has been upload.')
 })
+```
+
+## 14.1 express完整应用
+
+```js
+const express = require('express')
+const path = require('path')
+const bodyParser = require('body-parser')
+const app = express()
+
+app.use(bodyParser.json()) // 使用body-parse插件 接收post参数
+// 注册中间件：{extended：false} 代表使用node的 querystring 模块来解析表单数据
+app.use(bodyParser.urlencoded({ extended: false }))
+
+app.listen(3001, () => console.log('express server is running on port 3001'))
+
+app.use('/public', express.static(path.join(__dirname, 'public'))) // 托管public下的静态资源文件 css img js等
+
+app.get('/index', (req, res) => {
+  // 读取html文件夹下的index.html返回给浏览器
+  res.sendFile(path.join(__dirname, 'html', 'index.html'), (err) => {
+    if (err) {
+      console.log('err', err)
+    }
+  })
+})
+
+app.get('/base', (req, res) => {
+  // 读取html文件夹下的base.html返回给浏览器
+  res.sendFile(path.join(__dirname, 'html', 'base.html'), (err) => {
+    if (err) {
+      console.log(err)
+    }
+  })
+})
+
+// post请求
+app.post('/queryList', (req, res) => {
+  console.log('req', req.body) // 接收前端请求体中的参数
+  if (req.body.id) {
+    res.send({ code: 0, data: req.body, msg: 'success' })
+  } else {
+    res.send({ code: -1, data: null, msg: '缺少必要参数id' })
+  }
+})
+
+// get两种请求
+app.get('/getListByQuery', (req, res) => {
+  // 前端传参: http://localhost:3001/getListByQuery?id=1&name=zs
+  console.log('req', req.query) // { id: '1', name: 'zs' }
+  res.send({ code: 0, data: req.query, msg: 'success' })
+})
+
+app.get('/getListByParams/:id/:name', (req, res) => {
+  // 前端传参: http://localhost:3001/getListByParams/1/zs
+  console.log('req', req.params) // { id: '1', name: 'zs }
+  res.send({ code: 0, data: req.params, msg: 'success' })
+})
+
 ```
 
 ## 15 mysql 模块
