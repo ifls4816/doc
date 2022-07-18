@@ -48,7 +48,7 @@ const fs = require('fs')
  * 参数3: 可选。默认是 utf-8
  * 参数4: 写入完成时触发的回调函数，有一个错误对象 err
  */
-fs.writeFile('./files/a.txt', '周星驰: 应该是烤鸡翅膀，我最爱吃', err => {
+fs.writeFile('./files/a.txt', '周星驰: 应该是烤鸡翅膀，我最爱吃', (err) => {
   //写入正确时，err就是 null
   //写入失败时，err就是 错误对象
   console.log(err)
@@ -66,7 +66,7 @@ fs.writeFile('./files/a.txt', '周星驰: 应该是烤鸡翅膀，我最爱吃',
  * 参数4: 写入完成时触发的回调函数，有一个参数 err
  */
 const fs = require('fs')
-fs.appendFile('./a.txt', '我爱庄小曼', err => {
+fs.appendFile('./a.txt', '我爱庄小曼', (err) => {
   console.log(err)
 })
 ```
@@ -232,7 +232,7 @@ const fs = require('fs')
 const path = require('path')
 
 server.on('request', (req, res) => {
-  res.sendAsk = function(fpath) {
+  res.sendAsk = function (fpath) {
     fs.readFile(fpath, 'utf-8', (err, data) => {
       if (err) {
         console.log(err)
@@ -251,7 +251,7 @@ server.on('request', (req, res) => {
   } else if (url === '/addpost') {
     //此处是表单提交
     let str = ''
-    req.on('data', chunk => {
+    req.on('data', (chunk) => {
       str += chunk
     })
     req.on('end', () => {
@@ -294,24 +294,24 @@ server.on('request', (req, res) => {
           //注意此处的list:      若不加在这里的话可以加在下面引用的地方
           cate_name: '奇趣事',
           cate_icon: 'fa-leaf',
-          cate_ctime: '2019-01-10'
+          cate_ctime: '2019-01-10',
         },
         {
           cate_name: '潮科技',
           cate_icon: 'fa-fire',
-          cate_ctime: '2019-01-10'
+          cate_ctime: '2019-01-10',
         },
         {
           cate_name: '会生活',
           cate_icon: 'fa-gift',
-          cate_ctime: '2019-01-15'
+          cate_ctime: '2019-01-15',
         },
         {
           cate_name: '美奇迹',
           cate_icon: 'fa-phone',
-          cate_ctime: '2019-01-16'
-        }
-      ]
+          cate_ctime: '2019-01-16',
+        },
+      ],
     }
     // 调用模板引擎   两个参数： 第一个是要更改的文件路径  第二个是传入的对象
     var str = template(path.join(__dirname, 'view', 'cate.html'), obj)
@@ -341,7 +341,7 @@ server.on('request', (req, res) => {
     // 定义一个空字符串
     let str = ''
     // 请求对象的data事件,接收表单传过来的数据
-    req.on('data', chunk => {
+    req.on('data', (chunk) => {
       str += chunk //拼接字符串的过程
     })
     // 处理数据  记住就行
@@ -375,36 +375,36 @@ server.on('request', (req, res) => {
       {
         goods_name: '阳光美包新款单肩包女包时尚子母包四件套女',
         goods_price: '116.00',
-        goods_pic: 'uploads/like_01.png'
+        goods_pic: 'uploads/like_01.png',
       },
       {
         goods_name: '爱仕达 30CM炒锅不粘锅NWG8330E电磁炉炒',
         goods_price: '1161.00',
-        goods_pic: 'uploads/like_02.png'
+        goods_pic: 'uploads/like_02.png',
       },
       {
         goods_name: '捷波朗蓝牙耳机',
         goods_price: '116.00',
-        goods_pic: 'uploads/like_03.png'
+        goods_pic: 'uploads/like_03.png',
       },
       {
         goods_name: '大方块，不知道是干什么用的',
         goods_price: '2116.00',
-        goods_pic: 'uploads/like_04.png'
+        goods_pic: 'uploads/like_04.png',
       },
       {
         goods_name: '三星（G5500）',
         goods_price: '1816.00',
-        goods_pic: 'uploads/like_05.png'
+        goods_pic: 'uploads/like_05.png',
       },
       {
         goods_name: '好像是个洗手液',
         goods_price: '3116.00',
-        goods_pic: 'uploads/like_06.png'
-      }
+        goods_pic: 'uploads/like_06.png',
+      },
     ]
     let str = template(path.join(__dirname, 'view', 'index.html'), {
-      list: dataArr
+      list: dataArr,
     })
     res.end(str)
   } else if (url.startsWith('/style')) {
@@ -444,6 +444,7 @@ server.on('request', (req, res) => {
 > 注意： 使用 template 继承需要在 node 服务器加载 template 模块，并且监听到路由后返回的页面必须用 res.render 方法
 
 <!-- {{extend}} -->
+
 制作模板页：
 
 ```html
@@ -453,10 +454,7 @@ server.on('request', (req, res) => {
     <meta charset="utf-8" />
     <title>Dashboard &laquo; Admin</title>
     <link rel="stylesheet" href="/assets/vendors/bootstrap/css/bootstrap.css" />
-    <link
-      rel="stylesheet"
-      href="/assets/vendors/font-awesome/css/font-awesome.css"
-    />
+    <link rel="stylesheet" href="/assets/vendors/font-awesome/css/font-awesome.css" />
     <link rel="stylesheet" href="/assets/vendors/nprogress/nprogress.css" />
     <link rel="stylesheet" href="/assets/css/admin.css" />
     <script src="/assets/vendors/nprogress/nprogress.js"></script>
@@ -496,9 +494,7 @@ server.on('request', (req, res) => {
         </li>
         <li class="active">
           <a href="#menu-posts" data-toggle="collapse">
-            <i class="fa fa-thumb-tack"></i>文章<i
-              class="fa fa-angle-right"
-            ></i>
+            <i class="fa fa-thumb-tack"></i>文章<i class="fa fa-angle-right"></i>
           </a>
           <ul id="menu-posts" class="collapse in">
             <li><a href="/admin/post/posts.html">所有文章</a></li>
@@ -507,9 +503,7 @@ server.on('request', (req, res) => {
           </ul>
         </li>
         <li>
-          <a href="/admin/comment/comments.html"
-            ><i class="fa fa-comments"></i>评论</a
-          >
+          <a href="/admin/comment/comments.html"><i class="fa fa-comments"></i>评论</a>
         </li>
         <li>
           <a href="/admin/user/users.html"><i class="fa fa-users"></i>用户</a>
@@ -557,9 +551,7 @@ server.on('request', (req, res) => {
     <h1>One Belt, One Road</h1>
     <p>Thoughts, stories and ideas.</p>
     <p>
-      <a class="btn btn-primary btn-lg" href="post-add.html" role="button"
-        >写文章</a
-      >
+      <a class="btn btn-primary btn-lg" href="post-add.html" role="button">写文章</a>
     </p>
   </div>
   <div class="row">
@@ -569,13 +561,9 @@ server.on('request', (req, res) => {
           <h3 class="panel-title">站点内容统计：</h3>
         </div>
         <ul class="list-group">
-          <li class="list-group-item">
-            <strong>10</strong>篇文章（<strong>2</strong>篇草稿）
-          </li>
+          <li class="list-group-item"><strong>10</strong>篇文章（<strong>2</strong>篇草稿）</li>
           <li class="list-group-item"><strong>6</strong>个分类</li>
-          <li class="list-group-item">
-            <strong>5</strong>条评论（<strong>1</strong>条待审核）
-          </li>
+          <li class="list-group-item"><strong>5</strong>条评论（<strong>1</strong>条待审核）</li>
         </ul>
       </div>
     </div>
@@ -601,10 +589,7 @@ server.on('request', (req, res) => {
 表单提交就是提交其 value 值
 
 ```html
-name:<input type="text" value="username" /> password:<input
-  type="password"
-  value="psd"
-/>
+name:<input type="text" value="username" /> password:<input type="password" value="psd" />
 <!-- 省略其余Input标签 都是提交起value值 -->
 <!-- radio checkbox不设置value值时会自动提交成on -->
 <select name="area" id="add">
@@ -614,9 +599,7 @@ name:<input type="text" value="username" /> password:<input
   <option value="sz">深圳</option>
   <option value="gz">广州</option>
 </select>
-<textarea name="sign" id="111" cols="30" rows="10">
-这家伙很懒，什么也没留下</textarea
->
+<textarea name="sign" id="111" cols="30" rows="10">这家伙很懒，什么也没留下</textarea>
 <!-- textarea不用写value 直接提交就可以 -->
 <input type="submit" />
 ```
@@ -630,7 +613,7 @@ let str = '' //定义一个空字符串 用于接收data事件的值
 //参数1： 事件类型，data代表接收客户端数据事件
 //参数2： 接收时触发的回调函数
 // 使用post提交的表单数据可能会非常大，需要切割成一个个的小数据块进行接收
-req.on('data', chunk => {
+req.on('data', (chunk) => {
   str += chunk
 })
 //2. 监听end事件，接收完成后处理接收到数据的事件
@@ -785,8 +768,8 @@ server.on('request', (req, res) => {
     let obj = {
       list: [
         { cate_name: '奇趣事', cate_icon: 'fa-leaf', cate_ctime: '2019-01-10' },
-        { cate_name: '潮科技', cate_icon: 'fa-fire', cate_ctime: '2019-01-10' }
-      ]
+        { cate_name: '潮科技', cate_icon: 'fa-fire', cate_ctime: '2019-01-10' },
+      ],
     }
     var str = template(path.join(__dirname, 'view', 'cate.html'), obj)
     res.end(str)
@@ -814,7 +797,7 @@ server.on('request', (req, res) => {
   } else if (urlObj.pathname === '/addData') {
     //urlObj.pathname是服务器请求的路径
     let str = ''
-    req.on('data', chunk => {
+    req.on('data', (chunk) => {
       str += chunk
     })
     req.on('end', () => {
@@ -946,7 +929,7 @@ app.listen(3000, () => {
   console.log('expressServer is running...')
 })
 app.get('/index', (req, res) => {
-  res.sendFile(path.join(__dirname, 'view', 'index.html'), err => {
+  res.sendFile(path.join(__dirname, 'view', 'index.html'), (err) => {
     console.log(err)
   })
 })
@@ -1006,7 +989,7 @@ app.listen(3000, () => {
 })
 const path = require('path')
 app.get('/index', (req, res) => {
-  res.sendfile(path.join(__dirname, 'view', 'index.html'), err => {
+  res.sendfile(path.join(__dirname, 'view', 'index.html'), (err) => {
     console.log(err)
   })
 })
@@ -1020,12 +1003,12 @@ app.get('/index', (req, res) => {
 
 ```js
 app.get('/index', (req, res) => {
-  res.sendFile(path.join(__dirname, 'view', 'index.html'), err => {
+  res.sendFile(path.join(__dirname, 'view', 'index.html'), (err) => {
     console.log(err)
   })
 })
 app.get('login', (req, res) => {
-  res.sendFile(path.join(__dirname, 'view', 'login.html'), err => {
+  res.sendFile(path.join(__dirname, 'view', 'login.html'), (err) => {
     console.log(err)
   })
 })
@@ -1078,14 +1061,14 @@ const path = require('path')
 // 如果输入的是/index 返回回调函数
 app.get('/index', (req, res) => {
   //读取文件 并发送给服务器  参数1:返回文件的绝对路径 参数2：看上面 参数3：回调函数，储存了错误信息 无错误err是undefined
-  res.sendFile(path.join(__dirname, '/view', 'index.html'), err => {
+  res.sendFile(path.join(__dirname, '/view', 'index.html'), (err) => {
     console.log(err) //没错误的时候err是undefined
   })
 })
 
 // 监听post.html页面
 app.get('/post', (req, res) => {
-  res.sendFile(path.join('post.html'), config, err => {
+  res.sendFile(path.join('post.html'), config, (err) => {
     console.log(err)
   })
 })
@@ -1112,33 +1095,33 @@ let dataArr = [
   {
     goods_name: '阳光美包新款单肩包女包时尚子母包四件套女',
     goods_price: '116.00',
-    goods_pic: 'uploads/like_01.png'
+    goods_pic: 'uploads/like_01.png',
   },
   {
     goods_name: '爱仕达 30CM炒锅不粘锅NWG8330E电磁炉炒',
     goods_price: '1161.00',
-    goods_pic: 'uploads/like_02.png'
+    goods_pic: 'uploads/like_02.png',
   },
   {
     goods_name: '捷波朗蓝牙耳机',
     goods_price: '116.00',
-    goods_pic: 'uploads/like_03.png'
+    goods_pic: 'uploads/like_03.png',
   },
   {
     goods_name: '大方块，不知道是干什么用的',
     goods_price: '2116.00',
-    goods_pic: 'uploads/like_04.png'
+    goods_pic: 'uploads/like_04.png',
   },
   {
     goods_name: '三星（G5500）',
     goods_price: '1816.00',
-    goods_pic: 'uploads/like_05.png'
+    goods_pic: 'uploads/like_05.png',
   },
   {
     goods_name: '好像是个洗手液',
     goods_price: '3116.00',
-    goods_pic: 'uploads/like_06.png'
-  }
+    goods_pic: 'uploads/like_06.png',
+  },
 ]
 const express = require('express')
 const app = express()
@@ -1159,7 +1142,7 @@ app.get('/index', (req, res) => {
   //参数1: 模板文件路径
   //参数2: 要渲染到页面的json数据
   res.render(path.join(__dirname, 'view', 'index.html'), {
-    list: dataArr
+    list: dataArr,
   })
 })
 
@@ -1188,8 +1171,8 @@ let dataArr = [
   {
     name: '后羿',
     content: '周日都让我射熄火了',
-    date: '2018-10-10'
-  }
+    date: '2018-10-10',
+  },
 ]
 const express = require('express')
 const app = express()
@@ -1206,7 +1189,7 @@ app.listen(3000, () => {
 })
 app.get('/index', (req, res) => {
   res.render(path.join(__dirname, 'view', 'index.html'), {
-    list: dataArr
+    list: dataArr,
   })
 })
 app.get('/post', (req, res) => {
@@ -1269,7 +1252,7 @@ app.post('/myLogin', (req, res) => {
 })
 ```
 
-## 14.1 express完整应用
+## 14.1 express 完整应用
 
 ```js
 const express = require('express')
@@ -1305,6 +1288,20 @@ app.get('/base', (req, res) => {
 
 // post请求
 app.post('/queryList', (req, res) => {
+  // 前端传参:
+  // const ajax = () => {
+  //   fetch('http://localhost:3001/queryList', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({ id: 123, name: 'zs' }),
+  //   })
+  //     .then((response) => response.json())
+  //     .then((res) => {
+  //       console.log(res)
+  //     })
+  // }
   console.log('req', req.body) // 接收前端请求体中的参数
   if (req.body.id) {
     res.send({ code: 0, data: req.body, msg: 'success' })
@@ -1325,7 +1322,6 @@ app.get('/getListByParams/:id/:name', (req, res) => {
   console.log('req', req.params) // { id: '1', name: 'zs }
   res.send({ code: 0, data: req.params, msg: 'success' })
 })
-
 ```
 
 ## 15 mysql 模块
@@ -1348,7 +1344,7 @@ const conn = mysql.createConnection({
   host: '127.0.0.1',
   user: 'root',
   password: 'root',
-  database: 'school'
+  database: 'school',
 })
 // 链接mysql服务器
 conn.connect()
@@ -1373,7 +1369,7 @@ const conn = mysql.createConnection({
   host: '127.0.0.1',
   user: 'root',
   password: 'root',
-  database: 'school' //要创建的数据库名称
+  database: 'school', //要创建的数据库名称
 })
 conn.connect()
 const sql = 'insert into student values(null, "纯子", ?, ?, "2019-03-21")' //student是要修改的表名称
@@ -1392,7 +1388,7 @@ const conn = mysql.createConnection({
   host: '127.0.0.1',
   user: 'root',
   password: 'root',
-  database: 'school'
+  database: 'school',
 })
 conn.connect()
 const sql = 'update student set sname="小顾",sage=19 where sno=9'
@@ -1411,7 +1407,7 @@ const conn = mysql.createConnection({
   host: '127.0.0.1',
   user: 'root',
   password: 'root',
-  database: 'school'
+  database: 'school',
 })
 conn.connect()
 const sql = 'delete from student where sno=6'
@@ -1435,7 +1431,7 @@ const conn = mysql.createConnection({
   host: '127.0.0.1',
   user: 'root',
   password: 'root',
-  database: 'school'
+  database: 'school',
 })
 
 //3. 链接mysql服务器
@@ -1480,7 +1476,7 @@ const conn = mysql.createConnection({
   host: '127.0.0.1',
   user: 'root',
   password: 'root',
-  database: 'commentsData'
+  database: 'commentsData',
 })
 // 开启链接
 conn.connect()
@@ -1493,7 +1489,7 @@ conn.query(sql, (err, result) => {
   app.get('/index', (req, res) => {
     // 模板引擎调用 动态渲染到html中
     res.render(path.join(__dirname, 'view', 'index.html'), {
-      list: result
+      list: result,
     })
   })
 })
@@ -1520,8 +1516,8 @@ const bodyP = require('body-parser')
 // 中间件
 app.use(
   bodyP.urlencoded({
-    extended: false
-  })
+    extended: false,
+  }),
 )
 
 // 到处router模块  注册为中间件
@@ -1550,7 +1546,7 @@ router.get('/index', (req, res) => {
   db.query(sql, (err, result) => {
     if (err) return console.log(err)
     res.render(path.join(__dirname, 'view', 'index.html'), {
-      list: result
+      list: result,
     })
   })
 })
@@ -1563,7 +1559,7 @@ router.get('/add', (req, res) => {
   db.query(sql, (err, result) => {
     if (err) return console.log(err)
     res.render(path.join(__dirname, 'view', 'add.html'), {
-      list: result
+      list: result,
     })
   })
 })
@@ -1578,7 +1574,7 @@ router.post('/addInfo', (req, res) => {
     sgender: req.body.gender,
     sage: req.body.age,
     stime: moment().format('YYYY-MM-DD'),
-    sdept: req.body.dept
+    sdept: req.body.dept,
   }
   const sql = 'insert into infomation set ?'
   db.query(sql, data, (err, restul) => {
@@ -1611,7 +1607,7 @@ router.get('/edit', (req, res) => {
       if (err) return console.log(err2)
       const data = {
         data1: result[0],
-        data2: result2
+        data2: result2,
       }
       res.render(path.join(__dirname, 'view', 'edit.html'), data)
     })
@@ -1625,7 +1621,7 @@ router.post('/changeStu', (req, res) => {
     sname: req.body.name,
     sgender: req.body.gender,
     sage: req.body.age,
-    sdept: req.body.dept
+    sdept: req.body.dept,
   }
   // 接收当前点击的行数 用于数据库查询
   const sno = req.body.no
@@ -1669,7 +1665,7 @@ module.exports = router
 
 全部案例在 node day8
 
-##18 会话控制
+## 18 会话控制
 
 > 会话控制就是解决 http 无记忆的缺陷的。能够将数据持久化的保存在客户端(浏览器)或者服务器端，从而让浏览器和服务器进行多次数据交换时，产生连续性。
 
@@ -1677,7 +1673,7 @@ module.exports = router
   - cookie： 将数据持久化保存到客户端（浏览器）
   - session： 将数据持久化保存到服务器端
 
-##18 cookie 技术
+> cookie 技术
 
 - 核心：cookie 是随着响应头返回给浏览器的
 
@@ -1698,21 +1694,21 @@ module.exports = router
 app.get('/setck', (req, res) => {
   // 三个方法任选其一 不能都写
 
-  //方法一：使用setHeader设置cookie
-  //参数1: 在设置cookie时，此处必须是 set-cookie
-  //参数2: 必须是一个 key=value 的格式。
+  // 方法一：使用setHeader设置cookie
+  // 参数1: 在设置cookie时，此处必须是 set-cookie
+  // 参数2: 必须是一个 key=value 的格式。
   //  key就是cookie的名字；value就是该名称对应的值
   res.setHeader('set-cookie', 'keywords=phone')
   res.setHeader('set-cookie', ['keywords=phone', 'name=ls', 'age=14'])
 
-  //方法二：使用writeHeader设置cookie
-  //参数1: 给浏览器的状态码
-  //参数2: 对象，响应头信息都写在该配置项中
+  // 方法二：使用writeHeader设置cookie
+  // 参数1: 给浏览器的状态码
+  // 参数2: 对象，响应头信息都写在该配置项中
   res.writeHeader(200, {
     'content-type': 'text/html;charset=utf-8',
-    'set-cookie': 'type=xiaomi'
+    'set-cookie': 'type=xiaomi',
   })
-  //方法三： 使用express模块的方法 res.set();
+  // 方法三： 使用express模块的方法 res.set();
   res.set('set-cookie', ['color=red', 'bgcolor=green'])
 })
 ```
@@ -1752,13 +1748,12 @@ db.query(sql, (err, result) => {
   - 未设置 expires 则关闭浏览器 cookie 即消失
 
 ```js
-    app.get('/setc', (req, res) => {
-    //注意：要使用UTC时间，使用 toUTCString()方法转换
-    let time = new Date(Date.now() + 10000).toUTCString();
-    //设置age时，同时设置有效期,有效期过后age作废，其他还在
-    res.setHeader('set-cookie', ['age=18;expires=' + time, 'name=ifls', 'gender=nu', 'home=shenyang']);
-});
-}
+app.get('/setc', (req, res) => {
+  //注意：要使用UTC时间，使用 toUTCString()方法转换
+  const time = new Date(Date.now() + 10000).toUTCString() // 10s后 age从浏览器端自动删除
+  //设置age时，同时设置有效期,有效期过后age作废，其他还在
+  res.setHeader('set-cookie', ['age=18;expires=' + time, 'name=ifls', 'gender=nu', 'home=shenyang'])
+})
 ```
 
 ## 19 session 技术
@@ -1788,9 +1783,9 @@ app.use(
   session({
     secret: '2fh73f1edh47g5d', //加密字符串。 使用该字符串来加密session数据，自定义
     resave: false, //强制保存session即使它并没有变化
-    saveUninitialized: false //强制将未初始化的session存储。当新建了一个session且
+    saveUninitialized: false, //强制将未初始化的session存储。当新建了一个session且
     //未设定属性或值时，它就处于未初始化状态。
-  })
+  }),
 )
 
 // session 设置
@@ -1845,8 +1840,8 @@ const bodyP = require('body-parser')
 // 中间件
 app.use(
   bodyP.urlencoded({
-    extended: false
-  })
+    extended: false,
+  }),
 )
 
 // 加载session模块
@@ -1855,8 +1850,8 @@ app.use(
   session({
     secret: '2384y8sd9yr382',
     resave: false,
-    saveUninitialized: false
-  })
+    saveUninitialized: false,
+  }),
 )
 
 // 到处router模块  注册为中间件
@@ -1889,7 +1884,7 @@ router.get('/index', (req, res) => {
   db.query(sql, (err, result) => {
     if (err) return console.log(err)
     res.render(path.join(__dirname, 'view', 'index.html'), {
-      list: result
+      list: result,
     })
   })
 })
@@ -1905,7 +1900,7 @@ router.get('/add', (req, res) => {
   db.query(sql, (err, result) => {
     if (err) return console.log(err)
     res.render(path.join(__dirname, 'view', 'add.html'), {
-      list: result
+      list: result,
     })
   })
 })
@@ -1920,7 +1915,7 @@ router.post('/addInfo', (req, res) => {
     sgender: req.body.gender,
     sage: req.body.age,
     stime: moment().format('YYYY-MM-DD'),
-    sdept: req.body.dept
+    sdept: req.body.dept,
   }
   const sql = 'insert into infomation set ?'
   db.query(sql, data, (err, restul) => {
@@ -1956,7 +1951,7 @@ router.get('/edit', (req, res) => {
       if (err) return console.log(err2)
       const data = {
         data1: result[0],
-        data2: result2
+        data2: result2,
       }
       res.render(path.join(__dirname, 'view', 'edit.html'), data)
     })
@@ -1970,7 +1965,7 @@ router.post('/changeStu', (req, res) => {
     sname: req.body.name,
     sgender: req.body.gender,
     sage: req.body.age,
-    sdept: req.body.dept
+    sdept: req.body.dept,
   }
   // 接收当前点击的行数 用于数据库查询
   const sno = req.body.no
@@ -2095,66 +2090,63 @@ function checkUrl(req, res, next) {
 案例：下拉列表案例
 后端代码：
 
-```JS
-const express = require('express');
-const app = express();
+```js
+const express = require('express')
+const app = express()
 app.listen(3000, () => {
-    console.log('goods-server has been active on 3000');
-});
+  console.log('goods-server has been active on 3000')
+})
 
 // 加载mysql模块
-const mysql = require('mysql');
+const mysql = require('mysql')
 // 创建mysql对象并配置
 const conn = mysql.createConnection({
-    host: '127.0.0.1',
-    user: 'root',
-    password: 'root',
-    database: 'goods'
-});
+  host: '127.0.0.1',
+  user: 'root',
+  password: 'root',
+  database: 'goods',
+})
 // 创建链接
-conn.connect();
+conn.connect()
 
-
-
-const path = require('path');
+const path = require('path')
 
 // 加载模板引擎
-app.engine('html', require('express-art-template'));
+app.engine('html', require('express-art-template'))
 
 //静态资源托管
-app.use('/images', express.static(path.join(__dirname, 'view', 'images')));
-app.use('/js', express.static(path.join(__dirname, 'view', 'js')));
-app.use('/style', express.static(path.join(__dirname, 'view', 'style')));
-app.use('/Uploads', express.static(path.join(__dirname, 'view', 'Uploads')));
+app.use('/images', express.static(path.join(__dirname, 'view', 'images')))
+app.use('/js', express.static(path.join(__dirname, 'view', 'js')))
+app.use('/style', express.static(path.join(__dirname, 'view', 'style')))
+app.use('/Uploads', express.static(path.join(__dirname, 'view', 'Uploads')))
 
 // 渲染页面
 app.get('/index', (req, res) => {
-    res.sendFile(path.join(__dirname, 'view', 'index.html'), () => {})
-});
+  res.sendFile(path.join(__dirname, 'view', 'index.html'), () => {})
+})
 
-const db = require('./db.js');
+const db = require('./db.js')
 
 // 监听ajax请求地址
 app.get('/getData', (req, res) => {
-
-    // 接收ajax请求数据
-    const inputVal = req.query.val;
-    console.log(inputVal);
-    // 定义模糊查询
-    const sql = `select * from goods_key where key_name like '%${inputVal}%'`;
-    db.query(sql, (err, result) => {
-        console.log(result);
-        if (err) return console.log(err);
-        res.send({
-            text: '数据请求成功',
-            msg: result
-        });
-    });
-});
+  // 接收ajax请求数据
+  const inputVal = req.query.val
+  console.log(inputVal)
+  // 定义模糊查询
+  const sql = `select * from goods_key where key_name like '%${inputVal}%'`
+  db.query(sql, (err, result) => {
+    console.log(result)
+    if (err) return console.log(err)
+    res.send({
+      text: '数据请求成功',
+      msg: result,
+    })
+  })
+})
 ```
 
 ```js
-$('.txt').on('input', function() {
+$('.txt').on('input', function () {
   // 获取当前input框中的val值  用来发送ajax请求
   var inputVal = $(this).val()
 
@@ -2172,16 +2164,16 @@ $('.txt').on('input', function() {
     type: 'get',
     dataType: 'json',
     data: {
-      val: inputVal
+      val: inputVal,
     },
-    success: function(data) {
+    success: function (data) {
       // 每次向盒子追加内容之前清空原有的内容
       $('.addbox').empty()
 
       // data.msg是后端返回给前端的数据 是数组形式的 [].forEach是循环数组
       // item 是单元的值  index是下标
 
-      data.msg.forEach(function(item, index) {
+      data.msg.forEach(function (item, index) {
         // 当拿到数据的时候显示盒子
         console.log(item)
         $('.addbox').show()
@@ -2190,23 +2182,23 @@ $('.txt').on('input', function() {
         $(`<div class="goodInfo">${item.key_name}</div>`).appendTo('.addbox')
 
         // 实现鼠标移入选项颜色变红
-        $('.goodInfo').mouseenter(function() {
+        $('.goodInfo').mouseenter(function () {
           $(this)
             .css({
               color: 'red',
-              cursor: 'default'
+              cursor: 'default',
             })
             .siblings()
             .css('color', '')
         })
 
         // 实现点击选项内容进入input框中
-        $('.goodInfo').on('click', function() {
+        $('.goodInfo').on('click', function () {
           $('.txt').val($(this).text())
           $('.addbox').hide() //实现点击选项后隐藏盒子
         })
       })
-    }
+    },
   })
 })
 ```
@@ -2256,7 +2248,7 @@ app.use(cors())
 app.get('/getData', (req, res) => {
   res.send({
     code: 'code is ok',
-    data: 'this is a lot of data'
+    data: 'this is a lot of data',
   })
 })
 ```
@@ -2268,9 +2260,9 @@ $.ajax({
   url: 'http://127.0.0.1:4000/getData',
   type: 'get',
   dataType: 'json',
-  success: function(data) {
+  success: function (data) {
     console.log(data)
-  }
+  },
 })
 ```
 
@@ -2316,6 +2308,7 @@ index 页面：
 <body>
   <h1>jsonp方法</h1>
   <script>
+    // 注意: 此处应该先定义函数 后调用 不然会找不到fn函数
     function fn(agr) {
       console.log(agr)
     }
@@ -2360,10 +2353,10 @@ app.get('/index', (req, res) => {
       type: 'get',
       dataType: 'jsonp', //要求服务器返回的格式是jsonp
       jsonp: 'callback', //定义jsonp名称，约定俗成为callback
-      success: function(msg) {
+      success: function (msg) {
         console.log(msg) //注意：接收回来的数据是一个对象形式
         $('.box').text(msg.a)
-      }
+      },
     })
   </script>
 </body>
@@ -2444,11 +2437,11 @@ app.get('/index', (req, res) => {
         type: 'get',
         dataType: 'jsonp',
         jsop: 'callback',
-        success: function(msg) {
+        success: function (msg) {
           console.log(msg)
           var str = template('tmp', msg)
           $('tbody').html(str)
-        }
+        },
       })
     </script>
   </body>
@@ -2474,6 +2467,21 @@ app.get('/getData', (req, res) => {
 
   //将接收的数据和要返还给前端的数据拼接在一起  注意+号后面的写法'({})'
   res.send(data + '({city:"北京",tem:"30°",wind:"bigwind"})')
+})
+```
+
+### 22.4 请求头配置跨域
+
+```js
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Authorization,X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method',
+  )
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PATCH, PUT, DELETE')
+  res.header('Allow', 'GET, POST, PATCH, OPTIONS, PUT, DELETE')
+  next()
 })
 ```
 
@@ -2504,15 +2512,14 @@ let cate_ask = (req, res) => {
   const sql = 'select * from ali_cate'
   // 执行sql语句
   db.query(sql, (err, result) => {
-    if (err || result.length == 0)
-      return res.send({ code: 201, msg: '数据请求失败' })
+    if (err || result.length == 0) return res.send({ code: 201, msg: '数据请求失败' })
     res.send({ code: 200, data: result })
   })
 }
 // 导出为模块
 module.exports = {
   index,
-  cate_ask
+  cate_ask,
 }
 ```
 
@@ -2551,7 +2558,7 @@ const fs = require('fs')
 // resolve就是成功的回调函数
 // reject就是失败的回调函数
 // Promise对象中有一个then方法，该方法能够接收到成功(resolve)和失败(reject)的回调函数
-let p = new Promise(function(resolve, reject) {
+let p = new Promise(function (resolve, reject) {
   fs.readFile('../async/1.txt', 'utf-8', (err, data) => {
     if (err) {
       return reject(err) //失败的回调函数能够被then方法的参数2接收到
@@ -2562,9 +2569,9 @@ let p = new Promise(function(resolve, reject) {
 //p对象(Promise)的then方法能够接收到Promise内部异步操作结果
 //then对应resolve函数
 //catch对应 reject 函数
-p.then(function(data) {
+p.then(function (data) {
   console.log(data)
-}).catch(function(err) {
+}).catch(function (err) {
   console.log(err)
 })
 ```
@@ -2575,7 +2582,7 @@ p.then(function(data) {
 // 定义Promise函数
 const fs = require('fs')
 function pReadFile(fPath) {
-  let p = new Promise(function(resolve, reject) {
+  let p = new Promise(function (resolve, reject) {
     fs.readFile(fPath, 'utf-8', (err, data) => {
       if (err) {
         return reject(err) //失败的回调函数能够被then方法的参数2接收到
@@ -2589,15 +2596,15 @@ function pReadFile(fPath) {
 
 // 链式调用
 pReadFile('../async/1.txt')
-  .then(function(data) {
+  .then(function (data) {
     console.log(data)
     return pReadFile('../async/2.txt')
   })
-  .then(function(data) {
+  .then(function (data) {
     console.log(data)
     return pReadFile('../async/3.txt')
   })
-  .then(function(data) {
+  .then(function (data) {
     console.log(data)
   })
 ```
@@ -2613,13 +2620,13 @@ const conn = mysql.createConnection({
   host: '127.0.0.1',
   user: 'root',
   password: 'root',
-  database: 'alishow'
+  database: 'alishow',
 })
 
 conn.connect()
 
 function query(sql, args) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     conn.query(sql, args, (err, result) => {
       if (err) {
         conn.end()
@@ -2635,10 +2642,10 @@ module.exports = query
 const db = require('./mysql.js')
 
 db('select * from ali_cate where cate_id=?', '1')
-  .then(function(data) {
+  .then(function (data) {
     console.log(data)
   })
-  .catch(function(data) {
+  .catch(function (data) {
     console.log(data)
   })
 ```
