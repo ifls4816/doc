@@ -1,6 +1,6 @@
 # 整理
 
-## vuepress markdonw语法块
+## vuepress markdonw 语法块
 
 ::: tip
 这是一个提示
@@ -22,15 +22,15 @@ console.log('你好，VuePress！')
 
 :::
 
-## 1 a标签为何能包裹块级元素
+## 1 a 标签为何能包裹块级元素
 
-因为a标签属性为transparent(透明的),意思是取决于a标签的父级元素是否能包裹块级元素,例如
+因为 a 标签属性为 transparent(透明的),意思是取决于 a 标签的父级元素是否能包裹块级元素,例如
 
 ```js
 <div>
   <a>
-  	<div>此写法可以</div>
-	</a>
+    <div>此写法可以</div>
+  </a>
 </div>
 ```
 
@@ -42,22 +42,20 @@ console.log('你好，VuePress！')
 <p>
 ```
 
-## 2 prettierrc代码格式化配置
+## 2 prettierrc 代码格式化配置
 
-在.prettierrc下配置
+在.prettierrc 下配置
 
 ```json
 {
-  "tabWidth": 2,//tab长度
-  "singleQuote": true,//单引号
-  "semi": false,//关闭分号
-  "printWidth": 120//代码换行长度
+  "tabWidth": 2, //tab长度
+  "singleQuote": true, //单引号
+  "semi": false, //关闭分号
+  "printWidth": 120 //代码换行长度
 }
 ```
 
-
-
-## 3 flex页面布最后一行左对齐
+## 3 flex 页面布最后一行左对齐
 
 不管页面元素有多少,只要在后面加上相应数量的仅有宽没有高的空盒子即可
 
@@ -94,27 +92,21 @@ console.log('你好，VuePress！')
 </html>
 ```
 
+## 4 css 书写顺序
 
+（1）定位属性：position display float left top right bottom overflow clear z-index
 
-## 4 css书写顺序
+（2）自身属性：width height padding border margin background
 
-（1）定位属性：position  display  float  left  top  right  bottom   overflow  clear   z-index
+（3）文字样式：font-family font-size font-style font-weight font-varient color
 
-（2）自身属性：width  height  padding  border  margin   background
+（4）文本属性：text-align vertical-align text-wrap text-transform text-indent text-decoration letter-spacing word-spacing white-space text-overflow
 
-（3）文字样式：font-family   font-size   font-style   font-weight   font-varient   color   
+（5）css3 中新增属性：content box-shadow border-radius transform
 
-（4）文本属性：text-align   vertical-align   text-wrap   text-transform   text-indent    text-decoration   letter-spacing    word-spacing    white-space   text-overflow
+## 5 overscroll-behavior 属性简介
 
-（5）css3中新增属性：content   box-shadow   border-radius  transform
-
-
-
-## 5 overscroll-behavior属性简介
-
-
-
-CSS `overscroll-behavior`属性可以设置DOM元素滚动到边缘时候的行为。
+CSS `overscroll-behavior`属性可以设置 DOM 元素滚动到边缘时候的行为。
 
 语法:
 
@@ -124,7 +116,7 @@ overscroll-behavior: [ contain | none | auto ]{1,2}
 
 ```css
 /* 单个关键字值 */
-overscroll-behavior: auto;     /* 默认值 */
+overscroll-behavior: auto; /* 默认值 */
 overscroll-behavior: contain;
 overscroll-behavior: none;
 
@@ -132,31 +124,29 @@ overscroll-behavior: none;
 overscroll-behavior: auto contain;
 ```
 
-
-
 ## 6 浏览器右键自定义
 
 禁用右键:
 
 ```js
 document.oncontextmenu = (function () {
-	return function (e) { e.preventDefault() }
+  return function (e) {
+    e.preventDefault()
+  }
 })()
 ```
 
-
-
-## 7 url转码
+## 7 url 转码
 
 ```js
-  <script>
-    var str = 'E5s%2FsPWPCIXZpxXxhoC%2F4JQdu2t5ypsor0PXt%2B%2BL6Qs%3D%23JRZQAGzmp1vbBeGTYR%2FRHx0C4Mh9NULEKVOrskJp%2Bk%2B%2BiXfuf3OSYfV84Y5P%2F88yKiXZUwPAa4aYtjvjbdLQ8fa7lFpj9M8d0axmgEUZgOtAPBD1Vmt9cMD5y2bvaps4%23%23ilO%2F1HF0mYI%3D'
-    var a = decodeURIComponent(str)
-    console.log(a)
-  </script>
+<script>
+  var str =
+  'E5s%2FsPWPCIXZpxXxhoC%2F4JQdu2t5ypsor0PXt%2B%2BL6Qs%3D%23JRZQAGzmp1vbBeGTYR%2FRHx0C4Mh9NULEKVOrskJp%2Bk%2B%2BiXfuf3OSYfV84Y5P%2F88yKiXZUwPAa4aYtjvjbdLQ8fa7lFpj9M8d0axmgEUZgOtAPBD1Vmt9cMD5y2bvaps4%23%23ilO%2F1HF0mYI%3D'
+  var a = decodeURIComponent(str) console.log(a)
+</script>
 ```
 
-## 8 获取url参数
+## 8 获取 url 参数
 
 ```js
 // 获取url参数
@@ -259,4 +249,38 @@ console.log(sum)
 let sum2 = 0
 person.forEach((item) => (sum2 += item.age))
 console.log(sum2)
+```
+
+## 10 await-to-js
+
+```js
+// import { to } from 'await-to-js'
+function to(promise, errorExt) {
+  return promise
+    .then((data) => [null, data])
+    .catch((err) => {
+      if (errorExt) {
+        const parsedError = Object.assign({}, err, errorExt)
+        return [parsedError, {}]
+      }
+
+      return [err, {}]
+    })
+}
+
+const ajax = (data) => {
+  return Promise.resolve({ code: 200, msg: 'ok', data })
+}
+
+const init = async () => {
+  const [err, { code, msg }] = await to(ajax({ a: 1 }))
+  if (err) return console.log('err', err)
+  if (code === 0) {
+    console.log(msg)
+  } else {
+    console.log(msg)
+  }
+}
+
+init()
 ```
