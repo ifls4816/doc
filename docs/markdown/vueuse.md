@@ -28,6 +28,8 @@ const change = () => {
 
 ```js
 import { createSharedComposable, useMouse } from '@vueuse/core'
+// createSharedComposable(() => reactive({ foo: 'a', bar: 'b' }))
+// createSharedComposable接受一个函数
 const useSharedMouse = createSharedComposable(useMouse)
 // CompA.vue
 const { x, y } = useSharedMouse()
