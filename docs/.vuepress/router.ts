@@ -40,6 +40,7 @@ export default [
     children: [
       { text: 'vue2', link: '/markdown/vue.md' },
       { text: 'vue3', link: '/markdown/vue3.md' },
+      { text: 'vueuse', link: '/markdown/vueuse.md' },
     ],
   },
   { text: 'React', link: '/markdown/react.md' },
