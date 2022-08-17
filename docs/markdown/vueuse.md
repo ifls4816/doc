@@ -324,7 +324,7 @@ function closeModal() {
 
 ### onLongPress 监听长按
 
-### useElementHover 响应式hover
+### useElementHover 响应式 hover
 
 ### usePointerSwipe 鼠标滑动
 
@@ -349,3 +349,152 @@ const { counter, pause, resume } = useInterval(200, { controls: true })
 
 ### useTimestamp 响应式获取时间戳
 
+### useTransition 过度动画
+
+```vue
+<template>
+  <p>{{ Math.floor(output) }}</p>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import { TransitionPresets, useTransition } from '@vueuse/core'
+const source = ref(0)
+
+const output = useTransition(source, {
+  duration: 1000,
+  transition: TransitionPresets.easeInOutCubic,
+})
+
+source.value = 5000
+</script>
+```
+
+## Component 组件
+
+### useMounted 判断是否 mounted 了
+
+```js
+import { useMounted } from '@vueuse/core'
+
+const isMounted = useMounted()
+```
+
+## watch
+
+### watchDebounced watch 防抖
+
+```js
+import { ref } from 'vue'
+import { watchDebounced } from '@vueuse/core'
+
+let source = ref(1)
+
+watchDebounced(
+  source,
+  () => {
+    console.log('changed!')
+  },
+  // 防抖时间500   最大等待时间1000 超过1s必定触发一次
+  { debounce: 500, maxWait: 1000 },
+)
+```
+
+### watchIgnorable 不触发 watch 更新
+
+```js
+import { watchIgnorable } from '@vueuse/core'
+import { nextTick, ref } from 'vue'
+
+const source = ref('foo')
+
+const { stop, ignoreUpdates } = watchIgnorable(source, (v) => console.log(`Changed to ${v}!`))
+
+source.value = 'bar'
+await nextTick() // logs: Changed to bar!
+
+ignoreUpdates(() => {
+  source.value = 'foobar'
+})
+await nextTick() // (nothing happened)
+
+source.value = 'hello'
+await nextTick() // logs: Changed to hello!
+```
+
+### watchOnce 只触发一次
+
+```js
+import { watchOnce } from '@vueuse/core'
+
+watchOnce(source, () => {
+  // triggers only once
+  console.log('source changed!')
+})
+```
+
+### watchThrottled 节流
+
+```js
+import { ref } from 'vue'
+import { watchThrottled } from '@vueuse/core'
+
+let source = ref(0)
+watchThrottled(
+  source,
+  () => {
+    console.log('changed!')
+  },
+  // 节流阀500 不论触发频率多高 都500毫秒触发一次
+  { throttle: 500 },
+)
+```
+
+## time 响应式格式化时间
+
+```js
+// 格式化时间工具
+// https://vueuse.org/shared/useDateFormat/
+```
+
+## utilibs 工具类
+
+### throttledFn 节流
+
+```js
+import { useThrottleFn } from '@vueuse/core'
+
+const throttledFn = useThrottleFn(() => {
+  // 1s触发一次
+}, 1000)
+```
+
+### useDebounceFn 防抖
+
+```js
+import { useDebounceFn } from '@vueuse/core'
+
+const debouncedFn = useDebounceFn(
+  () => {
+    // do something
+  },
+  // 防抖时间500
+  500,
+  // 最大等待时间1000 超过1s必定触发一次
+  { maxWait: 5000 },
+)
+```
+
+### useToggle 布尔值切换
+
+```vue
+<template>
+  <button @click="toggle()">{{ value }}</button>
+</template>
+
+<script lang="ts" setup>
+import { useToggle } from '@vueuse/core'
+
+const [value, toggle] = useToggle()
+</script>
+```
