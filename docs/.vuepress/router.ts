@@ -44,7 +44,16 @@ export default [
     ],
   },
   { text: 'React', link: '/markdown/react.md' },
-  { text: 'nodejs', link: '/markdown/nodeJS.md' },
+  {
+    text: 'nodejs',
+    children: [
+      { text: 'nodejs入门', link: '/markdown/nodeJS.md' },
+      {
+        text: 'nestjs',
+        link: '/markdown/nestJS.md',
+      },
+    ],
+  },
   // { text: '小程序', link: '/markdown/wx.md' },
   {
     text: 'CSS',
@@ -76,8 +85,7 @@ export default [
       },
       {
         text: '3-this与对象原型-this & object prototypes',
-        link:
-          '/markdown/You-Dont-Know-JS/3-this与对象原型-this & object prototypes',
+        link: '/markdown/You-Dont-Know-JS/3-this与对象原型-this & object prototypes',
       },
       {
         text: '4-类型与文法-types & grammar',
