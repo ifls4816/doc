@@ -510,3 +510,157 @@ export class CreateLoginDto {
 import { ValidationPipe } from '@nestjs/common'
 app.useGlobalPipes(new ValidationPipe())
 ```
+
+## 守卫
+
+> 在中间件之后 在拦截器或者管道之前执行
+
+```ts
+// 简单使用
+// nest g gu role
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { Observable } from 'rxjs';
+
+@Injectable()
+export class RoleGuard implements CanActivate {
+  canActivate(
+    context: ExecutionContext,
+  ): boolean | Promise<boolean> | Observable<boolean> {
+    console.log('-------');
+    return true;
+  }
+}
+// Controller
+@UseGuards(RoleGuard)
+
+// 全局使用
+// main.ts
+import { RoleGuard } from './role/role.guard';
+app.useGlobalGuards(new RoleGuard());
+
+// 智能守卫
+// controller
+import { RoleGuard } from '../role/role.guard';
+
+@Controller('guard')
+@UseGuards(RoleGuard)
+
+@Get()
+@SetMetadata('role', ['admin'])
+findAll() {
+  return this.guardService.findAll();
+}
+// role.guard.ts
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { Observable } from 'rxjs';
+import { Reflector } from '@nestjs/core';
+import type { Request } from 'express';
+
+@Injectable()
+export class RoleGuard implements CanActivate {
+  constructor(private readonly reflector: Reflector) {}
+  canActivate(
+    context: ExecutionContext,
+  ): boolean | Promise<boolean> | Observable<boolean> {
+    console.log('守卫触发了');
+    // role 为key值 需要跟SetMetadata中的role对应
+    // 此处获取到的值是controller中SetMetadata的第二个参数
+    const admin = this.reflector.get<string[]>('role', context.getHandler());
+    const req = context.switchToHttp().getRequest<Request>();
+    const params = <string>req.query.admin;
+    if (admin && admin.includes(params)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+```
+
+## 自定义装饰器
+
+```ts
+// 指令装饰器
+// nest g d role
+import { SetMetadata } from '@nestjs/common';
+export const Role = (...args: string[]) => SetMetadata('role', args);
+export const ReqUrl = createParamDecorator(
+  (data: unknown, ctx: ExecutionContext) => {
+    const req = ctx.switchToHttp().getRequest<Request>();
+    console.log('data', data); // 此处的data 就是装饰器的参数 ReqUrl('fff')
+    return req.url;
+  },
+);
+
+  @Get()
+  // @SetMetadata('role', ['admin'])
+  @Role('admin')
+  findAll(@ReqUrl('ffff') url: string) {
+    return this.guardService.findAll();
+  }
+
+```
+
+## 链接数据库
+
+```ts
+// app.mudule.ts
+import { TypeOrmModule } from '@nestjs/typeorm'; // 1.引入
+imports: [
+    // 2.配置
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: 'localhost',
+      port: 3306,
+      username: 'root',
+      password: 'root',
+      database: 'student',
+      entities: [],
+      synchronize: true, // 自动同步 生产不要使用
+      retryDelay: 500, // 重试连接数据库间隔
+      retryAttempts: 10, // 重试连接次数
+      autoLoadEntities: true, // 自动加载实体 entities文件
+    }),
+  ],
+// 3配置test.entity.ts
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+
+@Entity()
+export class Test {
+  @PrimaryGeneratedColumn() // 自增的id
+  id: number;
+
+  @Column({
+    type: 'string',
+    length: 255,
+  })
+  name: string;
+
+  @Column()
+  age: number;
+
+  @Column({
+    select: true, // 查询的时候 不返回此字段
+    comment: '我是一个注释',
+  })
+  password: string;
+
+  @CreateDateColumn() // 自动生成时间戳
+  createTiem: Date;
+
+  @Generated('uuid') // 生成uuid
+  uuid: string;
+
+  @Column('simple-array') // 简单数据
+  names: string[];
+
+  @Column('simple-json')
+  json: { name: string; age: number };
+}
+
+// 4 test.module.ts引入
+import { Test } from './entities/test.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
+imports: [TypeOrmModule.forFeature([Test])]
+
+```
