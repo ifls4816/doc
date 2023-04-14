@@ -622,7 +622,7 @@ imports: [
       autoLoadEntities: true, // 自动加载实体 entities文件
     }),
   ],
-// 3配置test.entity.ts
+// 3配置user.entity.ts
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -658,9 +658,33 @@ export class Test {
   json: { name: string; age: number };
 }
 
-// 4 test.module.ts引入
-import { Test } from './entities/test.entity';
+// 4 users.module.ts引入
+import { User } from './entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-imports: [TypeOrmModule.forFeature([Test])]
+imports: [CatsModule, TypeOrmModule.forFeature([User])]
 
+// 5 user.service.ts使用
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/users/entities/user.entity';
+import { Like, Repository } from 'typeorm';
+
+constructor(
+    @InjectRepository(User) private readonly user: Repository<User>,
+  ) {}
+
+create(createUserDto: CreateUserDto) {
+    const data = new User();
+    data.name = createUserDto.name;
+    data.age = createUserDto.age;
+    data.password = createUserDto.password;
+    return this.user.save(data);
+  }
+findAll(keyWord: string) {
+    console.log('keyWord', keyWord);
+    return this.user.find({
+      where: {
+        name: Like(`%${keyWord}%`),
+      },
+    });
+  }
 ```
