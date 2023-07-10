@@ -16,22 +16,23 @@ tsc hello.ts
 
 ## 代码检查
 
-注: 一般不用手动配置 vue3初始化的时候是可以选的
+注: 一般不用手动配置 vue3 初始化的时候是可以选的
 
-### 安装ESLint
+### 安装 ESLint
 
-> 配合ts的 eslint
+> 配合 ts 的 eslint
 
 ```shell
 // 安装ESLint
-npm install --save-dev eslint 
+npm install --save-dev eslint
 // 安装ts ESLint解析器
 npm install --save-dev typescript @typescript-eslint/parser
 // 安装ESLint的ts补充规则
 npm install --save-dev @typescript-eslint/eslint-plugin
 ```
 
-> 正常js的eslint
+> 正常 js 的 eslint
+
 ```shell
 // 全局安装esling
 npm install -g eslint
@@ -40,31 +41,27 @@ eslint --init
 
 ```
 
-
 ### 创建配置文件
 
-项目根目录:   .eslintrc.js  此处定义的是eslint的规则
+项目根目录: .eslintrc.js 此处定义的是 eslint 的规则
 
 ```js
 module.exports = {
-    parser: '@typescript-eslint/parser',
-    plugins: ['@typescript-eslint'],
-    rules: {
-      	// off、warn 或 error
-        // 禁止使用 var
-        'no-var': "error",
-        // 优先使用 interface 而不是 type
-        '@typescript-eslint/consistent-type-definitions': [
-            "error",
-            "interface"
-        ]
-    }
+  parser: '@typescript-eslint/parser',
+  plugins: ['@typescript-eslint'],
+  rules: {
+    // off、warn 或 error
+    // 禁止使用 var
+    'no-var': 'error',
+    // 优先使用 interface 而不是 type
+    '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
+  },
 }
 ```
 
-### vscdoe配置
+### vscdoe 配置
 
-.vscode/settings.json 此处能控制vscode的prettier
+.vscode/settings.json 此处能控制 vscode 的 prettier
 
 ```json
 {
@@ -94,7 +91,7 @@ module.exports = {
       "tabWidth": 2, // tab宽度
       "arrowParens": "avoid", // 箭头函数的括号
       "printWidth": 120, // 换行宽度
-      "bracketSpacing": true, // 大括号内的首尾需要空格
+      "bracketSpacing": true // 大括号内的首尾需要空格
     }
   },
   "[less]": {
@@ -104,10 +101,7 @@ module.exports = {
   "editor.defaultFormatter": "esbenp.prettier-vscode" // 默认格式化工具
   // "editor.formatOnSave": true, // 保存时格式化
 }
-
 ```
-
-
 
 ## 基础
 
@@ -272,10 +266,7 @@ function test(a: number, b: string): string {
 test(1, '2')
 // 表达式声明
 // 注意: ts中的=>代表指定类型为函数 箭头左侧为输入值 箭头右侧为输出值
-const test2: (a: number, b: string) => string = function (
-  a: number,
-  b: string
-): string {
+const test2: (a: number, b: string) => string = function (a: number, b: string): string {
   return a + b
 }
 // 通过接口定义函数
@@ -313,7 +304,7 @@ test(1) // 12
 ```ts
 // b是一个数组 用数组方法定义即可
 function test(a: number, ...b: any[]): void {
-  b.forEach(item => {
+  b.forEach((item) => {
     console.log('a', a)
     console.log('item', item)
   })
@@ -522,9 +513,7 @@ let cat = new Animal('Tom')
 - declare enum 声明全局枚举类型
 
 ```ts
-<a href="https://ts.xcatliu.com/basics/declaration-files.html#declare-enum">
-  jump
-</a>
+<a href='https://ts.xcatliu.com/basics/declaration-files.html#declare-enum'>jump</a>
 ```
 
 - declare namespace 声明（含有子属性的）全局对象
@@ -721,12 +710,7 @@ const enum Directions {
   Left,
   Right,
 } // 使用const声明了枚举
-let directions = [
-  Directions.Up,
-  Directions.Down,
-  Directions.Left,
-  Directions.Right,
-]
+let directions = [Directions.Up, Directions.Down, Directions.Left, Directions.Right]
 // 上例的编译结果是：
 var directions = [0 /* Up */, 1 /* Down */, 2 /* Left */, 3 /* Right */]
 ```
@@ -1038,4 +1022,110 @@ interface Alarm {
   price: number
   weight: number
 }
+```
+
+## ts 里常用的内置工具类型
+
+### Record
+
+> 定义一个对象的 key 和 value 类型
+
+```ts
+// Record<string, number>; value值为数字的对象
+// Record<string, unknown> 空对象
+// Record<string, unknown> value值任意的对象
+```
+
+### Partial
+
+> 生成一个新类型 该类型与 T 拥有相同的属性，但是所有属性皆为可选项
+
+```ts
+interface Foo {
+  name: string
+  age: number
+}
+
+const obj: Foo = {
+  name: '123',
+  age: 1,
+}
+
+type myFoo = Partial<Foo> // name和age变为可选
+
+const myObj: myFoo = {
+  name: '1',
+}
+```
+
+### Required
+
+> 生成一个新类型，该类型与 T 拥有相同的属性，但是所有属性皆为必选项 与 Partial 相反
+
+### Readonly
+
+> 生成一个新类型，其中属性是只读的不可修改的。
+
+```ts
+interface Foo {
+  name: string
+  age: number
+}
+type Bar = Readonly<Foo>
+// 相当于
+type Bar = {
+  readonly name: string
+  readonly age: number
+}
+```
+
+### Pick
+
+> 生成一个新类型，映射类型 ; P in K 类似于 js 的 for…in 语句 ; extends 为泛型约束
+
+```ts
+interface Foo {
+  name: string
+  age?: number
+  gender: string
+}
+type Bar = Pick<Foo, 'age' | 'gender'>
+// 相当于
+type Bar = {
+  age?: number
+  gender: string
+}
+
+const todo: Bar = {
+  age: 3,
+  gender: 男,
+}
+console.log(todo)
+```
+
+### ReturnType
+
+> 获得函数返回值的类型
+
+```ts
+type t = ReturnType<(name: string) => string | number>
+// type t = string | number
+```
+
+### InstanceType
+
+> 获得构造函数返回值的类型
+
+```ts
+type InstanceType<T extends new (...args: any) => any> = T extends new (...args: any) => infer R
+  ? R
+  : any
+
+type t = InstanceType<new (name: string) => { name: string; age: number }>
+/*
+type h = {
+    name: string;
+    age: number;
+}
+*/
 ```
