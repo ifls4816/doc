@@ -70,6 +70,7 @@ export default [
       { text: 'npm使用', link: '/markdown/npm.md' },
       { text: 'git使用', link: '/markdown/git.md' },
       { text: 'mysql了解', link: '/markdown/mysql.md' },
+      { text: 'java入门', link: '/markdown/java.md' },
     ],
   },
   {

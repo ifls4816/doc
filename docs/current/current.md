@@ -22,7 +22,7 @@ console.log('你好，VuePress！')
 
 :::
 
-## 1 a 标签为何能包裹块级元素
+## a 标签为何能包裹块级元素
 
 因为 a 标签属性为 transparent(透明的),意思是取决于 a 标签的父级元素是否能包裹块级元素,例如
 
@@ -42,7 +42,7 @@ console.log('你好，VuePress！')
 <p>
 ```
 
-## 2 prettierrc 代码格式化配置
+## prettierrc 代码格式化配置
 
 在.prettierrc 下配置
 
@@ -55,7 +55,7 @@ console.log('你好，VuePress！')
 }
 ```
 
-## 3 flex 页面布最后一行左对齐
+## flex 页面布最后一行左对齐
 
 不管页面元素有多少,只要在后面加上相应数量的仅有宽没有高的空盒子即可
 
@@ -92,7 +92,7 @@ console.log('你好，VuePress！')
 </html>
 ```
 
-## 4 css 书写顺序
+## css 书写顺序
 
 （1）定位属性：position display float left top right bottom overflow clear z-index
 
@@ -104,7 +104,7 @@ console.log('你好，VuePress！')
 
 （5）css3 中新增属性：content box-shadow border-radius transform
 
-## 5 overscroll-behavior 属性简介
+## overscroll-behavior 属性简介
 
 CSS `overscroll-behavior`属性可以设置 DOM 元素滚动到边缘时候的行为。
 
@@ -124,7 +124,7 @@ overscroll-behavior: none;
 overscroll-behavior: auto contain;
 ```
 
-## 6 浏览器右键自定义
+## 浏览器右键自定义
 
 禁用右键:
 
@@ -136,7 +136,7 @@ document.oncontextmenu = (function () {
 })()
 ```
 
-## 7 url 转码
+## url 转码
 
 ```js
 <script>
@@ -146,7 +146,7 @@ document.oncontextmenu = (function () {
 </script>
 ```
 
-## 8 获取 url 参数
+## 获取 url 参数
 
 ```js
 // 获取url参数
@@ -157,7 +157,7 @@ const getURLParameters = (url) =>
   )
 ```
 
-## 9 reduce
+## reduce
 
 ```js
 const arr = ['a', 'b', 'c', 'd', undefined, null]
@@ -251,7 +251,7 @@ person.forEach((item) => (sum2 += item.age))
 console.log(sum2)
 ```
 
-## 10 await-to-js
+## await-to-js
 
 ```js
 // import { to } from 'await-to-js'
@@ -283,4 +283,13 @@ const init = async () => {
 }
 
 init()
+```
+
+## css文本省略
+
+```css
+display: -webkit-box;
+-webkit-box-orient: vertical;
+-webkit-line-clamp: 3;
+overflow: hidden;
 ```
