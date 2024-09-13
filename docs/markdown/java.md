@@ -297,20 +297,21 @@ public class Student {
 
 ### final
 
-> final修饰符是一种Java关键字，用于修饰类、变量和方法，用来限定其不能被继承、修改或删除。可以用来保护代码和数据的安全性。
+> final 修饰符是一种 Java 关键字，用于修饰类、变量和方法，用来限定其不能被继承、修改或删除。可以用来保护代码和数据的安全性。
 
-> final修饰符在以下几种场景中可以具体使用： 1. 类：当声明一个类为final时，它就成为一个不可变类，不能被其它类继承。 2. 方法：当声明一个方法为final时，它就不能被子类重写。 3. 变量：当声明一个变量为final时，它就成为一个常量，不能被修改。
+> final 修饰符在以下几种场景中可以具体使用： 1. 类：当声明一个类为 final 时，它就成为一个不可变类，不能被其它类继承。 2. 方法：当声明一个方法为 final 时，它就不能被子类重写。 3. 变量：当声明一个变量为 final 时，它就成为一个常量，不能被修改。
 
 - 保护值不被改变
+
 ```java
 public class MyClass {
   public final int MAX_VALUE = 100;
   public int value;
-  
+
   public MyClass(int value) {
     this.value = value;
   }
-  
+
   public void increaseValue() {
     if (this.value < MAX_VALUE)
       this.value++;
@@ -319,6 +320,7 @@ public class MyClass {
 ```
 
 - 禁止类被继承
+
 ```java
 public final class MyClass {
   // class definition
@@ -326,6 +328,7 @@ public final class MyClass {
 ```
 
 - 禁止类中的方法被重写
+
 ```java
 public class MyClass {
   public final void doSomething() {
@@ -520,7 +523,7 @@ for (int i=0; i<10; i++) {
 
 ## 运算符
 
-> 参考js运算符
+> 参考 js 运算符
 
 ## 字符串类型变量
 
@@ -533,19 +536,21 @@ str.replace("Hello", "Hi"); // 返回"Hi World"
 // 分割字符串
 str.split(" "); // 返回["Hello", "World"]
 ```
+
 > 常用方法
-- 返回此字符串的长度	int length()	str.length(); // 返回11
-- 获取指定位置的字符	char charAt(int index)	str.charAt(0); // 返回'H'
-- 截取子串	String substring(int beginIndex)	str.substring(0, 5); // 返回"Hello"
-- 转换大小写	String toUpperCase()	str.toUpperCase(); // 返回"HELLO WORLD"
-- 查找子串	int indexOf(int ch)	str.indexOf("World"); // 返回6
-- 检查字符串开头	boolean startsWith(String prefix)	str.startsWith("Hello"); // 返回true
-- 检查字符串结尾	boolean endsWith(String suffix)	str.endsWith("World"); // 返回true
-- 去除字符串头尾空格	String trim()	str.trim(); // 返回"Hello World"
-- 比较两个字符串	boolean equals(Object anObject)	str.equals("Hello World"); // 返回true
 
+- 返回此字符串的长度 int length() str.length(); // 返回 11
+- 获取指定位置的字符 char charAt(int index) str.charAt(0); // 返回'H'
+- 截取子串 String substring(int beginIndex) str.substring(0, 5); // 返回"Hello"
+- 转换大小写 String toUpperCase() str.toUpperCase(); // 返回"HELLO WORLD"
+- 查找子串 int indexOf(int ch) str.indexOf("World"); // 返回 6
+- 检查字符串开头 boolean startsWith(String prefix) str.startsWith("Hello"); // 返回 true
+- 检查字符串结尾 boolean endsWith(String suffix) str.endsWith("World"); // 返回 true
+- 去除字符串头尾空格 String trim() str.trim(); // 返回"Hello World"
+- 比较两个字符串 boolean equals(Object anObject) str.equals("Hello World"); // 返回 true
 
-> equal和== equla判断两个字符串内容是否相等  ==判断两个变量是否指向同一个对象
+> equal 和== equla 判断两个字符串内容是否相等 ==判断两个变量是否指向同一个对象
+
 ```java
 String str1 = "Hello World";
 String str2 = new String("Hello World");
@@ -555,19 +560,18 @@ System.out.println(str1.equals(str2)); //true
 System.out.println(str1 == str2); //false
 ```
 
-## Java中常用的包装类
+## Java 中常用的包装类
 
-> 直接声明的基本数据类型，如int、float、double等，在Java中称为基本数据类型。而包装类，如Integer、Float、Double等，在Java中称为引用数据类型。 区别于js, 基本数据类型中没有方法, 只有包装类中能调用方法
+> 直接声明的基本数据类型，如 int、float、double 等，在 Java 中称为基本数据类型。而包装类，如 Integer、Float、Double 等，在 Java 中称为引用数据类型。 区别于 js, 基本数据类型中没有方法, 只有包装类中能调用方法
 
 - Byte：表示一个字节，取值范围为-128~127。
 - Short：表示一个短整型，取值范围为-32768~32767。
 - Integer：表示一个整型，取值范围为-2147483648~2147483647。
 - Long：表示一个长整型，取值范围为-9223372036854775808~9223372036854775807。
-- Float：表示单精度浮点数，取值范围为1.4e-45~3.4028235e38。
-- Double：表示双精度浮点数，取值范围为4.9e-324~1.7976931348623157e308。
-- Boolean：表示布尔值，取值范围为true和false。
-- Character：表示字符，取值范围为0~65535。
-
+- Float：表示单精度浮点数，取值范围为 1.4e-45~3.4028235e38。
+- Double：表示双精度浮点数，取值范围为 4.9e-324~1.7976931348623157e308。
+- Boolean：表示布尔值，取值范围为 true 和 false。
+- Character：表示字符，取值范围为 0~65535。
 
 ### 拆箱和装箱
 
@@ -603,5 +607,52 @@ Character cc = Character.valueOf(c); // 把char转换为Character
 
 ## 哈希表介绍
 
-类似于js中的map
+### HashMap
 
+类似于 js 中的 map
+
+```java
+import java.util.HashMap;
+
+class Car  {
+  public static void main(String[] args) {
+    HashMap<String, String> map = new HashMap<String, String>();
+    // 添加元素
+    map.put("1", "One");
+    map.put("2", "Two");
+    map.put("3", "Three");
+    // 删除元素
+    map.remove("1");
+    System.out.println(map); // {1=One, 2=Two, 3=Three}
+    // 获取元素
+    String value = map.get("1");
+    System.out.println(value); // one 删除后为null
+    String v = map.get("5"); // 不存在的元素也为null
+    System.out.println(v);
+    // 判断是否存在某个key
+    if (map.containsKey("1")) {
+      System.out.println("map contains key 1");
+    }
+  }
+}
+```
+
+### Hashtable
+Hashtable 是一种线程安全的 HashMap 实现，可以让多个线程同时访问哈希表
+```java
+put get remove containsKey方法同HashMap一致
+```
+
+### LinkedHashMap
+LinkedHashMap可以使用链表来维护记录的插入顺序，从而提供有序的访问
+```java
+put get remove containsKey方法同HashMap一致
+```
+
+### TreeMap
+TreeMap可以按照排序键来存储和访问记录
+```java
+put get remove containsKey方法同HashMap一致
+```
+
+## 日期类型的介绍

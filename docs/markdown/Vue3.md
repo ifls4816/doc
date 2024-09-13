@@ -1740,3 +1740,39 @@ const post = await fun1('/api/getNums')
 console.log('post', post) // '/api/getNums'
 </script>
 ```
+
+## 双向数据绑定封装
+
+- 方案一
+
+```ts
+// 子组件
+const props = withDefaults(defineProps<IProps>(), {
+  modelValue: false,
+  value: '',
+})
+
+const show = computed({
+  get: () => {
+    return props.modelValue
+  },
+  set: val => {
+    emit('update:modelValue', val)
+  },
+})
+<el-dialog v-model="show"></el-dialog>
+// 父组件
+<Children v-model="visible">
+const visible = ref(false)
+```
+
+- 方案二
+
+```ts
+// 子组件
+const show = defineModel('show')
+<el-dialog v-model="show"></el-dialog>
+// 父组件
+<Children v-model="visible">
+const visible = ref(false)
+```
