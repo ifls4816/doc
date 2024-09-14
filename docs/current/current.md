@@ -293,3 +293,11 @@ display: -webkit-box;
 -webkit-line-clamp: 3;
 overflow: hidden;
 ```
+
+## null和undefined区别
+
+null表示无对象(no object) => 原本应该是对象 只是现在不是对象
+ 
+undefined表示无值(no value) => 将来可能是任何值 字符串 数值等
+
+但是这二者共享同一个类型标记 typeof null === "object" typeof undefiined === 'object' 这是一个设计缺陷
