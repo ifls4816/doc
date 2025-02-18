@@ -19,5 +19,5 @@ features:
   details: webpack vue全家桶等
 - title: 其他技术
   details: 其他杂七杂八的总结
-footer: MIT Licensed | Copyright © 2024 IFLS
+footer: MIT Licensed | Copyright © 2025 IFLS
 ---
