@@ -28,12 +28,14 @@ console.log(num) //在浏览器的控制台中输出100
 
 ```js
 /*
-js中的数据类型：number string boolean null undefined object
+js中的数据类型：number string boolean null undefined object symbol bigint
 number数字类型
 string字符串类型 一般用单引号或双引号括起来
 boolean布尔类型 值有两个：true真（1） false假（0）
 null 空类型 一个对象指向为空，此时可以赋值为null
 undefined 未定义  值只有一个：undefined
+symbol（ES6）唯一不可变标识符，常用于对象属性键
+bigint（ES2020）：表示任意精度整数（后缀n，如123n）
 变量声明了但没有赋值时显示该值和函数没有明确返回值，如果接收了，结果也是现实undefined
 如果一个变量的结果是undefined和一个数字进行计算，结果：NaN（not a number）
 object对象
