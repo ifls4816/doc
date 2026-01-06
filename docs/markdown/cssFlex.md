@@ -172,7 +172,7 @@
 
 ### 4.6 align-self 单个 item 的垂直对齐方式
 
-> 可覆盖 box 下的align-item 默认值为aotu
+> 可覆盖 box 下的align-item 默认值为auto
 
 ```css
 .item {
