@@ -1,14 +1,14 @@
-# 1 css-grid
+# css-grid
 
 > 整理自<a href="https://ruanyifeng.com/blog/2019/03/grid-layout-tutorial.html">阮一峰博客</a>
 
-# 2 概述
+## 1 概述
 
 > Flex 布局是轴线布局，只能指定"项目"针对轴线的位置，可以看作是一维布局。Grid 布局则是将容器划分成"行"和"列"，产生单元格，然后指定"项目所在"的单元格，可以看作是二维布局。Grid 布局远比 Flex 布局强大。
 
-# 3 container 容器属性
+## 2 container 容器属性
 
-## 3.1 display
+### 2.1 display
 
 ```css
 div {
@@ -19,7 +19,7 @@ div {
 }
 ```
 
-## 3.2 grid-template-columns grid-template-rows
+### 2.2 grid-template-columns grid-template-rows
 
 ```css
 /* 列宽 行高 */
@@ -86,7 +86,7 @@ grid-template-columns: 100px auto 100px;
 }
 ```
 
-## 3.3 grid-row-gap grid-column-gap grid-gap
+### 2.3 grid-row-gap grid-column-gap grid-gap
 
 ```css
 .container {
@@ -97,7 +97,7 @@ grid-template-columns: 100px auto 100px;
 }
 ```
 
-## 3.4 grid-template-areas
+### 2.4 grid-template-areas
 
 > 网格布局允许指定"区域"（area），一个区域由单个或多个单元格组成。grid-template-areas 属性用于定义区域
 
@@ -139,7 +139,7 @@ grid-template-columns: 100px auto 100px;
 }
 ```
 
-## 3.5 grid-auto-flow
+### 2.5 grid-auto-flow
 
 > 网格排序
 
@@ -163,7 +163,7 @@ grid-auto-flow: row dense;
 grid-auto-flow: column dense;
 ```
 
-## 3.6 justify-items align-items place-items
+### 2.6 justify-items align-items place-items
 
 > item 内容的位置
 > justify-items 属性设置单元格内容的水平位置（左中右），align-items 属性设置单元格内容的垂直位置（上中下）。
@@ -172,7 +172,7 @@ grid-auto-flow: column dense;
 place-items: <align-items> <justify-items>;
 ```
 
-## 3.7 justify-content align-content place-content
+### 2.7 justify-content align-content place-content
 
 > container 容器的位置
 > justify-content 属性是整个内容区域在容器里面的水平位置（左中右），align-content 属性是整个内容区域的垂直位置
@@ -181,21 +181,21 @@ place-items: <align-items> <justify-items>;
 place-content: <align-content> <justify-content>;
 ```
 
-## 3.8 grid-auto-columns grid-auto-rows
+### 2.8 grid-auto-columns grid-auto-rows
 
 > 隐式列/隐式行 指定在网格外的项目 网格内的不受影响
 > 有时候，一些项目的指定位置，在现有网格的外部。比如网格只有 3 列，但是某一个项目指定在第 5 行。这时，浏览器会自动生成多余的网格，以便放置项目。
 > 用法和 grid-template-rows gird-template-columns 一致
 
-## 3.9 grid-template grid 简写
+### 2.9 grid-template grid 简写
 
 > grid-template 属性是 grid-template-columns、grid-template-rows 和 grid-template-areas 这三个属性的合并简写形式。
 
 > grid 属性是 grid-template-rows、grid-template-columns、grid-template-areas、 grid-auto-rows、grid-auto-columns、grid-auto-flow 这六个属性的合并简写形式。
 
-# 4 item 项目属性
+## 3 item 项目属性
 
-## 4.1 指定网格线
+### 3.1 指定网格线
 
 grid-column-start 属性，
 grid-column-end 属性，
@@ -249,7 +249,7 @@ grid-row-end 属性
 }
 ```
 
-## 4.2 grid-area
+### 3.2 grid-area
 
 > 指定 item 放在哪一个区域 上文有使用 需要配合 gird-template-area
 
@@ -262,6 +262,6 @@ grid-row-end 属性
 }
 ```
 
-## 4.3 justify-self align-self place-self
+### 3.3 justify-self align-self place-self
 
 > 设置单元格自身的水平垂直对齐方式 与 justify-items属性用法完全一致 但只作用与单个项目
