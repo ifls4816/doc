@@ -1252,7 +1252,36 @@ app.post('/myLogin', (req, res) => {
 })
 ```
 
-## 14.1 express 完整应用
+## 14.1 express 中间件
+express本质上就是一个function处理函数 和vue中的路由 next类似
+如果有next() 就是中间件处理函数
+如果没有next() 就是路由处理函数
+
+### 14.1.1 全局生效中间件
+```js
+const mw = (req, res, next) => {
+  next()
+}
+app.use(mw)
+```
+### 14.1.2 局部生效中间件
+```js
+const mw = (req, res, next) => {
+  next()
+}
+app.get('/', [mv] /*[mv1,mv2]*/, function (req, res) {
+  // 只在当前路由中生效
+})
+```
+
+### 14.1.3 预检请求
+预检请求:在浏览器与服务器正式通信之前 浏览器会先发送OPTION请求进行预检 以获知服务器是否允许该请求 服务器影响预检请求后才会发送真正请求并携带数据
+只要符合一下任意条件 就会触发预检请求
+- 请求方式为GET POST HEAD之外的请求
+- 请求头中包含自定义头部字段
+- 向服务器发送了application/json格式数据
+
+## 14.2 express 完整应用
 
 ```js
 const express = require('express')
