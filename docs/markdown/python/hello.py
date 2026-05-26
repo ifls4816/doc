@@ -218,7 +218,88 @@
 # for i, value in enumerate(dic):
 #     print(i,value)
 # [1x1, 2x2, 3x3, ..., 10x10]
-L = []
-for item in range(1, 11):
-    L.append(item * item)
-print(L)
+# L = []
+# for item in range(1, 11):
+#     L.append(item * item)
+# print(L)
+
+# def add(x, y, f):
+#     return f(x) + f(y)
+
+# def my_add(n):
+#     return abs(n)
+# print(add(1,2, my_add))
+
+# def f(x,y):
+#     print('x',x)
+#     print('y',y)
+#     return x * x
+# r = map(f, [1,2,3,4,5,6])
+# print(list(r))
+# from functools import reduce
+# def add(x, y):
+#     print(x,y) # 1 2 / 3 3 / 6 4 / 10 5
+#     return x + y
+# reduce(add, [1,2,3,4,5]) # 15
+# from functools import reduce
+# def fn(x, y):
+#     print(x,y) # 1 3  / 13 5 / 135 7 / 1357 / 9
+#     return x * 10 + y
+# print(reduce(fn, [1, 3, 5, 7, 9]))
+
+# from functools import reduce
+# def fn(x, y):
+#      return x * 10 + y
+
+# def char2num(s):
+#      digits = {'0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9}
+#      return digits[s]
+
+# print(reduce(fn, map(char2num, '13579')))
+# def normalize(name):
+#     return name[0].upper() + name[1:].lower()
+
+# # 测试:
+# L1 = ['adam', 'LISA', 'barT']
+# L2 = list(map(normalize, L1))
+# print(L2)
+
+# from functools import reduce
+# def prod(L):
+#     def fn (x, y):
+#       return x * y
+#     return reduce(fn, L)
+# print('3 * 5 * 7 * 9 =', prod([3, 5, 7, 9]))
+# if prod([3, 5, 7, 9]) == 945:
+#     print('测试成功!')
+# else:
+#     print('测试失败!')
+# from functools import reduce
+
+# def str2float(s):
+#     pass
+
+# print('str2float(\'123.456\') =', str2float('123.456'))
+# if abs(str2float('123.456') - 123.456) < 0.00001:
+#     print('测试成功!')
+# else:
+#     print('测试失败!')
+
+# nums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+# # 筛选偶数：能被2整除
+# res = list(filter(lambda x: x % 2 == 0, nums))
+# print(res)
+
+# def fn (x):
+#   return x> 1
+# print(list(filter(fn, [1,2,3])))
+L = [('Bob', 75), ('Adam', 92), ('Bart', 66), ('Lisa', 88)]
+
+def by_name(t):
+    return t[1]
+def by_score(t):
+    return -t[1] # 处理正序反序
+
+L2 = sorted(L, key=by_name)
+L2 = sorted(L, key=by_score)
+print(L2)

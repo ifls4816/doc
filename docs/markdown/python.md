@@ -507,7 +507,171 @@ L2 = [s.lower() for s in L1 if isinstance(s, str)]
 
 ### 10.4 生成器
 
+> 通过列表生成式，我们可以直接创建一个列表, 但这样咱内存, 生成器可不必创建完整的list，从而节省大量的空间
 ```py
+L = [x * x for x in range(10)] # [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
 
+# 相比列表生成式 只是把[]换成了()
+g = (x * x for x in range(10)) # <generator object <genexpr> at 0x1022ef630>
+for n in g:
+    print(n) # 0 1 4 9 16 25 36 49 64 81
+```
+
+
+### 10.5 迭代器
+
+> 可迭代对象 Iterable：能被 for 循环遍历的东西（列表、字符串、字典）
+
+```py
+# 判断是否可迭代
+from collections.abc import Iterable
+isinstance([], Iterable) # True
+isinstance('abc', Iterable) # True
+isinstance((x for x in range(10)), Iterable) # True
+isinstance(100, Iterable) # False
+```
+
+> 迭代器 Iterator：凡是可作用于next()函数的对象都是Iterator类型，它们表示一个惰性计算的序列
+
+```py
+# 判断是否为迭代对象
+from collections.abc import Iterator
+isinstance((x for x in range(10)), Iterator) # True
+isinstance([], Iterator) # False
+isinstance({}, Iterator) # False
+isinstance('abc', Iterator) # False
+```
+
+> 生成器 Generator：简化版的迭代器，用 yield 写，业务最常用
+
+```py
+# 一边循环一边计算，不占内存 是迭代器的一种
+def gen():
+    yield 1
+    yield 2
+    yield 3
+g = gen()
+next(g)  # 1
+next(g)  # 2
+```
+
+## 11 函数式编程
+
+### 11.1 高阶函数
+
+> 一个函数就可以接收另一个函数作为参数，这种函数就称之为高阶函数。
+
+```py
+def add(x, y, f):
+    return f(x) + f(y)
+print(add(-5, 6, abs))
+```
+
+#### 11.1.1 map/reduce
+
+```py
+# map: 函数接收两个参数，一个是函数，一个是Iterable，map将传入的函数依次作用到序列的每个元素，并把结果作为新的Iterator返回。
+def f(x):
+    return x * x
+# 返回的是一个惰性Iterator 需要调用list()计算出来
+list(map(f, [1, 2, 3, 4, 5, 6, 7, 8, 9])) 
+# 把数组中的数字转为字符串
+list(map(str, [1, 2, 3, 4, 5, 6, 7, 8, 9]))
+
+# reduce: 把一个函数作用在一个序列[x1, x2, x3, ...]上，这个函数必须接收两个参数，reduce把结果继续和序列的下一个元素做累积计算，其效果就是
+reduce(f, [x1, x2, x3, x4]) = f(f(f(x1, x2), x3), x4)
+
+from functools import reduce
+def add(x, y):
+    print(x,y) # 1 2 / 3 3 / 6 4 / 10 5
+    return x + y
+reduce(add, [1,2,3,4,5]) # 15
+# 求和也可用sum
+sum([1,2,3,4,5]) # 15
+
+def fn(x, y):
+    print(x,y) # 1 3  / 13 5 / 135 7 / 1357 / 9
+    return x * 10 + y
+print(reduce(fn, [1, 3, 5, 7, 9])) # 13579
+
+# 结合使用
+from functools import reduce
+def fn(x, y):
+     return x * 10 + y
+
+def char2num(s):
+     digits = {'0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9}
+     return digits[s]
+# map(char2num, '13579')输出 map object 通过list转换后可见[1, 3, 5, 7, 9]
+# 等同于print(reduce(fn, [1, 3, 5, 7, 9])) 
+# 实现了将字符串转换成了数字 也就是int('13579)
+print(reduce(fn, map(char2num, '13579'))) # 13579
+
+# 练习
+# 1.变为首字母大写，其他小写的规范名字
+def normalize(name):
+    return name[0].upper() + name[1:].lower()
+# 测试:
+L1 = ['adam', 'LISA', 'barT']
+L2 = list(map(normalize, L1))
+print(L2)
+
+# 2. 输入数组求积
+from functools import reduce
+def prod(L):
+    def fn (x, y):
+      return x * y
+    return reduce(fn, L)
+print('3 * 5 * 7 * 9 =', prod([3, 5, 7, 9]))
+if prod([3, 5, 7, 9]) == 945:
+    print('测试成功!')
+else:
+    print('测试失败!')
+```
+
+#### 11.1.2 filter
+
+```py
+def fn (x):
+  return x> 1
+list(filter(fn, [1,2,3]))
+```
+
+#### 11.1.3 sorted
+
+```py
+sorted([36, 5, -12, 9, -21])
+# 接收一个key 按绝对值大小排序
+sorted([36, 5, -12, 9, -21], key=abs)
+# 忽略大小写后排序
+sorted(['bob', 'about', 'Zoo', 'Credit'], key=str.lower) # ['about', 'bob', 'Credit', 'Zoo'] 不会改变原来的数组元素 只是排序顺序
+# 反向排序参数
+sorted(['bob', 'about', 'Zoo', 'Credit'], key=str.lower, reverse=True)
+
+# 排序
+L = [('Bob', 75), ('Adam', 92), ('Bart', 66), ('Lisa', 88)]
+def by_name(t):
+    return t[1]
+def by_score(t):
+    return -t[1] # 处理正序反序
+L2 = sorted(L, key=by_name)
+L2 = sorted(L, key=by_score)
+print(L2)
+```
+
+
+### 返回函数
+
+```py
+def lazy_sum(*args):
+    def sum():
+        ax = 0
+        for n in args:
+            ax = ax + n
+        return ax
+    return sum
+f1 = lazy_sum(1, 3, 5, 7, 9)
+f2 = lazy_sum(1, 3, 5, 7, 9)
+f1==f2 # False
 ```
 
