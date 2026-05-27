@@ -293,13 +293,162 @@
 # def fn (x):
 #   return x> 1
 # print(list(filter(fn, [1,2,3])))
-L = [('Bob', 75), ('Adam', 92), ('Bart', 66), ('Lisa', 88)]
+# L = [('Bob', 75), ('Adam', 92), ('Bart', 66), ('Lisa', 88)]
 
-def by_name(t):
-    return t[1]
-def by_score(t):
-    return -t[1] # 处理正序反序
+# def by_name(t):
+#     return t[1]
+# def by_score(t):
+#     return -t[1] # 处理正序反序
 
-L2 = sorted(L, key=by_name)
-L2 = sorted(L, key=by_score)
-print(L2)
+# L2 = sorted(L, key=by_name)
+# L2 = sorted(L, key=by_score)
+# print(L2)
+
+# def inc():
+#     x = 0
+#     def fn():
+#         nonlocal x
+#         x = x + 1
+#         return x
+#     return fn
+
+# f = inc()
+# print(f()) # 1
+# print(f()) # 2
+
+# def inc():
+#   x = 0
+#   def fn():
+#     return x + 1
+#   return fn
+# f = inc()
+
+# print(f())
+
+# def inc():
+#     x = 0
+#     def fn():
+#         nonlocal x
+#         x = x + 1
+#         return x
+#     return fn
+# f = inc()
+# print(f()) # 1
+# print(f()) # 2
+
+# def createCounter():
+#     x = 0
+#     def counter():
+#         nonlocal x
+#         x = x + 1
+#         return x
+#     return counter
+
+# # 测试:
+# counterA = createCounter()
+# print(counterA(), counterA(), counterA(), counterA(), counterA()) # 1 2 3 4 5
+# counterB = createCounter()
+# if [counterB(), counterB(), counterB(), counterB()] == [1, 2, 3, 4]:
+#     print('测试通过!')
+# else:
+#     print('测试失败!')
+
+# def is_odd(n):
+#     return n % 2 == 1
+
+# L = list(filter(lambda n : n % 2 == 1, range(1, 20)))
+
+# print(L)
+
+
+# def log(func):
+#     def wrapper(*args, **kw):
+#         print('call %s():' % func.__name__)
+#         return func(*args, **kw)
+#     return wrapper
+
+# @log
+# def now():
+#     print('2024-6-1')
+
+# now()
+
+# 装饰器传递参数
+# def log(text):
+#     def decorator(func):
+#         def wrapper(*args, **kw):
+#             print('%s %s():' % (text, func.__name__))
+#             return func(*args, **kw)
+#         return wrapper
+#     return decorator
+# @log('execute')
+# def now():
+#     print(now.__name__)
+#     print('2024-6-1') 
+# now() # execute now():     2024-6-1
+
+# import time, functools
+
+# def metric(fn):
+#     print('%s executed in %s ms' % (fn.__name__, 10.24))
+#     return fn
+
+# # 测试
+# @metric
+# def fast(x, y):
+#     time.sleep(0.0012)
+#     return x + y
+
+# @metric
+# def slow(x, y, z):
+#     time.sleep(0.1234)
+#     return x * y * z
+
+# f = fast(11, 22)
+# s = slow(11, 22, 33)
+# if f != 33:
+#     print('测试失败!')
+# elif s != 7986:
+#     print('测试失败!')
+
+# import functools
+# int2 = functools.partial(int, base=2)
+# print(int2('1000000'))
+
+# kw = { 'base': 2 }
+# print(int('10010', **kw))
+
+# class Student(object):
+#     def __init__(self, name, age):
+#         self.name = name
+#         self.age = age
+# stu = Student('zs', 19)
+
+# class Student(object):
+#     count = 0
+
+#     def __init__(self, name):
+#         self.name = name
+#         Student.count = Student.count + 1
+
+# # 测试:
+# if Student.count != 0:
+#     print('测试失败!')
+# else:
+#     bart = Student('Bart')
+#     if Student.count != 1:
+#         print('测试失败!')
+#     else:
+#         lisa = Student('Bart')
+#         if Student.count != 2:
+#             print('测试失败!')
+#         else:
+#             print('Students:', Student.count)
+#             print('测试通过!')
+class Student(object):
+    def __init__(self, name):
+        self.name = name
+    def __str__(self):
+        return 'Student object (name: %s)' % self.name
+    __repr__ = __str__
+print(Student('Michael'))

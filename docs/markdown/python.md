@@ -660,7 +660,7 @@ print(L2)
 ```
 
 
-### 返回函数
+### 11.2返回函数
 
 ```py
 def lazy_sum(*args):
@@ -675,3 +675,443 @@ f2 = lazy_sum(1, 3, 5, 7, 9)
 f1==f2 # False
 ```
 
+#### 11.2.1 闭包
+
+> 参考js
+
+```py
+def count():
+    fs = []
+    for i in range(1, 4):
+        # 内部的函数引用了外部的变量i
+        # 但是函数没有调用 for循环已经执行完了 等f调用时 i已经变为3了
+        def f():
+             return i*i
+        fs.append(f)
+    return fs
+
+f1, f2, f3 = count()
+f1() # 9
+f2() # 9
+f3() # 9
+
+# 处理:
+def count():
+    def f(j):
+        def g():
+            return j*j
+        return g
+    fs = []
+    for i in range(1, 4):
+        fs.append(f(i)) # f(i)立刻被执行 g中引用的j值也就正常了
+    return fs
+f1, f2, f3 = count()
+f1() # 1
+f2() # 4
+f3() # 9
+
+
+# nonlocal
+# 使用闭包，就是内层函数引用了外层函数的局部变量。只读情况下没问题
+def inc():
+  x = 0
+  def fn():
+    return x + 1
+  return fn
+f = inc()
+print(f()) # 1
+print(f()) # 1
+# 如果需要修改 x会被当做fn的局部变量处理 不会出外层函数找 就导致x没有初始化 导致报错:
+# cannot access local variable 'x' where it is not associated with a value
+# 因为x没初始化 直接计算x+1就异常了 需要加一个nonlocal告诉py 要去非本地变量 要去外层找
+def inc():
+    x = 0
+    def fn():
+        # nonlocal x
+        x = x + 1
+        return x
+    return fn
+f = inc()
+print(f()) # 1
+print(f()) # 2
+```
+
+### 11.3 匿名函数
+
+```py
+list(map(lambda x: x * x, [1, 2, 3, 4, 5, 6, 7, 8, 9]))
+# lambda x: x * x 相当于
+def f(x):
+    return x * x
+# 可以用变量接收
+f = lambda x: x * x
+# 也可当做返回值
+def f():
+    return lambda x: x * x
+```
+
+### 11.4 装饰器
+
+```py
+# 基础使用
+# 由于log()是一个decorator，返回一个函数，所以，原来的now()函数仍然存在，只是现在同名的now变量指向了新的函数，于是调用now()将执行新函数，即在log()函数中返回的wrapper()函数
+def log(func):
+    def wrapper(*args, **kw):
+        print('call %s():' % func.__name__)
+        return func(*args, **kw)
+    return wrapper
+@log
+def now():
+    print('2024-6-1') # call now()     2024-6-1
+now()
+# 装饰器传递参数
+def log(text):
+    def decorator(func):
+        def wrapper(*args, **kw):
+            print('%s %s():' % (text, func.__name__))
+            return func(*args, **kw)
+        return wrapper
+    return decorator
+@log('execute')
+def now():
+    print('2024-6-1') 
+now() # execute now():     2024-6-1
+# 本质上就是
+log('execute')(now)
+
+# 注意:
+# 此时的now.__name__ 已经变成wrapper了 
+# 因为最后返回的就是wrapper函数 需要用functools.wraps保留原函数信息
+@log('execute')
+def now():
+    print(now.__name__) # wrapper
+    print('2024-6-1') 
+# 所以完整的案例需要改为
+def log(text):
+    def decorator(func):
+        @functools.wraps(func) # 把wrapper名字改为func
+        def wrapper(*args, **kw):
+            print('%s %s():' % (text, func.__name__))
+            return func(*args, **kw)
+        return wrapper
+    return decorator
+```
+
+### 11.5 偏函数
+
+> 当函数的参数个数太多，需要简化时，使用functools.partial可以创建一个新的函数，这个新函数可以固定住原函数的部分参数，从而在调用时更简单。 functools.partial就是帮助我们创建一个偏函数的
+
+```py
+int('12345') # 123456 默认10进制
+int('12345', base=8) # 5349 设置为8进制
+def int2(x, base=2): # 封装默认参数
+    return int(x, base)
+# functools.partial带的方法
+import functools
+int2 = functools.partial(int, base=2)
+# 两个int2完全一致
+max2 = functools.partial(max, 10)
+max2(5, 6, 7)
+# 实际上会把10作为*args的一部分自动加到左边
+# 等同于
+args = (10, 5, 6, 7)
+max(*args)
+```
+
+
+## 12 模块
+
+```py
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+' a test module '
+__author__ = 'Michael Liao'
+import sys
+def test():
+    args = sys.argv
+    if len(args)==1:
+        print('Hello, world!')
+    elif len(args)==2:
+        print('Hello, %s!' % args[1])
+    else:
+        print('Too many arguments!')
+if __name__=='__main__': # 只有是主模块时 __name__才为__main__ 其他地方导入时 __name__则变成了导入时的模块名 import hi.hi name为hi.hi
+    test()
+ # 获取触发命令的名称 如: Python3 hi.py 则argv是['hi.py']
+# Python3 hi.py ifls  则argv是['hi.py','ifls']
+print(sys.argv)
+
+```
+
+### 12.1 作用域
+
+```py
+fn = int # fn作用域是public
+#py中没有办法私有变量和js一样 约定俗称的办法也是采用_ 如 _fn
+import hi.my_hi
+hi.my_hi.fn()
+hi.my_hi._fn() # 程序也能正常运行 但不建议这么做
+
+```
+
+
+### 12.2 第三方模块
+
+```py
+# 安装常用模块
+Anaconda官网: https://www.anaconda.com/download/
+# 虚拟环境:
+# py第三方的包默认安装在系统的Python环境下 可以通过创建虚拟环境实现类似node_modules隔离
+python -m venv my_venv
+# 激活:
+source my_venv/bin/activate
+# 然后安装 此时安装的numpy就是在my_venv目录下的
+pip install numpy
+```
+
+## 13 面向对象编程
+
+### 13.1 类和实例
+
+```py
+class Student(object):
+    # 相当于js的constructor 定义属性
+    # init第一个参数固定为self 顺手写成this也行 更靠近js
+    # name score必填
+    def __init__(self, name, score):
+        self.name = name
+        self.score = score
+    # 定义方法
+    def print_score(self): # 此处self参数调用时不用传递
+      print('name',self.name,'socre',self.score)
+
+stu = Student('zs', 180)
+stu.name # 'zs'
+stu.score # 180
+stu.print_score()
+```
+
+### 13.2 访问限制
+
+```py
+class Student(object):
+    def __init__(self, name, score):
+        self.__name = name # 加上__即变成私有属性 在实例中就不能访问了
+        self.__score = score
+    #获取时只能通过定义方法来获取
+
+    def get_name(self):
+        return self.__name
+    def set_score(self, value):
+        self.__score = value
+
+    def print_score(self):
+        print('%s: %s' % (self.__name, self.__score))
+  
+# 有self._name情况发生 _name是可以访问的 约定俗成中不要访问name
+# 其实self.__name也可以通过 stu._Student__name访问 但不建议
+```
+
+
+### 13.3 继承和多态
+
+```py
+class Animal(object):
+    def run(self):
+        print('Animal is running...')
+# class的参数直接传递构造函数即可继承
+class Dog(Animal):
+    pass
+class Cat(Animal):
+    pass
+
+# 多态
+# 多态（Polymorphism） ：同一个方法名，在不同的对象上有不同的行为。
+# 简单说： 不同的对象，收到同一个消息（调用同一个方法），做出不同的反应 。
+class Animal:
+    def speak(self):
+        pass
+class Dog(Animal):
+    def speak(self):
+        return "汪汪汪!"
+class Cat(Animal):
+    def speak(self):
+        return "喵喵喵!"
+class Duck(Animal):
+    def speak(self):
+        return "嘎嘎嘎!"
+# 多态：同一个函数，接收不同的对象，表现不同
+def make_speak(animal):
+    print(animal.speak())
+# 使用
+dog = Dog()
+cat = Cat()
+duck = Duck()
+make_speak(dog)   # 汪汪汪!
+make_speak(cat)   # 喵喵喵!
+make_speak(duck)  # 嘎嘎嘎!
+```
+
+### 13.4 获取对象信息
+
+- type()
+```py
+# 基本类型判断
+type(123) # <class 'int'>
+type('str') # <class 'str'>
+type(None) # <class 'NoneType'>
+type(abs) # <class 'builtin_function_or_method'>
+type(lambda x: x) # <class 'function'>
+type((x for x in range(10))) # <class 'generator'>
+type(123) == int # True
+type('123') == str # True
+import types
+type(lambda x: x) == types.FunctionType # True
+type(abs)==types.BuiltinFunctionType # True
+type(lambda x: x)==types.LambdaType # True
+types.FunctionType == types.LambdaType # True
+type((x for x in range(10)))==types.GeneratorType # True
+```
+
+- isinstance()
+
+> 判断类型 99% 用 isinstance  只有需要严格确认 “是不是精确这个类” 才用 type  isinstance支持继承 type精确类型 不认继承
+
+
+```py
+isinstance('a', str)
+isinstance(123, int)
+isinstance(b'a', bytes)
+# 判断xx是否为list或者tuple中的一种
+isinstance([1, 2, 3], (list, tuple)) # True
+isinstance((1, 2, 3), (list, tuple)) # True 
+```
+
+- dir() 
+> 获得一个对象的所有属性和方法
+
+```py
+dir('ABC')# ['__add__', '__class__', '__contains__', '__delattr__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__getitem__', '__getnewargs__', '__getstate__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__iter__', '__le__', '__len__', '__lt__', '__mod__', '__mul__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__rmod__', '__rmul__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', 'capitalize', 'casefold', 'center', 'count', 'encode', 'endswith', 'expandtabs', 'find', 'format', 'format_map', 'index', 'isalnum', 'isalpha', 'isascii', 'isdecimal', 'isdigit', 'isidentifier', 'islower', 'isnumeric', 'isprintable', 'isspace', 'istitle', 'isupper', 'join', 'ljust', 'lower', 'lstrip', 'maketrans', 'partition', 'removeprefix', 'removesuffix', 'replace', 'rfind', 'rindex', 'rjust', 'rpartition', 'rsplit', 'rstrip', 'split', 'splitlines', 'startswith', 'strip', 'swapcase', 'title', 'translate', 'upper', 'zfill']
+
+len('ABC') # 实质上就是在调用对象方法的__len__
+# 也可以类似于js重写对象方法似的 重写__len__
+class MyDog(object):
+    def __init__(self, name):
+        self.name = name
+    def __len__(self):
+        return 100
+    def bark(self): # 注意 bark中哪怕使用self 也要写
+        print('wolf wolf')
+dog = MyDog('ww')
+len(dog) # 100
+
+hasattr(dog, 'name') # 判断dog上是否有name属性 区别于dict的get方法
+getattr(dog, 'name') # 获取属性值
+getattr(dog,'11', 404) # 404 不写404会报错
+setattr(dog, 'age', 18) # 添加age属性 等同于 dog.age = 18
+hasattr(dog, 'bark') # True 获取属性
+# 能直接写 dog.name就不用hasattr(dog, 'name')
+# 只有不确定某个属性或方法是否存在时 用来判断
+```
+
+### 13.5 实例属性和类属性
+
+```py
+class Student(object):
+    def __init__(self, name):
+        self.name = name
+s = Student('Bob')
+s.score = 90
+
+# 可以给类自己加一个name属性
+class Student(object):
+    name = 'Student'
+Student.name # Student
+s = Student()
+s.name # Student
+s.name = '1' # s.name = 1
+# 此时Student.name # Student 不变
+del s.name # 如果删除实例的name属性 
+# 向实例添加方法需要使用MethodType
+from types import MethodType
+s.set_age = MethodType(set_age, s)
+s.set_age(25)
+# 注意 直接通过 s.set_age = set_age的形式不能有效传递self 导致set_age(25)时会报错
+
+```
+
+## 14 面向对象高级编程
+> 重继承、定制类、元类
+
+### 14.1 使用__slots__
+
+```py
+from types import MethodType
+class Student(object):
+    pass
+s.name = 'zs'
+def set_score(self, score):
+     self.score = score
+s.set_age = MethodType(set_age, s)
+s.set_age(25)
+# 但是 s1 是不能获取的
+s1 = Student()
+s1.set_age(25) # 无此方法
+# 可以直接通过类上挂方法实现
+Student.set_age = set_age
+# 但是这种动态的类需要限制
+class Student(object):
+    __slots__ = ('name', 'age') # 用tuple定义允许绑定的属性名称
+# 此时添加非name或age就报错了
+# 仅对当前类起作用 继承的无效
+```
+
+### 14.2 @property装饰器
+
+> 给属性做限制
+```py
+class Student(object):
+    @property # 实例上读取score时 走这里 等同于getter
+    def score(self):
+        return self._score # 注意 方法名和这里的_score不要重名 会导致栈溢出
+
+    @score.setter # 实例上设置score时 走这里
+    def score(self, value):
+        if not isinstance(value, int):
+            raise ValueError('score must be an integer!')
+        if value < 0 or value > 100:
+            raise ValueError('score must between 0 ~ 100!')
+        self._score = value
+
+    @property # 也可以只设置property 不设置setter 说明他不可写
+    def age(self):
+        return 18
+```
+
+
+### 14.3 多重继承
+
+```py
+class Bat(Mammal, Flyable): # 继承两个类
+    pass
+# 一般多重继承都通过mxinin混入实现
+# 最佳实践清单：
+# 每个MixIn 仅实现 1 个功能。
+# 永远不单独实例化 MixIn 。
+# 优先级高的 MixIn 放在继承列表靠前位置。
+# 避免在 MixIn 中定义  __init__ 。
+class MyTCPServer(TCPServer, ForkingMixIn):
+    pass
+```
+
+### 14.4 定制类
+
+```py
+__slots__
+__len__
+__str__ # 定义控制台打印出来的内容<__main__.Student object at 0x109afb190>
+__repr__ = __str__ # 定义实例打出来的内容
+__iter__
+__getattr__
+
+```
