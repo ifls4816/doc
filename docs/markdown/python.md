@@ -71,7 +71,7 @@ world''')
 #### 3.3.1 字符串替换
 >>> 'Hello, %s' % 'world'
 'Hello, world'
->>> 'Hi, %s, you have $%d.' % ('Michael', 1000000)
+>>> 'Hi, %s, you have $%d.' % ('Mi# -*- coding: utf-8 -*-chael', 1000000)
 'Hi, Michael, you have $1000000.'
 
 #### 3.3.2 占位符
@@ -180,7 +180,7 @@ match args:
     case ['gcc']:
         print('gcc: missing source file(s).')
     # 出现gcc，且至少指定了一个文件:
-    case ['gcc', file1, *files]: # *flies类似于...arg
+    case ['gcc', file1, *files]: # *flies类似于rg
         print('gcc compile: ' + file1 + ', ' + ', '.join(files))
     # 仅出现clean:
     case ['clean']:
@@ -1049,6 +1049,7 @@ s.set_age(25)
 from types import MethodType
 class Student(object):
     pass
+s = Student()
 s.name = 'zs'
 def set_score(self, score):
      self.score = score
@@ -1107,11 +1108,511 @@ class MyTCPServer(TCPServer, ForkingMixIn):
 ### 14.4 定制类
 
 ```py
-__slots__
-__len__
-__str__ # 定义控制台打印出来的内容<__main__.Student object at 0x109afb190>
+__slots__ # 参考上方
+
+__len__ # 参考上方
+
+__str__ # 定义控制台打印出来的内容
+class Student(object):
+    def __init__(self, name):
+      self.name = name
+    def __str__(self):
+          return 'Student object (name: %s)' % self.name
+print(Student('zs')) # Student object (name: zs)
+# 只有print打印时才会触发__str__直接显示变量调用的是__repr__
+# 可以 下如下的代码 让显示变量调用也打印
 __repr__ = __str__ # 定义实例打出来的内容
-__iter__
+
+__iter__ # 便利
+#如果一个类想被用于for ... in循环，类似list或tuple那样，就必须实现一个__iter__()方法，该方法返回一个迭代对象
+# # Python的for循环就会不断调用该迭代对象的__next__()方法拿到循环的下一个值，直到遇到StopIteration错误时退出循环。
+class Fib(object):
+    def __init__(self):
+        self.a, self.b = 0, 1 # 初始化两个计数器a，b
+    def __iter__(self):
+        return self # 实例本身就是迭代对象，故返回自己
+    def __next__(self):
+        self.a, self.b = self.b, self.a + self.b # 计算下一个值
+        if self.a > 100000: # 退出循环的条件
+            raise StopIteration()
+        return self.a # 返回下一个值
+for n in Fib():
+    print(n)
+
+__getitem__ # 下标取值
+class Fib(object):
+    def __getitem__(self, n): 
+        a, b = 1, 1
+        for x in range(n):
+            a, b = b, a + b
+        return a
+f = Fib()
+f[1] # 相当于__getitem__函数的n参数传递了1 就能返回当前遍历的n的结果
+
 __getattr__
+class Student(object):
+    def __init__(self, name):
+        self.name = name
+    def __getattr__(self, attr):
+        if attr == 'age':
+          # return 'no age'
+          return lambda x : x + 1 # 也可以返回函数 调用方式就变为s.age('19')
+s = Student('zs')
+print(s.name) # zs
+print(s.age(19)) # 访问class中不存在的属性会报错'Student' object has no attribute 'age'
+print(s.sex) # 针对没定义的属性 __getattr__走默认函数返回也就是None
+# 这里可以用__getattr__实现链式调用
+class Chain(object):
+    def __init__(self, path=''):
+        self._path = path
+    def __getattr__(self, path):
+        return Chain('%s/%s' % (self._path, path))
+    def __str__(self):
+        return self._path
+    __repr__ = __str__
+# /status/user/timeline/list 不论传递什么参数 都会加一个/返回
+print(Chain().status.user.timeline.list)
+
+__call__ # 把实例当作函数去调用
+class Student(object):
+    def __init__(self, name):
+        self.name = name
+    def __call__(self):
+        print('My name is %s.' % self.name)
+s = Student('zs')
+s() # 此时实例的调用就是调了call方法
+# 判断对象是否可以被调用
+callable 加了__call__是True 不加是False
+```
+
+### 14.5 枚举类
+
+```py
+from enum import Enum
+Month = Enum('Month', ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'))
+Month.Jan
+# 可以通过这样便利出来所有的Enum元素
+for name, member in Month.__members__.items():
+    print(name, '=>', member, ',', member.value) # value是Enum的默认赋值 从1开始
+# Jan => Month.Jan , 1
+# Feb => Month.Feb , 2
+# Mar => Month.Mar , 3
+# Apr => Month.Apr , 4
+# May => Month.May , 5
+# Jun => Month.Jun , 6
+# Jul => Month.Jul , 7
+# Aug => Month.Aug , 8
+# Sep => Month.Sep , 9
+# Oct => Month.Oct , 10
+# Nov => Month.Nov , 11
+# Dec => Month.Dec , 12
+
+
+# 更精确地控制枚举类型
+from enum import Enum, unique
+@unique # 用来检查是否有重复值
+class Weekday(Enum):
+    Sun = 0 # Sun的value被设定为0
+    Mon = 1
+    Tue = 2
+    Wed = 3
+    Thu = 4
+    Fri = 5
+    Sat = 6
+Weekday.Mon # <Weekday.Sun: 0>
+Weekday.Mon.value # 0\
+
+day1 = Weekday.Mon
+if day1 == Weekday.Mon # True
+Weekday(1) # <Weekday.Mon: 1>
+day1 == Weekday(1) # True
+Weekday(7) # ValueError: 7 is not a valid Weekday
+for name, member in Weekday.__members__.items():
+print(name, '=>', member)
+# Sun => Weekday.Sun
+# Mon => Weekday.Mon
+# Tue => Weekday.Tue
+# Wed => Weekday.Wed
+# Thu => Weekday.Thu
+# Fri => Weekday.Fri
+# Sat => Weekday.Sat
+```
+
+
+### 14.6 元类
+
+type()函数既可以返回一个对象的类型，又可以创建出新的类型
+```py
+class Hello(object):
+    def hello(self, name='world'):
+        print('Hello, %s.' % name)
+from hello import Hello
+h = Hello()
+h.hello() # Hello world
+print(type(Hello)) # <class 'type'> 这里用到type创建了class 所以判断构造函数的类型就是 class 'type'
+# 通过type创建class
+def fn(self, name='world'): # 先定义函数
+    print('Hello, %s.' % name)
+
+# 参数1 class名称  
+# 参数2 继承的父类集合，注意Python支持多重继承，如果只有一个父类，别忘了tuple的单元素写法
+# 参数3 要绑定的方法
+Hello = type('Hello', (object,), dict(hello=fn)) # 创建Hello class
+h = Hello()
+h.hello() # Hello, world.
+print(type(Hello)) # <class 'type'>
+print(type(h)) # <class '__main__.Hello'>
+# 通过type()函数创建的类和直接写class是完全一样的，因为Python解释器遇到class定义时，仅仅是扫描一下class定义的语法，然后调用type()函数创建出class。
+```
+
+```py
+# metaclass
+# 除了使用type()动态创建类以外，要控制类的创建行为，还可以使用metaclass。
+# metaclass允许创建类或者修改类。换句话说，可以把类看成是metaclass创建出来的“实例”。
+具体使用参考：
+https://liaoxuefeng.com/books/python/oop-adv/meta-class/index.html
+```
+ 
+## 15 错误 调试 测试
+
+### 15.1 错误处理
+
+#### 15.1.1 try
+
+```py
+# 基础使用
+try:
+    print('try...')
+    r = 10 / 0
+    print('result:', r) # 这里不会打印
+except ZeroDivisionError as e:
+    print('except:', e) # except: division by zero
+finally:
+    print('finally...')
+print('END')
+
+# 全部
+try:
+    print('try...')
+    r = 10 / int('2')
+    print('result:', r)
+except ValueError as e: # 第一个except触发了 第二个就不会触发
+    print('ValueError:', e)
+except ZeroDivisionError as e:
+    print('ZeroDivisionError:', e)
+else:
+    print('no error!') # 没进入except 会走这里
+finally:
+    print('finally...')
+print('END')
+
+# 多个函数组合时 不需要每一个都捕获
+def foo(s):
+    return 10 / int(s)
+def bar(s):
+    return foo(s) * 2
+def main():
+    try:
+        bar('0')
+    except Exception as e:
+        print('Error:', e) # Error: division by zero
+    finally:
+        print('finally...')
+main()
+```
+
+#### 15.1.2 调用栈
+
+
+```py
+def foo(s):
+    return 10 / int(s)
+def bar(s):
+    return foo(s) * 2
+def main():
+    bar('0')
+main()
+# 控制台能打印完整的报错信息
+# Traceback (most recent call last):
+#   File "D:\1\personCode\doc\docs\markdown\python\hello.py", line 553, in <module>
+#     main()
+#     ~~~~^^
+#   File "D:\1\personCode\doc\docs\markdown\python\hello.py", line 551, in main
+#     bar('0')
+#     ~~~^^^^^
+#   File "D:\1\personCode\doc\docs\markdown\python\hello.py", line 548, in bar
+#     return foo(s) * 2
+#            ~~~^^^
+#   File "D:\1\personCode\doc\docs\markdown\python\hello.py", line 545, in foo
+#     return 10 / int(s)
+#            ~~~^~~~~~~~
+# ZeroDivisionError: division by zero
+```
+
+
+#### 15.1.2 记录错误
+
+```py
+# logging
+import logging
+def foo(s):
+    return 10 / int(s)
+def bar(s):
+    return foo(s) * 2
+def main():
+    try:
+        bar('0')
+    except Exception as e:
+        logging.exception(e) # 这里会正常打印调用栈信息 且不会打断代码的执行
+main()
+print('END')
+```
+
+#### 15.1.3 抛出错误
+
+```py
+class FooError(ValueError):
+    pass
+def foo(s):
+    n = int(s)
+    if n==0:
+        raise FooError('invalid value: %s' % s) # 自定义错误
+    return 10 / n
+foo('0')
+
+
+def foo(s):
+    n = int(s)
+    if n==0:
+        raise ValueError('invalid value: %s' % s)
+    return 10 / n
+def bar():
+    try:
+        foo('0')
+    except ValueError as e:
+        print('ValueError!') # 打印错误后向上抛出 这里并不清楚错误来源和处理办法
+        raise
+bar()
+```
+
+### 15.2 调试
+
+```py
+# print
+
+# 断言
+def foo(s):
+    n = int(s)
+    # n不为0时 满足断言条件 不触发错误 n0为0时才打印
+    assert n != 0, 'n is zero!' # AssertionError: n is zero!
+    return 10 / n
+
+def main():
+    foo('0')
+main()
+# 大写字母O 不是零
+# 运行时可以通过python -O err.py来排除断言引发的错误
+# 关闭后 断言可当作pass看
+
+# logging 能记录错误
+import logging
+logging.basicConfig(level=logging.INFO)
+
+# pdb
+s = '0'
+n = int(s)
+print(10 / n)
+python -m pdb err.py
+l # 查看当前代码执行到哪行了
+n # next下一步
+p s # s是代码的变量也就是0
+p n # n是变量 0
+q # 结束调试
+
+# pdb.set_trace()
+import pdb
+s = '0'
+n = int(s)
+pdb.set_trace() # 运行到这里会自动暂停 js debugger
+print(10 / n)
+```
+
+## 16 IO编程
+
+### 16.1 文件读写
+
+#### 16.1.1读
+```py
+f = open('./test.txt', 'r', encoding='gbk',  errors='ignore') # r代表只读 errors=ignore可忽略编码不规范引发的错误
+f.read() # 接收参数size 避免内存爆掉 单位字节
+f.readline() # 读一行内容
+f.readlines() # 读取所有内容 按行返回list
+for line in f.readlines():
+    print(line.strip()) # 把末尾的'\n'删掉
+f.close() # 读取会占用资源 必须关闭
+
+try:
+    f = open('/path/to/file', 'r')
+    print(f.read())
+finally: # 避免读取出错后不调用close的情况
+    if f:
+        f.close()
+# 等同于try finally 不用手动close了 with是关键字
+with open('/path/to/file', 'r') as f:
+    print(f.read())
+```
+
+#### 16.1.2写
+
+```py
+f = open('./test.txt', 'w') # w: write 直接覆盖
+f = open('./test.txt', 'a') # a: append 追加写入
+f.write('hello') # 默认不会立即触发写 会放到内存中后续处理
+f.close() # 调用close会立即写入
+
+# 立即读写
+with open('./test.txt', 'w') as f:
+  f.write('Hello, world!')
+```
+
+### 16.2 StringIO和BytesIO
+
+#### 16.2.1 StringIO
+StringIO顾名思义就是在内存中读写str。
+```py
+from io import StringIO
+f = StringIO()
+#  f = StringIO('Hello!\nHi!\nGoodbye!') 也可以直接初始化
+f.write('hello') # 5
+f.write(' ') # 1
+f.write('world!') # 6
+# getvalue 获取写入后的str
+print(f.getvalue()) # hello world!
+```
+
+#### 16.2.2 BytesIO
+StringIO处理str BytesIO处理二进制
+
+```py
+from io import BytesIO
+f = BytesIO()
+f.write('中文'.encode('utf-8')) # 写入的不是str 而是经过二进制编码的bytes
+print(f.getvalue()) # b'\xe4\xb8\xad\xe6\x96\x87'
+```
+
+### 16.3 操作文件和目录
+
+```py
+import os
+os.name # nt=windows posix=linux/unix/macos
+os.environ # 环境变量
+os.environ.get('key') # 获取某个环境变量的值
+os.environ.get('PATH')
+os.path.abspath('.')  # 查看当前目录的绝对路径
+p = os.path.join(os.path.abspath('.'), 'testdir') # 在当前目录创建一个testdir 首先把新目录的完整路径表示出来 这部还是在拼接路径 没有创建文件
+os.mkdir(p) # 创建目录
+os.rmdir(p) # 删除目录
+
+# 路径处理: 不同系统的路径不一致 不能直接拼接字符串
+os.path.join() # 合并路径采用
+os.path.split() # 拆分路径采用
+os.rename('test.txt', 'test.py') # 重命名文件
+os.remove('test.py') # 删除文件
+import shutil
+shutil.copy('原文件.txt','目标文件.txt')
 
 ```
+
+### 16.4 序列化
+我们把变量从内存中变成可存储或传输的过程称之为序列化，在Python中叫pickling
+序列化之后，就可以把序列化后的内容写入磁盘，或者通过网络传输到别的机器上。
+
+```py
+# pickle
+import pickle
+d = dict(name='Bob', age=20, score=88)
+# dumps 把任意对象序列化成一个bytes
+pickle.dumps(d) # b'\x80\x03}q\x00(X\x03\x00\x00\x00ageq\x01K\x14X\x05\x00\x00\x00scoreq\x02KXX\x04\x00\x00\x00nameq\x03X\x03\x00\x00\x00Bobq\x04u.' 
+pickle.dump()
+f = open('dump.txt', 'wb') # w:write b:binary
+pickle.dump(d, f)
+f.close() # 会生成一个二进制文件
+
+f = open('dump.txt', 'rb')
+d = pickle.load(f) # {'age': 20, 'score': 88, 'name': 'Bob'}
+f.close()
+```
+
+
+```py
+# JSON json就是标准的js对象
+| JSON类型 | Python类型 |
+|---------|-----------|
+| {} | dict |
+| [] | list |
+| "string" | str |
+| 1234.56 | int或float |
+| true/false | True/False |
+| null | None |
+# 将py对象转换为json对象
+import json
+d = dict(name='Bob', age=20, score=88)
+json.dumps(d) # '{"name": "Bob", "age": 20, "score": 88}' =js的JSON.stringify
+# 将json转为py对象
+json_str = '{"age": 20, "score": 88, "name": "Bob"}'
+json.loads(json_str) # {'age': 20, 'score': 88, 'name': 'Bob'} =js的JSON.parse
+
+# 将class表示的对象转换成json
+class Student(object):
+    def __init__(self, name, age, score):
+        self.name = name
+        self.age = age
+        self.score = score
+s = Student('Bob', 20, 88)
+# class上的__dict__属性
+print(json.dumps(s, default=lambda obj: obj.__dict__属性)) # {"name": "Bob", "age": 20, "score": 88}
+
+# 将json转换回class
+def dict2student(d):
+    return Student(d['name'], d['age'], d['score'])
+json_str = '{"age": 20, "score": 88, "name": "Bob"}'
+print(json.loads(json_str, object_hook=dict2student)) # <__main__.Student object at 0x000001CD73A3C910>
+```
+
+
+## 17 进程和线程
+
+```py
+
+```
+
+### 17.1 多进程
+
+```py
+
+```
+
+### 17.2 多线程
+
+```py
+
+```
+
+### 17.3 ThreadLocal
+
+```py
+
+```
+
+### 17.4 进程vs线程
+
+```py
+
+```
+
+### 17.5 分布式进程
+
+```py
+
+```
+

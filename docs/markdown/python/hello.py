@@ -1,5 +1,5 @@
 # #!/usr/bin/env python3
-
+# -*- coding: utf-8 -*-
 # # print('hello world!')
 # # print('The quick brown fox', 'jumps over', 'the lazy dog')
 # # print(100+300)
@@ -445,10 +445,211 @@
 #         else:
 #             print('Students:', Student.count)
 #             print('测试通过!')
-class Student(object):
-    def __init__(self, name):
-        self.name = name
-    def __str__(self):
-        return 'Student object (name: %s)' % self.name
-    __repr__ = __str__
-print(Student('Michael'))
+# class Student(object):
+#     def __init__(self, name):
+#         self.name = name
+#     def __str__(self):
+#           return 'DIY Student object (name: %s)' % self.name
+# print(Student('zs')) # Student object (name: zs)
+# class Fib(object):
+#     def __init__(self):
+#         self.a, self.b = 0, 1 # 初始化两个计数器a，b
+#     def __iter__(self):
+#         return self # 实例本身就是迭代对象，故返回自己
+#     def __next__(self):
+#         self.a, self.b = self.b, self.a + self.b # 计算下一个值
+#         if self.a > 100000: # 退出循环的条件
+#             raise StopIteration()
+#         return self.a # 返回下一个值
+# for n in Fib():
+#     print(n)
+# class Chain(object):
+#     def __init__(self, path=''):
+#         self._path = path
+#     def __getattr__(self, path):
+#         return Chain('%s/%s' % (self._path, path))
+#     def __str__(self):
+#         return self._path
+#     __repr__ = __str__
+# # /status/user/timeline/list 不论传递什么参数 都会加一个/返回
+# print(Chain().status.user.timeline.list)
+# class Student(object):
+#     def __init__(self, name):
+#         self.name = name
+#     # def __call__(self):
+#         # print('My name is %s.' % self.name)
+# s = Student('zs')
+# # s()
+# print(callable(Student('zs')))
+
+# from enum import Enum, unique
+
+# @unique
+# class Gender(Enum):
+#     Male = 0
+#     Female = 1
+
+# class Student(object):
+#     def __init__(self, name, gender):
+#         # self.gender = gender
+#         if not isinstance(gender,Gender):
+#             raise TypeError("gender must be an instance of Gender Enum.")
+#         self.name = name
+#         self.gender = gender
+
+
+
+# # 测试:
+# bart = Student('Bart', Gender.Male)
+# if bart.gender == Gender.Male:
+#     print('测试通过!')
+# else:
+#     print('测试失败!')
+
+# try:
+#     print('try...')
+#     r = 10 / 0
+#     print('result:', r)
+# except ZeroDivisionError as e:
+#     print('except:', e) # except: division by zero
+# finally:
+#     print('finally...')
+# print('END')
+
+# try:
+#     print('try...')
+#     r = 10 / int('2')
+#     print('result:', r)
+# except ValueError as e:
+#     print('ValueError:', e)
+# except ZeroDivisionError as e:
+#     print('ZeroDivisionError:', e)
+# else:
+#     print('no error!')
+# finally:
+#     print('finally...')
+# print('END')
+# def foo(s):
+#     return 10 / int(s)
+# def bar(s):
+#     return foo(s) * 2
+# def main():
+#     try:
+#         bar('0')
+#     except Exception as e:
+#         print('Error:', e)
+#     finally:
+#         print('finally...')
+# main()
+# def foo(s):
+#     return 10 / int(s)
+# def bar(s):
+#     return foo(s) * 2
+# def main():
+#     bar('0')
+# main()
+
+# import logging
+# def foo(s):
+#     return 10 / int(s)
+# def bar(s):
+#     return foo(s) * 2
+# def main():
+#     try:
+#         bar('0')
+#     except Exception as e:
+#         logging.exception(e)
+# main()
+# print('END')
+
+# class FooError(ValueError):
+#     pass
+
+# def foo(s):
+#     n = int(s)
+#     if n==0:
+#         raise FooError('invalid value: %s' % s)
+#     return 10 / n
+
+# foo('0')
+# def foo(s):
+#     n = int(s)
+#     if n==0:
+#         raise ValueError('invalid value: %s' % s)
+#     return 10 / n
+# def bar():
+#     try:
+#         foo('0')
+#     except ValueError as e:
+#         print('ValueError!')
+#         raise
+# # bar()
+# from functools import reduce
+
+# def str2num(s):
+#     return float(s)
+
+# def calc(exp):
+#     ss = exp.split('+')
+#     ns = map(str2num, ss)
+#     return reduce(lambda acc, x: acc + x, ns)
+
+# def main():
+#     r = calc('100 + 200 + 345')
+#     print('100 + 200 + 345 =', r)
+#     r = calc('99 + 88 + 7.6')
+#     print('99 + 88 + 7.6 =', r)
+
+# main()
+
+# def foo(s):
+#     n = int(s)
+#     assert n != 0, 'n is zero!'
+#     return 10 / n
+
+# def main():
+#     foo('0')
+
+# main()
+# import pdb
+
+# s = '0'
+# n = int(s)
+# # pdb.set_trace() # 运行到这里会自动暂停
+# print(10 / n)
+# fpath = './test.txt'
+
+# with open(fpath, 'r') as f:
+#     s = f.read()
+#     print(s)
+# import os
+
+# p = os.path.join(os.path.abspath('.'), 'testdir')
+# # os.mkdir(p)
+# os.rmdir(p
+# import pickle
+# d = dict(name='Bob', age=20, score=88)
+# p = pickle.dumps(d)
+# print(p)
+# import json
+
+# class Student(object):
+#     def __init__(self, name, age, score):
+#         self.name = name
+#         self.age = age
+#         self.score = score
+
+# s = Student('Bob', 20, 88)
+# # print(s)
+# j = json.dumps(s, default=lambda obj: obj.__dict__)
+# print(j)
+# def dict2student(d):
+#     return Student(d['name'], d['age'], d['score'])
+# json_str = '{"age": 20, "score": 88, "name": "Bob"}'
+# print(json.loads(json_str, object_hook=dict2student))
+
+import json
+
+obj = dict(name='小明', age=20)
+s = json.dumps(obj, ensure_ascii=True)
+print(s)
